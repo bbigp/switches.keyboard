@@ -1,0 +1,64 @@
+{% extends "main.html" %}
+{% block head %}
+<!--DataTables [ OPTIONAL ]-->
+<link href="/plugins/datatables/media/css/dataTables.bootstrap.css" rel="stylesheet">
+<link href="/plugins/datatables/extensions/Responsive/css/dataTables.responsive.css" rel="stylesheet">
+<!--DataTables [ OPTIONAL ]-->
+<script src="/plugins/datatables/media/js/jquery.dataTables.js"></script>
+<script src="/plugins/datatables/media/js/dataTables.bootstrap.js"></script>
+<script src="/plugins/datatables/extensions/Responsive/js/dataTables.responsive.min.js"></script>
+<!--DataTables Sample [ SAMPLE ]-->
+<script src="/js/demo/tables-datatables.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-heading">
+        <h3 class="panel-title">Add Row</h3>
+    </div>
+
+    <div id="demo-custom-toolbar2" class="table-toolbar-left">
+        <a href="/add">add</a>
+        <button data-target="#demo-modal-wo-anim" data-toggle="modal" class="btn btn-primary"><i
+                class="demo-pli-plus"></i> Add row
+        </button>
+    </div>
+
+    <div class="panel-body">
+        <table id="demo-dt-addrow" class="table table-striped table-bordered" cellspacing="0" width="100%">
+            <thead>
+            <tr>
+                <th>图片</th>
+                <th>名字</th>
+                <th>工作室</th>
+                <th class="min-tablet">类型</th>
+                <th class="min-tablet">代工厂</th>
+                <th class="min-desktop">备注</th>
+                <th class="min-desktop">触发</th>
+                <th class="min-desktop">触底</th>
+                <th class="min-desktop">价格</th>
+                <th class="min-desktop">材料</th>
+                <th class="min-desktop">添加时间</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in page_list %}
+            <tr>
+                <td>{{item.pic }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.sutdio }}</td>
+                <td>{{ item.type }}</td>
+                <td>{{ item.foundry }}</td>
+                <td>{{ item.remark }}</td>
+                <td>{{ item.operating_force }} | {{ item.pre_travel }}</td>
+                <td>{{ item.end_force }} | {{ item.full_travel }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.upper }} | {{ item.bottom }} | {{ item.shaft }} | {{ item.light_pipe }}</td>
+                <td>{{ item.create_time }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

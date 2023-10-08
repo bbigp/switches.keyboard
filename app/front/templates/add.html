@@ -1,0 +1,185 @@
+{% extends "main.html" %}
+{% block head %}
+<link href="/plugins/magic-check/css/magic-check.min.css" rel="stylesheet">
+<script src="/plugins/dropzone/dropzone.min.js"></script>
+<script src="/js/demo/form-file-upload.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="panel">
+    <div class="panel-heading">
+        <h3 class="panel-title">Input size</h3>
+    </div>
+
+
+    <!--Input Size-->
+    <!--===================================================-->
+    <form class="form-horizontal" action="/add" enctype="application/x-www-form-urlencoded" method="post">
+        <div class="panel-body">
+            <div class="form-group">
+                <div class="col-sm-3 col-sm-offset-3">
+                    <div id="demo-error-container" class="bg-gray-light">
+                        <small class="help-block" style="">电话号码为必填项，不能为空</small>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="demo-is-inputsmall">主图</label>
+                <div class="col-sm-6">
+                    <!-- The fileinput-button span is used to style the file input field as button -->
+                    <span class="btn btn-success fileinput-button dz-clickable">
+					                        <i class="fa fa-plus"></i>
+					                        <span>Add files...</span>
+					                    </span>
+
+                    <div class="btn-group pull-right">
+                        <button id="dz-upload-btn" class="btn btn-primary" type="submit" disabled>
+                            <i class="fa fa-upload-cloud"></i> Upload
+                        </button>
+                        <button id="dz-remove-btn" class="btn btn-danger cancel" type="reset" disabled>
+                            <i class="demo-pli-cross"></i>
+                        </button>
+                    </div>
+
+                    <div id="dz-previews">
+                        <div id="dz-template" class="pad-top bord-top">
+                            <div class="media">
+                                <div class="media-body">
+                                    <!--This is used as the file preview template-->
+                                    <div class="media-block">
+                                        <div class="media-left">
+                                            <img class="dz-img" data-dz-thumbnail>
+                                        </div>
+                                        <div class="media-body">
+                                            <p class="text-main text-bold mar-no text-overflow"
+                                               data-dz-name></p>
+                                            <span class="dz-error text-danger text-sm"
+                                                  data-dz-errormessage></span>
+                                            <p class="text-sm" data-dz-size></p>
+                                            <div id="dz-total-progress" style="opacity:0">
+                                                <div class="progress progress-xs active"
+                                                     role="progressbar" aria-valuemin="0"
+                                                     aria-valuemax="100" aria-valuenow="0">
+                                                    <div class="progress-bar progress-bar-success"
+                                                         style="width:0%;" data-dz-uploadprogress></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="media-right">
+                                    <button data-dz-remove class="btn btn-xs btn-danger dz-cancel"><i
+                                            class="demo-pli-cross"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="demo-is-inputsmall">名字</label>
+                <div class="col-sm-3">
+                    <input type="text" placeholder="名字" class="form-control input-sm"
+                           id="demo-is-inputsmall" name="name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="demo-is-inputnormal" class="col-sm-3 control-label">工作室</label>
+                <div class="col-sm-3">
+                    <input type="text" placeholder="工作室" class="form-control" id="demo-is-inputnormal" name="studio">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="demo-is-inputnormal" class="col-sm-3 control-label">代工厂</label>
+                <div class="col-sm-3">
+                    <input type="text" placeholder="代工厂" class="form-control" id="demo-is-inputnormal1" name="foundry">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="demo-is-inputsmall">类型</label>
+                <div class="col-sm-3">
+                    <input type="text" placeholder="类型" class="form-control input-sm"
+                           id="demo-is-inputsmall1">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="demo-is-inputlarge" class="col-sm-3 control-label">备注</label>
+                <div class="col-sm-3">
+                    <input type="text" placeholder="备注" class="form-control input-sm"
+                           id="demo-is-inputlarge">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">触发</label>
+                <div class="col-sm-3">
+                    <input type="text" placeholder="力度" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-3 col-sm-offset-3">
+                    <input type="text" placeholder="行程" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">触底</label>
+                <div class="col-sm-3">
+                    <input type="text" placeholder="力度" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-3 col-sm-offset-3">
+                    <input type="text" placeholder="行程" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">材料</label>
+                <div class="col-sm-3">
+                    <input type="text" placeholder="上盖" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-3 col-sm-offset-3">
+                    <input type="text" placeholder="底壳" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-3 col-sm-offset-3">
+                    <input type="text" placeholder="轴心" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-3 col-sm-offset-3">
+                    <input type="text" placeholder="导光柱" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">价格</label>
+                <div class="col-sm-3">
+                    <input type="text" placeholder="上盖" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">相关描述</label>
+                <div class="col-sm-3">
+                    <input type="text" placeholder="上盖" class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-sm-9 col-sm-offset-3">
+                    <button class="btn btn-mint" type="submit">保存</button>
+                    <button class="btn btn-warning" type="reset">Reset</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!--===================================================-->
+    <!--End Input Size-->
+
+
+</div>
+{% endblock %}
+
+
+

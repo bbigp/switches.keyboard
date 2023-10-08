@@ -1,0 +1,12 @@
+# aiofiles==22.1.0
+Jinja2==3.1.2
+# python-multipart==0.0.5
+# starlette==0.19.1
+uvicorn[standard]==0.20.0
+# yt-dlp==2023.6.22
+# aiomysql==0.1.1
+# apscheduler==3.9.1
+# ffmpy3==0.2.4
+fastapi==0.78.0
+# loguru==0.6.0
+# peewee==3.15.4
