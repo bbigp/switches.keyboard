@@ -34,4 +34,4 @@ build/
 
 .docker_cache
 logs
-app/__pycache__
+app/__pycache__/
