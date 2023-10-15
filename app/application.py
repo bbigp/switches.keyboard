@@ -6,11 +6,13 @@ from datetime import datetime
 from typing import Optional
 from urllib.parse import urlencode
 
+import requests
 from fastapi import FastAPI, Request, Form, Query
+from pydantic.main import BaseModel
 from sqlalchemy import select, insert, func, and_, or_
 from starlette import status
 from starlette.middleware.cors import CORSMiddleware
-from starlette.responses import HTMLResponse, RedirectResponse, Response
+from starlette.responses import HTMLResponse, RedirectResponse, Response, JSONResponse
 from starlette.routing import Mount
 
 # from app.config.setting import log_path
@@ -104,12 +106,15 @@ async def index():
 async def index(request: Request):
     return templates.TemplateResponse('index.html', context={'request': request})
 
-@app.get("/p/ax/{id}", response_class=HTMLResponse)
-async def index(request: Request, id: int):
+@app.get("/p/ax", response_class=HTMLResponse)
+async def index(request: Request, id: Optional[int]=None):
     with SqlSession() as session:
-        model = session.fetchone(
-            select(ScTable.axioal).where(ScTable.axioal.columns.id==id), Axial
-        )
+        if id is not None:
+            model = session.fetchone(
+                select(ScTable.axioal).where(ScTable.axioal.columns.id==id), Axial
+            )
+        else:
+            model = Axial(name='', price=0)
         a_types = session.fetchall(
             select(ScTable.setting).where(ScTable.setting.columns.option_type=='a_type'),
             Setting
@@ -150,6 +155,15 @@ async def index(request: Request, axial: Optional[str]=None):
     else:
         ax = None
     return templates.TemplateResponse('add.html', context={'request': request, 'axial': ax, 'error_msg': []})
+
+class DownloadRequest(BaseModel):
+    url: str
+@app.post('/api/download_pic', response_class=JSONResponse)
+async def download_pic(req: DownloadRequest):
+    response = requests.get(req.url)
+    with open('/tmp/1.jpg', 'wb') as f:
+        f.write(response.content)
+    return {'status': 'ok'}
 
 @app.post("/a/add", response_class=HTMLResponse)
 async def add(request: Request, name=Form(None), studio=Form(None), foundry=Form(None), type=Form(None),
@@ -194,4 +208,4 @@ async def add(request: Request, name=Form(None), studio=Form(None), foundry=Form
 import uvicorn
 
 if __name__ == '__main__':
-    uvicorn.run('application:app', host='0.0.0.0', port=8000, access_log=True)
+    uvicorn.run('application:app', host='0.0.0.0', port=8001, access_log=True)
