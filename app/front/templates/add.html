@@ -2,7 +2,18 @@
 {% block head %}
 <link href="/plugins/magic-check/css/magic-check.min.css" rel="stylesheet">
 <script src="/plugins/dropzone/dropzone.min.js"></script>
-<script src="/js/demo/form-file-upload.js"></script>
+<!--<script src="/js/demo/form-file-upload.js"></script>-->
+
+<link href="/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+<script src="/plugins/bootstrap-select/bootstrap-select.min.js"></script>
+
+<link href="/plugins/animate-css/animate.min.css" rel="stylesheet">
+<script src="/js/demo/ui-modals.js"></script>
+<link href="/plugins/ionicons/css/ionicons.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+
+
 {% endblock %}
 
 {% block content %}
@@ -11,157 +22,213 @@
         <h3 class="panel-title">Input size</h3>
     </div>
 
+    <div class="modal fade" id="demo-default-modal" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                    <h4 class="modal-title">图片</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-8 col-xs-9">
+                            <input type="text" class="form-control">
+                        </div>
+                        <button id="download-pic-btn" class="col-sm-2 col-xs-3 btn btn-primary btn-sm">
+                            下载图片
+                        </button>
+                    </div>
+
+                        <p class="text-semibold text-main">Bootstrap Modal Vertical Alignment Center</p>
+                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
+                        <br>
+                        <p class="text-semibold text-main">Popover in a modal</p>
+                        <p>This
+                            <button class="btn btn-sm btn-warning demo-modal-popover add-popover" data-toggle="popover" data-trigger="focus" data-content="And here's some amazing content. It's very engaging. right?" data-original-title="Popover Title">button</button>
+                            should trigger a popover on click.
+                        </p>
+                        <br>
+                        <p class="text-semibold text-main">Tooltips in a modal</p>
+                        <p>
+                            <a class="btn-link text-bold add-tooltip" href="#" data-original-title="Tooltip">This link</a> and
+                            <a class="btn-link text-bold add-tooltip" href="#" data-original-title="Tooltip">that link</a> should have tooltips on hover.
+                        </p>
+                </div>
+
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                    <button class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <!--Input Size-->
     <!--===================================================-->
-    <form class="form-horizontal" action="/add" enctype="application/x-www-form-urlencoded" method="post">
-        <div class="panel-body">
+<!--    <form class="form-horizontal" action="/a/add" enctype="application/x-www-form-urlencoded" method="post">-->
+        <div class="panel-body form-horizontal">
             <div class="form-group">
                 <div class="col-sm-3 col-sm-offset-3">
                     <div id="demo-error-container" class="bg-gray-light">
-                        <small class="help-block" style="">电话号码为必填项，不能为空</small>
+                        {% for item in error_msg %}
+                        <small class="help-block" style="">{{ item }}</small>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="demo-is-inputsmall">主图</label>
-                <div class="col-sm-6">
-                    <!-- The fileinput-button span is used to style the file input field as button -->
-                    <span class="btn btn-success fileinput-button dz-clickable">
-					                        <i class="fa fa-plus"></i>
-					                        <span>Add files...</span>
-					                    </span>
-
-                    <div class="btn-group pull-right">
-                        <button id="dz-upload-btn" class="btn btn-primary" type="submit" disabled>
-                            <i class="fa fa-upload-cloud"></i> Upload
-                        </button>
-                        <button id="dz-remove-btn" class="btn btn-danger cancel" type="reset" disabled>
-                            <i class="demo-pli-cross"></i>
-                        </button>
-                    </div>
-
-                    <div id="dz-previews">
-                        <div id="dz-template" class="pad-top bord-top">
-                            <div class="media">
-                                <div class="media-body">
-                                    <!--This is used as the file preview template-->
-                                    <div class="media-block">
-                                        <div class="media-left">
-                                            <img class="dz-img" data-dz-thumbnail>
-                                        </div>
-                                        <div class="media-body">
-                                            <p class="text-main text-bold mar-no text-overflow"
-                                               data-dz-name></p>
-                                            <span class="dz-error text-danger text-sm"
-                                                  data-dz-errormessage></span>
-                                            <p class="text-sm" data-dz-size></p>
-                                            <div id="dz-total-progress" style="opacity:0">
-                                                <div class="progress progress-xs active"
-                                                     role="progressbar" aria-valuemin="0"
-                                                     aria-valuemax="100" aria-valuenow="0">
-                                                    <div class="progress-bar progress-bar-success"
-                                                         style="width:0%;" data-dz-uploadprogress></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="media-right">
-                                    <button data-dz-remove class="btn btn-xs btn-danger dz-cancel"><i
-                                            class="demo-pli-cross"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-sm-3">
+                    <button data-target="#demo-default-modal" data-toggle="modal" class="btn btn-primary btn-sm">
+                        <i class="ion-plus"></i>添加
+                    </button>
                 </div>
+<!--                <div class="col-sm-6">-->
+<!--                    &lt;!&ndash; The fileinput-button span is used to style the file input field as button &ndash;&gt;-->
+<!--                    <span class="btn btn-success fileinput-button dz-clickable">-->
+<!--					                        <i class="fa fa-plus"></i>-->
+<!--					                        <span>Add files...</span>-->
+<!--					                    </span>-->
+
+<!--                    <div class="btn-group pull-right">-->
+<!--                        <button id="dz-upload-btn" class="btn btn-primary" type="submit" disabled>-->
+<!--                            <i class="fa fa-upload-cloud"></i> Upload-->
+<!--                        </button>-->
+<!--                        <button id="dz-remove-btn" class="btn btn-danger cancel" type="reset" disabled>-->
+<!--                            <i class="demo-pli-cross"></i>-->
+<!--                        </button>-->
+<!--                    </div>-->
+
+<!--                    <div id="dz-previews">-->
+<!--                        <div id="dz-template" class="pad-top bord-top">-->
+<!--                            <div class="media">-->
+<!--                                <div class="media-body">-->
+<!--                                    &lt;!&ndash;This is used as the file preview template&ndash;&gt;-->
+<!--                                    <div class="media-block">-->
+<!--                                        <div class="media-left">-->
+<!--                                            <img class="dz-img" data-dz-thumbnail>-->
+<!--                                        </div>-->
+<!--                                        <div class="media-body">-->
+<!--                                            <p class="text-main text-bold mar-no text-overflow"-->
+<!--                                               data-dz-name></p>-->
+<!--                                            <span class="dz-error text-danger text-sm"-->
+<!--                                                  data-dz-errormessage></span>-->
+<!--                                            <p class="text-sm" data-dz-size></p>-->
+<!--                                            <div id="dz-total-progress" style="opacity:0">-->
+<!--                                                <div class="progress progress-xs active"-->
+<!--                                                     role="progressbar" aria-valuemin="0"-->
+<!--                                                     aria-valuemax="100" aria-valuenow="0">-->
+<!--                                                    <div class="progress-bar progress-bar-success"-->
+<!--                                                         style="width:0%;" data-dz-uploadprogress></div>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                                <div class="media-right">-->
+<!--                                    <button data-dz-remove class="btn btn-xs btn-danger dz-cancel"><i-->
+<!--                                            class="demo-pli-cross"></i></button>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="demo-is-inputsmall">名字</label>
                 <div class="col-sm-3">
-                    <input type="text" placeholder="名字" class="form-control input-sm"
-                           id="demo-is-inputsmall" name="name">
+                    <input type="text" class="form-control input-sm" value="{{ axial.name }}" id="demo-is-inputsmall" name="name">
                 </div>
             </div>
             <div class="form-group">
                 <label for="demo-is-inputnormal" class="col-sm-3 control-label">工作室</label>
                 <div class="col-sm-3">
-                    <input type="text" placeholder="工作室" class="form-control" id="demo-is-inputnormal" name="studio">
+                    <input type="text" class="form-control" id="demo-is-inputnormal" value="{{ axial.studio }}" name="studio">
                 </div>
             </div>
             <div class="form-group">
                 <label for="demo-is-inputnormal" class="col-sm-3 control-label">代工厂</label>
                 <div class="col-sm-3">
-                    <input type="text" placeholder="代工厂" class="form-control" id="demo-is-inputnormal1" name="foundry">
+                    <select class="selectpicker">
+                        {% for item in foundries %}
+                            <option value="{{ item.name }}" {{ 'selected' if item.name == axial.foundry else '' }}>{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="demo-is-inputsmall">类型</label>
                 <div class="col-sm-3">
-                    <input type="text" placeholder="类型" class="form-control input-sm"
-                           id="demo-is-inputsmall1">
+                    <select class="selectpicker">
+                        {% for item in a_types%}
+                        <option value="{{ item.name }}" {{ 'selected' if item.name == axial.type else '' }}>{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
             <div class="form-group">
                 <label for="demo-is-inputlarge" class="col-sm-3 control-label">备注</label>
                 <div class="col-sm-3">
-                    <input type="text" placeholder="备注" class="form-control input-sm"
-                           id="demo-is-inputlarge">
+                    <input type="text" class="form-control input-sm" value="{{ axial.remark }}" id="demo-is-inputlarge">
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">触发</label>
-                <div class="col-sm-3">
-                    <input type="text" placeholder="力度" class="form-control">
+                <label class="col-sm-3 control-label">触发力度</label>
+                <div class="col-sm-3 form-inline">
+                    <input type="text" class="form-control" value="{{ axial.operating_force }}">
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-3 col-sm-offset-3">
-                    <input type="text" placeholder="行程" class="form-control">
+                    <input type="text" class="form-control" value="{{ axial.pre_travel }}">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">触底</label>
                 <div class="col-sm-3">
-                    <input type="text" placeholder="力度" class="form-control">
+                    <input type="text" class="form-control" value="{{ axial.end_force }}">
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-3 col-sm-offset-3">
-                    <input type="text" placeholder="行程" class="form-control">
+                    <input type="text" class="form-control" value="{{ axial.full_travel }}">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">材料</label>
                 <div class="col-sm-3">
-                    <input type="text" placeholder="上盖" class="form-control">
+                    <input type="text" placeholder="上盖" class="form-control" value="{{ axial.upper }}">
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-3 col-sm-offset-3">
-                    <input type="text" placeholder="底壳" class="form-control">
+                    <input type="text" placeholder="底壳" class="form-control" value="{{ axial.bottom }}">
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-3 col-sm-offset-3">
-                    <input type="text" placeholder="轴心" class="form-control">
+                    <input type="text" placeholder="轴心" class="form-control" value="{{ axial.shaft }}">
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-3 col-sm-offset-3">
-                    <input type="text" placeholder="导光柱" class="form-control">
+                    <input type="text" placeholder="导光柱" class="form-control" value="{{ axial.light_pipe }}">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">价格</label>
                 <div class="col-sm-3">
-                    <input type="text" placeholder="上盖" class="form-control">
+                    <input type="text" placeholder="上盖" class="form-control" value="{{ axial.price / 100 }}">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">相关描述</label>
                 <div class="col-sm-3">
-                    <input type="text" placeholder="上盖" class="form-control">
+                    <input type="text" placeholder="上盖" class="form-control" value="{{ axial.desc }}">
                 </div>
             </div>
         </div>
@@ -173,7 +240,7 @@
                 </div>
             </div>
         </div>
-    </form>
+<!--    </form>-->
     <!--===================================================-->
     <!--End Input Size-->
 

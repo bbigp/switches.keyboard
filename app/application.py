@@ -6,8 +6,8 @@ from datetime import datetime
 from typing import Optional
 from urllib.parse import urlencode
 
-from fastapi import FastAPI, Request, Form
-from sqlalchemy import select, insert
+from fastapi import FastAPI, Request, Form, Query
+from sqlalchemy import select, insert, func, and_, or_
 from starlette import status
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse, RedirectResponse, Response
@@ -24,7 +24,7 @@ import sys
 from app.config.database import SqlSession
 from app.config.response import RedirectResponseWraper
 from app.config.snowflake_id import id_worker
-from app.model import ScTable, Axial
+from app.model import ScTable, Axial, Setting
 
 templates = Jinja2Templates(directory='front/templates')
 
@@ -98,17 +98,48 @@ async def del_blank_str_query_param(request: Request, call_next):
 
 @app.get("/", response_class=HTMLResponse)
 async def index():
-    return
+    return RedirectResponseWraper(url='/p/axlist', status_code=status.HTTP_302_FOUND)
 
-@app.get('/p/', response_class=HTMLResponse)
+@app.get('/p/axlist', response_class=HTMLResponse)
 async def index(request: Request):
-    with SqlSession() as session:
-        list = session.fetchall(
-            select(ScTable.axioal).limit(10),
-            Axial
-        )
-    return templates.TemplateResponse('index.html', context={'request': request, 'page_list': list})
+    return templates.TemplateResponse('index.html', context={'request': request})
 
+@app.get("/p/ax/{id}", response_class=HTMLResponse)
+async def index(request: Request, id: int):
+    with SqlSession() as session:
+        model = session.fetchone(
+            select(ScTable.axioal).where(ScTable.axioal.columns.id==id), Axial
+        )
+        a_types = session.fetchall(
+            select(ScTable.setting).where(ScTable.setting.columns.option_type=='a_type'),
+            Setting
+        )
+        foundries = session.fetchall(
+            select(ScTable.setting).where(ScTable.setting.columns.option_type=='foundry'),
+            Setting
+        )
+    return templates.TemplateResponse('add.html', context={'request': request, 'axial': model, 'a_types': a_types, 'foundries': foundries, 'error_msg': []})
+
+@app.get('/a/axlist')
+async def axlist(draw: Optional[int]=None, start: Optional[int]=1, length: Optional[int]=10, search: str=Query(alias='s', default=None)):
+    with SqlSession() as session:
+        stmt_list = select(ScTable.axioal).offset(start).limit(length)
+        stmt_count = select(func.count(ScTable.axioal.columns.id))
+        if search is not None:
+            s = '%' + search + '%'
+            search_expression = and_(
+                or_(
+                    ScTable.axioal.columns.name.like(s),
+                    ScTable.axioal.columns.studio.like(s),
+                    ScTable.axioal.columns.foundry.like(s),
+                    ScTable.axioal.columns.remark.like(s)
+                )
+            )
+            stmt_list = stmt_list.where(search_expression)
+            stmt_count = stmt_count.where(search_expression)
+        list = session.fetchall(stmt_list, Axial)
+        total = session.count(stmt_count)
+    return {'draw': draw, 'page_list': list, 'recordsTotal': total, 'recordsFiltered': total}
 
 @app.get("/add1", response_class=HTMLResponse)
 async def index(request: Request, axial: Optional[str]=None):
@@ -120,7 +151,7 @@ async def index(request: Request, axial: Optional[str]=None):
         ax = None
     return templates.TemplateResponse('add.html', context={'request': request, 'axial': ax, 'error_msg': []})
 
-@app.post("/add", response_class=HTMLResponse)
+@app.post("/a/add", response_class=HTMLResponse)
 async def add(request: Request, name=Form(None), studio=Form(None), foundry=Form(None), type=Form(None),
               pic=Form(None), remark=Form(None),
               operating_force=Form(None), pre_travel=Form(None), end_force=Form(None), full_travel=Form(None),
