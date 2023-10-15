@@ -26,7 +26,7 @@ class Axial(BaseModel):
     update_time: int=None
     # buy_address: str=None 购买地址
 
-class Option(BaseModel):
+class Setting(BaseModel):
     name: str
     option_type: str
 
@@ -54,7 +54,7 @@ class ScTable:
                       Column('update_time', BIGINT()),
                       )
 
-    option = Table('option', metadata,
+    setting = Table('option', metadata,
                     Column('name', String(50), primary_key=True),
                     Column('option_type', String(10))
                     )

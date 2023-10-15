@@ -6,6 +6,8 @@
 //
 // - ThemeOn.net -
 
+$('#download-pic-btn').click();
+
 
  $(document).ready(function() {
 
