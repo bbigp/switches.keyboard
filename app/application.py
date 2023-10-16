@@ -12,7 +12,7 @@ from pydantic.main import BaseModel
 from sqlalchemy import select, insert, func, and_, or_
 from starlette import status
 from starlette.middleware.cors import CORSMiddleware
-from starlette.responses import HTMLResponse, RedirectResponse, Response, JSONResponse
+from starlette.responses import HTMLResponse, RedirectResponse, Response, JSONResponse, FileResponse
 from starlette.routing import Mount
 
 # from app.config.setting import log_path
@@ -124,7 +124,13 @@ async def index(request: Request, id: Optional[int]=None):
             select(sqlm_keyword).where(sqlm_keyword.columns.type=='manufacturer'),
             Keyword
         )
-    return templates.TemplateResponse('add.html', context={'request': request, 'keyboard_switch': model, 'switch_types': switch_types, 'manufacturers': manufacturers, 'error_msg': []})
+    return templates.TemplateResponse('add.html', context={
+        'request': request,
+        'keyboard_switch': model,
+        'switch_types': switch_types,
+        'manufacturers': manufacturers,
+        'error_msg': []
+    })
 
 @app.get('/api/mkslist')
 async def axlist(draw: Optional[int]=None, start: Optional[int]=1, length: Optional[int]=10, search: str=Query(alias='s', default=None)):
@@ -161,11 +167,19 @@ class DownloadRequest(BaseModel):
     url: str
 @app.post('/api/download_pic', response_class=JSONResponse)
 async def download_pic(req: DownloadRequest):
-    temp_image_id = id_worker.next_id()
+    temp_image_id = str(id_worker.next_id())
     response = requests.get(req.url)
     with open(app_config.temp_dir + temp_image_id + '.jpg', 'wb') as f:
         f.write(response.content)
-    return {'status': 'ok'}
+    return {'status': 'ok', 'data': '/bfs/t/' + temp_image_id + '.jpg' }
+
+@app.get('/bfs/{source}/{path}', response_class=FileResponse)
+async def show_pic(path: str, source: str):
+    if source == 't':
+        full_path = app_config.temp_dir + path
+    else:
+        full_path = ''
+    return FileResponse(full_path, media_type='image/jpg')
 
 @app.post("/api/mks", response_class=HTMLResponse)
 async def add(request: Request, name=Form(None), studio=Form(None), foundry=Form(None), type=Form(None),
@@ -210,4 +224,4 @@ async def add(request: Request, name=Form(None), studio=Form(None), foundry=Form
 import uvicorn
 
 if __name__ == '__main__':
-    uvicorn.run('application:app', host='0.0.0.0', port=8001, access_log=True)
+    uvicorn.run('application:app', host='0.0.0.0', port=8002, access_log=True)

@@ -41,6 +41,18 @@
                         </button>
                     </div>
 
+                    <div class="row">
+		                <img id="main-pic-img" class="col-sm-12"></img>
+                    </div>
+                    <div class="row" id="showTailorImage">
+
+                    </div>
+
+                    <div class="row">
+                        <button id="confirm-cropper-btn" class="col-sm-2 col-xs-3 btn btn-primary btn-sm">确认</button>
+                        <button id="cancel-cropper-btn" class="col-sm-2 col-xs-3 btn btn-default btn-sm">取消</button>
+                    </div>
+
                         <p class="text-semibold text-main">Bootstrap Modal Vertical Alignment Center</p>
                         <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
                         <br>
@@ -141,21 +153,21 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="demo-is-inputsmall">名字</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control input-sm" value="{{ axial.name }}" id="demo-is-inputsmall" name="name">
+                    <input type="text" class="form-control input-sm" value="{{ keyboard_switch.name }}" id="demo-is-inputsmall" name="name">
                 </div>
             </div>
             <div class="form-group">
                 <label for="demo-is-inputnormal" class="col-sm-3 control-label">工作室</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="demo-is-inputnormal" value="{{ axial.studio }}" name="studio">
+                    <input type="text" class="form-control" id="demo-is-inputnormal" value="{{ keyboard_switch.studio }}" name="studio">
                 </div>
             </div>
             <div class="form-group">
-                <label for="demo-is-inputnormal" class="col-sm-3 control-label">代工厂</label>
+                <label for="demo-is-inputnormal" class="col-sm-3 control-label">生厂商</label>
                 <div class="col-sm-3">
                     <select class="selectpicker">
-                        {% for item in foundries %}
-                            <option value="{{ item.name }}" {{ 'selected' if item.name == axial.foundry else '' }}>{{ item.name }}</option>
+                        {% for item in manufacturers %}
+                            <option value="{{ item.word }}" {{ 'selected' if item.word == keyboard_switch.manufacturer else '' }}>{{ item.word }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -164,71 +176,22 @@
                 <label class="col-sm-3 control-label" for="demo-is-inputsmall">类型</label>
                 <div class="col-sm-3">
                     <select class="selectpicker">
-                        {% for item in a_types%}
-                        <option value="{{ item.name }}" {{ 'selected' if item.name == axial.type else '' }}>{{ item.name }}</option>
+                        {% for item in switch_types %}
+                        <option value="{{ item.word }}" {{ 'selected' if item.word == keyboard_switch.type else '' }}>{{ item.word }}</option>
                         {% endfor %}
                     </select>
                 </div>
             </div>
             <div class="form-group">
-                <label for="demo-is-inputlarge" class="col-sm-3 control-label">备注</label>
+                <label for="demo-is-inputlarge" class="col-sm-3 control-label">TAG</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control input-sm" value="{{ axial.remark }}" id="demo-is-inputlarge">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">触发力度</label>
-                <div class="col-sm-3 form-inline">
-                    <input type="text" class="form-control" value="{{ axial.operating_force }}">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-3 col-sm-offset-3">
-                    <input type="text" class="form-control" value="{{ axial.pre_travel }}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">触底</label>
-                <div class="col-sm-3">
-                    <input type="text" class="form-control" value="{{ axial.end_force }}">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-3 col-sm-offset-3">
-                    <input type="text" class="form-control" value="{{ axial.full_travel }}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">材料</label>
-                <div class="col-sm-3">
-                    <input type="text" placeholder="上盖" class="form-control" value="{{ axial.upper }}">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-3 col-sm-offset-3">
-                    <input type="text" placeholder="底壳" class="form-control" value="{{ axial.bottom }}">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-3 col-sm-offset-3">
-                    <input type="text" placeholder="轴心" class="form-control" value="{{ axial.shaft }}">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-3 col-sm-offset-3">
-                    <input type="text" placeholder="导光柱" class="form-control" value="{{ axial.light_pipe }}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">价格</label>
-                <div class="col-sm-3">
-                    <input type="text" placeholder="上盖" class="form-control" value="{{ axial.price / 100 }}">
+                    <input type="text" class="form-control input-sm" value="{{ keyboard_switch.tag }}" id="demo-is-inputlarge">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">相关描述</label>
                 <div class="col-sm-3">
-                    <input type="text" placeholder="上盖" class="form-control" value="{{ axial.desc }}">
+                    <input type="text" placeholder="上盖" class="form-control" value="{{ keyboard_switch.desc }}">
                 </div>
             </div>
         </div>

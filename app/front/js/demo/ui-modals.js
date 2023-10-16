@@ -6,22 +6,106 @@
  $(document).ready(function() {
 
      $('#download-pic-btn').click(function () {
-    console.log('1111')
-    const url = $('#download-pic-input').val()
+         const url = $('#download-pic-input').val()
          $.ajax({
              type: 'POST',
              url: '/api/download_pic',
              contentType: 'application/json',
              data: JSON.stringify({url: url}),
              dataType: 'json',
-             success: function (data){
-                console.log(data)
+             success: function (data) {
+                 $('#main-pic-img').attr('src', data.data)
+                 init()
              },
-             error: function (err){
+             error: function (err) {
                  console.log(err)
              }
          })
-});
+     });
+
+     var cropper = null
+     function init(){
+         cropper = new Cropper(document.getElementById('main-pic-img'),
+         {
+            aspectRatio: 16 / 9,
+             viewMode: 1,
+             crop: function (event) {
+                console.log(event)
+             }
+         })
+
+          // $('#main-pic-img').copper({
+          //     aspectRatio: 16 / 9,
+          //    viewMode: 1,
+          //    crop: function (event) {
+          //       console.log(event)
+          //    }
+          // })
+     }
+
+     $('#confirm-cropper-btn').click(function (){
+         cropper.getCroppedCanvas({width: 100, height: 100}).toBlob((blob) => {
+             const formData = new FormData();
+             formData.append('croppedImage', blob/*, 'example.png' */);
+             $.ajax('/path/to/upload', {
+                 method: 'POST',
+                 data: formData,
+                 processData: false,
+                 contentType: false,
+                 success() {
+                     console.log('Upload success');
+                 },
+                 error() {
+                     console.log('Upload error');
+                 },
+             });
+         });
+
+        //  // https://www.cnblogs.com/crime/p/11026491.html
+        //  $('#main-pic-img').copper('getCroppedCanvas', {width: 100, height: 100})
+        //      .toBlob(function (blob){
+        //           var formData = new FormData()
+        //          formData.append('username', '11')
+        //          $.ajax({
+        //     url: '/accounts/profile/update/',
+        //     type: 'post',
+        //     data: formData,
+        //     processData: false, //不设置Content-Type请求头
+        //     contentType: false, //不处理发送的数据
+        //     success: function(data) {
+        //         var avaterurl = JSON.parse(data).url;
+        //         $("#avatar").attr("src", avaterurl);
+        //         $('#changeModal').modal('hide');
+        //     },error: function() { console.log("保存失败"); }
+        // });
+        //      });
+        // let canvasImage = cropper['getCroppedCanvas']({minWidth: 200, maxHeight: 200})
+        //  $('#showTailorImage').append(canvasImage)
+        //  canvasImage.toBlob(function (blob){
+        //      var formData = new FormData()
+        //      formData.append(canvasImage, blob)
+        //      $.ajax({
+        //          type: 'POST',
+        //          url: '/api/download_pic',
+        //          data: formData,
+        //          mimeType: 'image/jpg',
+        //          filename: '',
+        //          success: function (data) {
+        //          },
+        //          error: function (err) {
+        //              console.log(err)
+        //          }
+        //  })
+        //  })
+        //  const dataUrl= canvasImage.toDataURL('image/png')
+        //  console.log(dataUrl)
+     })
+
+     $('#cancel-cropper-btn').click(function (){
+
+     })
+
+
 
     // BOOTBOX - ALERT MODAL
     // =================================================================
