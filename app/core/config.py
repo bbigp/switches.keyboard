@@ -2,9 +2,9 @@ from pydantic import BaseSettings
 
 
 class Config(BaseSettings):
-    tmp_dir: str
+    temp_dir: str
     db_dir: str=f'sqlite:///axial.db'
-    import_dir: str
+    data_dir: str=''
 
 
     class Config:

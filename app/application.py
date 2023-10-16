@@ -23,10 +23,11 @@ from app import routes
 from loguru import logger
 import sys
 
+from app.core.config import app_config
 from app.core.database import SqlSession
 from app.core.response import RedirectResponseWraper
 from app.core.snowflake_id import id_worker
-from app.model import ScTable, Axial, Setting
+from app.model import KeyboardSwitch, Keyword, sqlm_keyboard_switch, sqlm_keyword
 
 templates = Jinja2Templates(directory='front/templates')
 
@@ -100,49 +101,49 @@ async def del_blank_str_query_param(request: Request, call_next):
 
 @app.get("/", response_class=HTMLResponse)
 async def index():
-    return RedirectResponseWraper(url='/p/axlist', status_code=status.HTTP_302_FOUND)
+    return RedirectResponseWraper(url='/p/mkslist', status_code=status.HTTP_302_FOUND)
 
-@app.get('/p/axlist', response_class=HTMLResponse)
+@app.get('/p/mkslist', response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse('index.html', context={'request': request})
 
-@app.get("/p/ax", response_class=HTMLResponse)
+@app.get("/p/mks", response_class=HTMLResponse)
 async def index(request: Request, id: Optional[int]=None):
     with SqlSession() as session:
         if id is not None:
             model = session.fetchone(
-                select(ScTable.axioal).where(ScTable.axioal.columns.id==id), Axial
+                select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.columns.id==id), KeyboardSwitch
             )
         else:
-            model = Axial(name='', price=0)
-        a_types = session.fetchall(
-            select(ScTable.setting).where(ScTable.setting.columns.option_type=='a_type'),
-            Setting
+            model = KeyboardSwitch(name='')
+        switch_types = session.fetchall(
+            select(sqlm_keyword).where(sqlm_keyword.columns.type=='switch_type'),
+            Keyword
         )
-        foundries = session.fetchall(
-            select(ScTable.setting).where(ScTable.setting.columns.option_type=='foundry'),
-            Setting
+        manufacturers = session.fetchall(
+            select(sqlm_keyword).where(sqlm_keyword.columns.type=='manufacturer'),
+            Keyword
         )
-    return templates.TemplateResponse('add.html', context={'request': request, 'axial': model, 'a_types': a_types, 'foundries': foundries, 'error_msg': []})
+    return templates.TemplateResponse('add.html', context={'request': request, 'keyboard_switch': model, 'switch_types': switch_types, 'manufacturers': manufacturers, 'error_msg': []})
 
-@app.get('/a/axlist')
+@app.get('/api/mkslist')
 async def axlist(draw: Optional[int]=None, start: Optional[int]=1, length: Optional[int]=10, search: str=Query(alias='s', default=None)):
     with SqlSession() as session:
-        stmt_list = select(ScTable.axioal).offset(start).limit(length)
-        stmt_count = select(func.count(ScTable.axioal.columns.id))
+        stmt_list = select(sqlm_keyboard_switch).offset(start).limit(length)
+        stmt_count = select(func.count(sqlm_keyboard_switch.columns.id))
         if search is not None:
             s = '%' + search + '%'
             search_expression = and_(
                 or_(
-                    ScTable.axioal.columns.name.like(s),
-                    ScTable.axioal.columns.studio.like(s),
-                    ScTable.axioal.columns.foundry.like(s),
-                    ScTable.axioal.columns.remark.like(s)
+                    sqlm_keyboard_switch.columns.name.like(s),
+                    sqlm_keyboard_switch.columns.studio.like(s),
+                    sqlm_keyboard_switch.columns.manufacturer.like(s),
+                    sqlm_keyboard_switch.columns.tag.like(s)
                 )
             )
             stmt_list = stmt_list.where(search_expression)
             stmt_count = stmt_count.where(search_expression)
-        list = session.fetchall(stmt_list, Axial)
+        list = session.fetchall(stmt_list, KeyboardSwitch)
         total = session.count(stmt_count)
     return {'draw': draw, 'page_list': list, 'recordsTotal': total, 'recordsFiltered': total}
 
@@ -160,12 +161,13 @@ class DownloadRequest(BaseModel):
     url: str
 @app.post('/api/download_pic', response_class=JSONResponse)
 async def download_pic(req: DownloadRequest):
-    # response = requests.get(req.url)
-    # with open('/tmp/1.jpg', 'wb') as f:
-    #     f.write(response.content)
+    temp_image_id = id_worker.next_id()
+    response = requests.get(req.url)
+    with open(app_config.temp_dir + temp_image_id + '.jpg', 'wb') as f:
+        f.write(response.content)
     return {'status': 'ok'}
 
-@app.post("/a/add", response_class=HTMLResponse)
+@app.post("/api/mks", response_class=HTMLResponse)
 async def add(request: Request, name=Form(None), studio=Form(None), foundry=Form(None), type=Form(None),
               pic=Form(None), remark=Form(None),
               operating_force=Form(None), pre_travel=Form(None), end_force=Form(None), full_travel=Form(None),
@@ -173,7 +175,7 @@ async def add(request: Request, name=Form(None), studio=Form(None), foundry=Form
               price=Form(None), desc=Form(None)):
     now = datetime.now().timestamp()
     id = id_worker.next_id()
-    axial = Axial(
+    keyboard_switch = KeyboardSwitch(
         name=name, studio=studio, foundry=foundry, type=type,
         pic=pic, remark=remark,
         operating_force=operating_force, pre_travel=pre_travel, end_force=end_force, full_travel=full_travel,
@@ -183,8 +185,8 @@ async def add(request: Request, name=Form(None), studio=Form(None), foundry=Form
     )
     with SqlSession() as session:
         ax = session.fetchone(
-            select(ScTable.axioal).where(ScTable.axioal.columns.name==axial.name),
-            Axial
+            select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.columns.name==keyboard_switch.name),
+            KeyboardSwitch
         )
         if ax is not None:
             pass
