@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, MetaData, Table, Column, String, Integer, Text, BIGINT
-from app.config.database import metadata
+from app.core.database import metadata
 
 from pydantic.main import BaseModel
 

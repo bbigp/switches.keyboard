@@ -23,9 +23,9 @@ from app import routes
 from loguru import logger
 import sys
 
-from app.config.database import SqlSession
-from app.config.response import RedirectResponseWraper
-from app.config.snowflake_id import id_worker
+from app.core.database import SqlSession
+from app.core.response import RedirectResponseWraper
+from app.core.snowflake_id import id_worker
 from app.model import ScTable, Axial, Setting
 
 templates = Jinja2Templates(directory='front/templates')
@@ -160,9 +160,9 @@ class DownloadRequest(BaseModel):
     url: str
 @app.post('/api/download_pic', response_class=JSONResponse)
 async def download_pic(req: DownloadRequest):
-    response = requests.get(req.url)
-    with open('/tmp/1.jpg', 'wb') as f:
-        f.write(response.content)
+    # response = requests.get(req.url)
+    # with open('/tmp/1.jpg', 'wb') as f:
+    #     f.write(response.content)
     return {'status': 'ok'}
 
 @app.post("/a/add", response_class=HTMLResponse)

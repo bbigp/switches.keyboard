@@ -1,24 +1,12 @@
 from loguru import logger
-from starlette.config import Config
-
-
-config = Config('.env')
-MYSQL_HOST = config('MYSQL_HOST', default='127.0.0.1')
-MYSQL_PORT = int(config('MYSQL_PORT', default=3306))
-MYSQL_USER = config('MYSQL_USER', default='root')
-MYSQL_PASSWORD = config('MYSQL_PASSWORD', default='')
-MYSQL_NAME = config('MYSQL_NAME', default='crow')
-PDL_table_name=config('PDL_TABLE', default='pdl_record')
-CONFIG_table_name=config('CONFIG_TBALE', default='config_d')
-LABEL_table_name = config('LABEL_TABLE', default='label')
+from app.core.config import app_config
 
 from sqlalchemy import create_engine, MetaData, Table, Column, String, Integer, Text, BIGINT
 from sqlalchemy.orm import  sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 
-db_url = f'sqlite:///axial.db'
-engine = create_engine(db_url, echo=False)
+engine = create_engine(app_config.db_dir, echo=False)
 base = declarative_base(engine)
 session = sessionmaker(bind=engine)
 metadata = MetaData()

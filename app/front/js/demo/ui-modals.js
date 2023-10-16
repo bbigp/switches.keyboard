@@ -8,14 +8,11 @@
      $('#download-pic-btn').click(function () {
     console.log('1111')
     const url = $('#download-pic-input').val()
-         // $.post('/api/download_pic', {"url": url}, function (response) {
-         //     console.log(response)
-         // })
          $.ajax({
              type: 'POST',
              url: '/api/download_pic',
              contentType: 'application/json',
-             data: {"url": url},
+             data: JSON.stringify({url: url}),
              dataType: 'json',
              success: function (data){
                 console.log(data)
