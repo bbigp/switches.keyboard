@@ -14,8 +14,7 @@
              data: JSON.stringify({url: url}),
              dataType: 'json',
              success: function (data) {
-                 $('#main-pic-img').attr('src', data.data)
-                 init()
+                 $('#cropper-main-pic-img').attr('src', data.data)
              },
              error: function (err) {
                  console.log(err)
@@ -23,86 +22,65 @@
          })
      });
 
-     var cropper = null
-     function init(){
-         cropper = new Cropper(document.getElementById('main-pic-img'),
-         {
-            aspectRatio: 16 / 9,
-             viewMode: 1,
-             crop: function (event) {
-                console.log(event)
-             }
-         })
+     $('#cropper-btn').click(function () {
+         initcropper()
+         cropper.clear()
+     })
 
-          // $('#main-pic-img').copper({
-          //     aspectRatio: 16 / 9,
-          //    viewMode: 1,
-          //    crop: function (event) {
-          //       console.log(event)
-          //    }
-          // })
+     var cropper = null
+     function initcropper(){
+         cropper = new Cropper(document.getElementById('cropper-main-pic-img'),
+         {
+             aspectRatio: 13 / 10,
+             viewMode: 1,
+             preview:'.small',//开启预览效果
+             dragMode:'move',//参数：move-能够移动图片和框，crop-拖拽新建框
+             modal:true,//是否开启遮罩，将未选中的地方暗色处理
+             guides:true,//是否显示裁剪的虚线
+             highlight:true,//将选中的区域亮色处理
+             background:true,//是否显示网格背景
+             center:true,//裁剪框是否在图片的中心
+             autoCrop:true,//当初始化的时候（是否自动显示裁剪框）.
+             autoCropArea:0.8,//当初始化时，裁剪框的大小与原图的比例 0.8是默认，1是1比1
+             zoomable:true,//是否能够缩放图片 false为不能放大缩小
+             zoomOnTouch:true,//是否能够经过触摸的形式来放大图片(手机端)
+             zoomOnWheel:true,//是否容许用鼠标来放大货缩小图片
+             wheelZoomRatio:0.2,//设置鼠标控制缩放的比例
+             cropBoxMovable:true,//是否能够移动裁剪框 裁剪框不动，图片动。当movable:true
+             cropBoxResizable:true,//是否能够调整裁剪框的大小，默认true
+             crop: function (event) {
+                // console.log(event)
+             },
+         })
      }
 
      $('#confirm-cropper-btn').click(function (){
          cropper.getCroppedCanvas({width: 100, height: 100}).toBlob((blob) => {
              const formData = new FormData();
-             formData.append('croppedImage', blob/*, 'example.png' */);
-             $.ajax('/path/to/upload', {
+             formData.append('image', blob/*, 'example.png' */);
+             $.ajax('/api/upload_pic', {
                  method: 'POST',
                  data: formData,
                  processData: false,
                  contentType: false,
-                 success() {
-                     console.log('Upload success');
+                 success(data) {
+                     $('#main-pic-img').attr('src', data.data)
+                     $('#download-pic-input').val('')
+                     cropper.destroy()
+                     $('#demo-default-modal').modal('hide')
                  },
-                 error() {
-                     console.log('Upload error');
+                 error(err) {
+                     console.log(err);
                  },
              });
          });
-
-        //  // https://www.cnblogs.com/crime/p/11026491.html
-        //  $('#main-pic-img').copper('getCroppedCanvas', {width: 100, height: 100})
-        //      .toBlob(function (blob){
-        //           var formData = new FormData()
-        //          formData.append('username', '11')
-        //          $.ajax({
-        //     url: '/accounts/profile/update/',
-        //     type: 'post',
-        //     data: formData,
-        //     processData: false, //不设置Content-Type请求头
-        //     contentType: false, //不处理发送的数据
-        //     success: function(data) {
-        //         var avaterurl = JSON.parse(data).url;
-        //         $("#avatar").attr("src", avaterurl);
-        //         $('#changeModal').modal('hide');
-        //     },error: function() { console.log("保存失败"); }
-        // });
-        //      });
-        // let canvasImage = cropper['getCroppedCanvas']({minWidth: 200, maxHeight: 200})
-        //  $('#showTailorImage').append(canvasImage)
-        //  canvasImage.toBlob(function (blob){
-        //      var formData = new FormData()
-        //      formData.append(canvasImage, blob)
-        //      $.ajax({
-        //          type: 'POST',
-        //          url: '/api/download_pic',
-        //          data: formData,
-        //          mimeType: 'image/jpg',
-        //          filename: '',
-        //          success: function (data) {
-        //          },
-        //          error: function (err) {
-        //              console.log(err)
-        //          }
-        //  })
-        //  })
-        //  const dataUrl= canvasImage.toDataURL('image/png')
-        //  console.log(dataUrl)
      })
 
      $('#cancel-cropper-btn').click(function (){
-
+         if (cropper){
+             cropper.destroy()
+         }
+         $('#demo-default-modal').modal('hide')
      })
 
 

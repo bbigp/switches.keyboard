@@ -5,6 +5,7 @@ class Config(BaseSettings):
     temp_dir: str
     db_dir: str=f'sqlite:///axial.db'
     data_dir: str=''
+    file_dir: str=''
 
 
     class Config:

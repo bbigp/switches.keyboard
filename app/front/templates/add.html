@@ -34,44 +34,21 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-sm-8 col-xs-9">
-                            <input type="text" class="form-control" id="download-pic-input">
+                            <input type="text" class="form-control" value="https://img.alicdn.com/imgextra/i3/2214933827694/O1CN01kNVZUI26huDQ0foGc_!!2214933827694.jpg" id="download-pic-input">
                         </div>
                         <button id="download-pic-btn" class="col-sm-2 col-xs-3 btn btn-primary btn-sm">
                             下载图片
                         </button>
                     </div>
-
                     <div class="row">
-		                <img id="main-pic-img" class="col-sm-12"></img>
+		                <img id="cropper-main-pic-img" style="height: 300px;" class="col-sm-12"></img>
                     </div>
-                    <div class="row" id="showTailorImage">
-
-                    </div>
-
-                    <div class="row">
-                        <button id="confirm-cropper-btn" class="col-sm-2 col-xs-3 btn btn-primary btn-sm">确认</button>
-                        <button id="cancel-cropper-btn" class="col-sm-2 col-xs-3 btn btn-default btn-sm">取消</button>
-                    </div>
-
-                        <p class="text-semibold text-main">Bootstrap Modal Vertical Alignment Center</p>
-                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
-                        <br>
-                        <p class="text-semibold text-main">Popover in a modal</p>
-                        <p>This
-                            <button class="btn btn-sm btn-warning demo-modal-popover add-popover" data-toggle="popover" data-trigger="focus" data-content="And here's some amazing content. It's very engaging. right?" data-original-title="Popover Title">button</button>
-                            should trigger a popover on click.
-                        </p>
-                        <br>
-                        <p class="text-semibold text-main">Tooltips in a modal</p>
-                        <p>
-                            <a class="btn-link text-bold add-tooltip" href="#" data-original-title="Tooltip">This link</a> and
-                            <a class="btn-link text-bold add-tooltip" href="#" data-original-title="Tooltip">that link</a> should have tooltips on hover.
-                        </p>
                 </div>
 
                 <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-                    <button class="btn btn-primary">Save changes</button>
+                    <button id="cropper-btn" class="col-sm-2 col-xs-3 btn btn-default btn-sm">裁切</button>
+                    <button id="confirm-cropper-btn" class="col-sm-2 col-xs-3 btn btn-primary btn-sm">确认</button>
+                    <button id="cancel-cropper-btn" class="col-sm-2 col-xs-3 btn btn-danger btn-sm">取消</button>
                 </div>
             </div>
         </div>
@@ -95,9 +72,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="demo-is-inputsmall">主图</label>
                 <div class="col-sm-3">
-                    <button data-target="#demo-default-modal" data-toggle="modal" class="btn btn-primary btn-sm">
-                        <i class="ion-plus"></i>添加
-                    </button>
+                    <img id="main-pic-img" width="80px" height="60px" data-target="#demo-default-modal" data-toggle="modal"/>
                 </div>
 <!--                <div class="col-sm-6">-->
 <!--                    &lt;!&ndash; The fileinput-button span is used to style the file input field as button &ndash;&gt;-->

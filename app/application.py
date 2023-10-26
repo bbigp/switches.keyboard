@@ -7,7 +7,7 @@ from typing import Optional
 from urllib.parse import urlencode
 
 import requests
-from fastapi import FastAPI, Request, Form, Query
+from fastapi import FastAPI, Request, Form, Query, UploadFile
 from pydantic.main import BaseModel
 from sqlalchemy import select, insert, func, and_, or_
 from starlette import status
@@ -173,10 +173,20 @@ async def download_pic(req: DownloadRequest):
         f.write(response.content)
     return {'status': 'ok', 'data': '/bfs/t/' + temp_image_id + '.jpg' }
 
+@app.post('/api/upload_pic')
+async def upload_pic(image: UploadFile):
+    image_id = str(id_worker.next_id())
+    with open(app_config.file_dir + image_id + '.jpg', 'wb') as f:
+        f.write(await image.read())
+    return {'status': 'ok', 'data': '/bfs/fs/' + image_id + '.jpg'}
+
+
 @app.get('/bfs/{source}/{path}', response_class=FileResponse)
 async def show_pic(path: str, source: str):
     if source == 't':
         full_path = app_config.temp_dir + path
+    elif source == 'fs':
+        full_path = app_config.file_dir + path
     else:
         full_path = ''
     return FileResponse(full_path, media_type='image/jpg')
