@@ -74,56 +74,6 @@
                 <div class="col-sm-3">
                     <img id="main-pic-img" width="80px" height="60px" data-target="#demo-default-modal" data-toggle="modal"/>
                 </div>
-<!--                <div class="col-sm-6">-->
-<!--                    &lt;!&ndash; The fileinput-button span is used to style the file input field as button &ndash;&gt;-->
-<!--                    <span class="btn btn-success fileinput-button dz-clickable">-->
-<!--					                        <i class="fa fa-plus"></i>-->
-<!--					                        <span>Add files...</span>-->
-<!--					                    </span>-->
-
-<!--                    <div class="btn-group pull-right">-->
-<!--                        <button id="dz-upload-btn" class="btn btn-primary" type="submit" disabled>-->
-<!--                            <i class="fa fa-upload-cloud"></i> Upload-->
-<!--                        </button>-->
-<!--                        <button id="dz-remove-btn" class="btn btn-danger cancel" type="reset" disabled>-->
-<!--                            <i class="demo-pli-cross"></i>-->
-<!--                        </button>-->
-<!--                    </div>-->
-
-<!--                    <div id="dz-previews">-->
-<!--                        <div id="dz-template" class="pad-top bord-top">-->
-<!--                            <div class="media">-->
-<!--                                <div class="media-body">-->
-<!--                                    &lt;!&ndash;This is used as the file preview template&ndash;&gt;-->
-<!--                                    <div class="media-block">-->
-<!--                                        <div class="media-left">-->
-<!--                                            <img class="dz-img" data-dz-thumbnail>-->
-<!--                                        </div>-->
-<!--                                        <div class="media-body">-->
-<!--                                            <p class="text-main text-bold mar-no text-overflow"-->
-<!--                                               data-dz-name></p>-->
-<!--                                            <span class="dz-error text-danger text-sm"-->
-<!--                                                  data-dz-errormessage></span>-->
-<!--                                            <p class="text-sm" data-dz-size></p>-->
-<!--                                            <div id="dz-total-progress" style="opacity:0">-->
-<!--                                                <div class="progress progress-xs active"-->
-<!--                                                     role="progressbar" aria-valuemin="0"-->
-<!--                                                     aria-valuemax="100" aria-valuenow="0">-->
-<!--                                                    <div class="progress-bar progress-bar-success"-->
-<!--                                                         style="width:0%;" data-dz-uploadprogress></div>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="media-right">-->
-<!--                                    <button data-dz-remove class="btn btn-xs btn-danger dz-cancel"><i-->
-<!--                                            class="demo-pli-cross"></i></button>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="demo-is-inputsmall">名字</label>
@@ -134,7 +84,7 @@
             <div class="form-group">
                 <label for="demo-is-inputnormal" class="col-sm-3 control-label">工作室</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="demo-is-inputnormal" value="{{ keyboard_switch.studio }}" name="studio">
+                    <input type="text" class="form-control" id="demo-is-inputnormal" value="{{ '' if keyboard_switch.studio == None else keyboard_switch.studio }}" name="studio">
                 </div>
             </div>
             <div class="form-group">
@@ -160,13 +110,70 @@
             <div class="form-group">
                 <label for="demo-is-inputlarge" class="col-sm-3 control-label">TAG</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control input-sm" value="{{ keyboard_switch.tag }}" id="demo-is-inputlarge">
+                    <input type="text" class="form-control input-sm" value="{{ '' if keyboard_switch.tag == None else keyboard_switch.tag }}" id="demo-is-inputlarge">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">规格</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" value="{{ '' if keyboard_switch.specs == None else keyboard_switch.specs }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">规格</label>
+                <div class="col-sm-6 form-inline">
+                    <div class="input-group mar-btm">
+                        <span class="input-group-addon">触发</span>
+                        <input type="text" class="form-control" placeholder="Name">
+                    </div>
+                    <div class="input-group mar-btm">
+                        <span class="input-group-addon">触发</span>
+                        <input type="text" class="form-control" placeholder="Name">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">规格</label>
+                <div class="col-sm-6 form-inline">
+                    <div class="input-group mar-btm">
+                        <span class="input-group-addon">触发</span>
+                        <input type="text" class="form-control" placeholder="Name">
+                    </div>
+                    <div class="input-group mar-btm">
+                        <span class="input-group-addon">触发</span>
+                        <input type="text" class="form-control" placeholder="Name">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">规格</label>
+                <div class="col-sm-6 form-inline">
+                    <div class="input-group mar-btm">
+                        <span class="input-group-addon">触发</span>
+                        <input type="text" class="form-control" placeholder="Name">
+                    </div>
+                    <div class="input-group mar-btm">
+                        <span class="input-group-addon">触发</span>
+                        <input type="text" class="form-control" placeholder="Name">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">库存</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" value="{{ '0' if keyboard_switch.quantity == None else keyboard_switch.quantity }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">价格</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" value="{{ '' if keyboard_switch.price == None else keyboard_switch.price }}">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">相关描述</label>
                 <div class="col-sm-3">
-                    <input type="text" placeholder="上盖" class="form-control" value="{{ keyboard_switch.desc }}">
+                    <input type="text" class="form-control" value="{{ '' if keyboard_switch.desc == None else keyboard_switch.desc }}">
                 </div>
             </div>
         </div>
