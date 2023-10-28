@@ -8,6 +8,8 @@ from starlette.datastructures import URL
 from starlette.responses import RedirectResponse
 
 
+# a = base64.b64decode(axial)
+# ax = json.loads(a)
 class RedirectResponseWraper(RedirectResponse):
 
     def __init__(

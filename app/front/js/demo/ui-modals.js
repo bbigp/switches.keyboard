@@ -5,6 +5,43 @@
 
  $(document).ready(function() {
 
+     $('#save-btn').click(function () {
+         let light_pipe = $('input[name=light-pipe-inline-form-radio]:checked').val()
+         if (light_pipe === '其它') {
+             light_pipe = $('#light-pipe-other-input').val()
+         }
+         const data = {
+             id: $('#id-input').val(),
+             name: $('#name-inputsmall').val(),
+             pic: $('#main-pic-img').attr('src'),
+             studio: $('#studio-inputnormal').val(),
+             manufacturer: $('#manufacturer-select').val(),
+             type: $('#type-select').val(),
+             tag: $('#tag-inputlarge').val(),
+             quantity: $('#quantity-input').val(),
+             price: $('#price-input').val(),
+             desc: $('#desc-input').val(),
+             specs: {
+                 actuation_force: $('#act-force-input').val(),
+                 actuation_force_p: $('#act-force-p-input').val(),
+                 end_force: $('#end-force-input').val(),
+                 end_force_p: $('#end-force-p-input').val(),
+                 pre_travel: $('#pre-travel-input').val(),
+                 pre_travel_p: $('#pre-travel-p-input').val(),
+                 total_travel: $('#total-travel-input').val(),
+                 total_travel_p: $('#total-travel-p-input').val(),
+                 pin: $('input[name=pin-inline-form-radio]:checked').val(),
+                 top: $('#top-input').val(),
+                 bottom: $('#bottom-input').val(),
+                 stem: $('#stem-input').val(),
+                 spring: $('#spring-inputlarge').val(),
+                 light_pipe: light_pipe,
+             }
+         }
+         console.log(data)
+     })
+
+
      $('#download-pic-btn').click(function () {
          const url = $('#download-pic-input').val()
          $.ajax({

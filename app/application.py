@@ -2,6 +2,7 @@ import base64
 import json
 import os
 import time
+import uuid
 from datetime import datetime
 from typing import Optional
 from urllib.parse import urlencode
@@ -9,7 +10,7 @@ from urllib.parse import urlencode
 import requests
 from fastapi import FastAPI, Request, Form, Query, UploadFile
 from pydantic.main import BaseModel
-from sqlalchemy import select, insert, func, and_, or_
+from sqlalchemy import select, insert, func, and_, or_, update
 from starlette import status
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse, RedirectResponse, Response, JSONResponse, FileResponse
@@ -27,7 +28,7 @@ from app.core.config import app_config
 from app.core.database import SqlSession
 from app.core.response import RedirectResponseWraper
 from app.core.snowflake_id import id_worker
-from app.model import KeyboardSwitch, Keyword, sqlm_keyboard_switch, sqlm_keyword
+from app.model import KeyboardSwitch, Keyword, sqlm_keyboard_switch, sqlm_keyword, Etd, sqlm_etd
 
 templates = Jinja2Templates(directory='front/templates')
 
@@ -153,16 +154,6 @@ async def axlist(draw: Optional[int]=None, start: Optional[int]=1, length: Optio
         total = session.count(stmt_count)
     return {'draw': draw, 'page_list': list, 'recordsTotal': total, 'recordsFiltered': total}
 
-@app.get("/add1", response_class=HTMLResponse)
-async def index(request: Request, axial: Optional[str]=None):
-    if axial is not None:
-        # ax = json.loads(axial)
-        a = base64.b64decode(axial)
-        ax = json.loads(a)
-    else:
-        ax = None
-    return templates.TemplateResponse('add.html', context={'request': request, 'axial': ax, 'error_msg': []})
-
 class DownloadRequest(BaseModel):
     url: str
 @app.post('/api/download_pic', response_class=JSONResponse)
@@ -191,22 +182,89 @@ async def show_pic(path: str, source: str):
         full_path = ''
     return FileResponse(full_path, media_type='image/jpg')
 
+class Specs(BaseModel):
+    actuation_force: str=None
+    actuation_force_p: str=None
+    end_force: str=None
+    end_force_p: str=None
+    pre_travel: str=None
+    pre_travel_p: str=None
+    total_travel: str=None
+    total_travel_p: str=None
+    pin: str
+    top: str=None
+    bottom: str=None
+    stem: str=None
+    spring: str=None
+    light_pipe: str=None
+
+class MksRequest(BaseModel):
+    id: int=None
+    name: str
+    pic: str=None
+    studio: str
+    manufacturer: str=None
+    type: str=None
+    tag: str=None
+    quantity: int
+    price: str=None
+    desc: str=None
+    specs: Specs=None
+
+@app.post('/api/mks', response_class=RedirectResponse)
+async def save_mks(req: MksRequest):
+    now = datetime.now().timestamp()
+    id = req.id
+    is_update = True
+    if req.id is None or req.id == '':
+        is_update = False
+        id = id_worker.next_id()
+    keyboard_switch = KeyboardSwitch(
+        name=req.name, studio=req.studio, manufacturer=req.manufacturer, type=req.type,
+        pic=req.pic, tag=req.tag, quantity=req.quantity, price=req.price, desc=req.desc,
+        specs=req.specs.json(),
+        create_time=now, update_time=now, id=id
+    )
+    with SqlSession() as session:
+        if is_update:
+            _ks = session.fetchone(
+                select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.columns.name==keyboard_switch.name),
+                KeyboardSwitch
+            )
+            if _ks is None:
+                etd = Etd(id=uuid.uuid4(), data=keyboard_switch.json(), error=json.dumps(['不存在的轴体']))
+                session.execute(insert(sqlm_etd).values(etd.dict()))
+                return RedirectResponseWraper(url='/p/mks?_etd=' + etd.id, status_code=status.HTTP_302_FOUND)
+            else:
+                session.execute(
+                    update(sqlm_keyboard_switch).values(manufacturer=keyboard_switch.manufacturer,
+                                                        studio=keyboard_switch.studio,
+                                                        pic=keyboard_switch.pic,
+                                                        type=keyboard_switch.type,
+                                                        tag=keyboard_switch.tag,
+                                                        specs=keyboard_switch.specs,
+                                                        quantity=keyboard_switch.quantity,
+                                                        price=keyboard_switch.price,
+                                                        desc=keyboard_switch.desc,
+                                                        update_time=keyboard_switch.update_time)
+                        .where(sqlm_keyboard_switch.columns.id == id)
+                )
+                return RedirectResponseWraper(url='/p/mkslist', status_code=status.HTTP_302_FOUND)
+        else:
+            session.execute(insert(sqlm_keyboard_switch).values(keyboard_switch.dict()))
+            return RedirectResponseWraper(url='/p/mkslist', status_code=status.HTTP_302_FOUND)
+
+
+
+
 @app.post("/api/mks", response_class=HTMLResponse)
 async def add(request: Request, name=Form(None), studio=Form(None), foundry=Form(None), type=Form(None),
               pic=Form(None), remark=Form(None),
               operating_force=Form(None), pre_travel=Form(None), end_force=Form(None), full_travel=Form(None),
               upper=Form(None), bottom=Form(None), shaft=Form(None), light_pipe=Form(None),
               price=Form(None), desc=Form(None)):
-    now = datetime.now().timestamp()
-    id = id_worker.next_id()
-    keyboard_switch = KeyboardSwitch(
-        name=name, studio=studio, foundry=foundry, type=type,
-        pic=pic, remark=remark,
-        operating_force=operating_force, pre_travel=pre_travel, end_force=end_force, full_travel=full_travel,
-        upper=upper, bottom=bottom, shaft=shaft, light_pipe=light_pipe,
-        price=price, desc=desc,
-        create_time=now, update_time=now, id=id
-    )
+
+
     with SqlSession() as session:
         ax = session.fetchone(
             select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.columns.name==keyboard_switch.name),

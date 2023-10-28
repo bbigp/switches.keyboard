@@ -70,27 +70,30 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label" for="demo-is-inputsmall">主图</label>
+                <input type="text" id="id-input" hidden value="{{ '' if keyboard_switch.id == None else keyboard_switch.id }}">
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="main-pic-img">主图</label>
                 <div class="col-sm-3">
                     <img id="main-pic-img" width="80px" height="60px" data-target="#demo-default-modal" data-toggle="modal"/>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label" for="demo-is-inputsmall">名字</label>
+                <label class="col-sm-3 control-label" for="name-inputsmall">名字</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control input-sm" value="{{ keyboard_switch.name }}" id="demo-is-inputsmall" name="name">
+                    <input type="text" class="form-control input-sm" value="{{ keyboard_switch.name }}" id="name-inputsmall" name="name">
                 </div>
             </div>
             <div class="form-group">
-                <label for="demo-is-inputnormal" class="col-sm-3 control-label">工作室</label>
+                <label for="studio-inputnormal" class="col-sm-3 control-label">工作室</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="demo-is-inputnormal" value="{{ '' if keyboard_switch.studio == None else keyboard_switch.studio }}" name="studio">
+                    <input type="text" class="form-control" id="studio-inputnormal" value="{{ '' if keyboard_switch.studio == None else keyboard_switch.studio }}" name="studio">
                 </div>
             </div>
             <div class="form-group">
-                <label for="demo-is-inputnormal" class="col-sm-3 control-label">生厂商</label>
+                <label for="manufacturer-select" class="col-sm-3 control-label">生厂商</label>
                 <div class="col-sm-3">
-                    <select class="selectpicker">
+                    <select class="selectpicker" id="manufacturer-select">
                         {% for item in manufacturers %}
                             <option value="{{ item.word }}" {{ 'selected' if item.word == keyboard_switch.manufacturer else '' }}>{{ item.word }}</option>
                         {% endfor %}
@@ -98,9 +101,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label" for="demo-is-inputsmall">类型</label>
+                <label class="col-sm-3 control-label" for="type-select">类型</label>
                 <div class="col-sm-3">
-                    <select class="selectpicker">
+                    <select class="selectpicker" id="type-select">
                         {% for item in switch_types %}
                         <option value="{{ item.word }}" {{ 'selected' if item.word == keyboard_switch.type else '' }}>{{ item.word }}</option>
                         {% endfor %}
@@ -108,79 +111,122 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="demo-is-inputlarge" class="col-sm-3 control-label">TAG</label>
+                <label for="tag-inputlarge" class="col-sm-3 control-label">TAG</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control input-sm" value="{{ '' if keyboard_switch.tag == None else keyboard_switch.tag }}" id="demo-is-inputlarge">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">规格</label>
-                <div class="col-sm-3">
-                    <input type="text" class="form-control" value="{{ '' if keyboard_switch.specs == None else keyboard_switch.specs }}">
+                    <input type="text" class="form-control input-sm" value="{{ '' if keyboard_switch.tag == None else keyboard_switch.tag }}" id="tag-inputlarge">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">规格</label>
                 <div class="col-sm-6 form-inline">
                     <div class="input-group mar-btm">
-                        <span class="input-group-addon">触发</span>
-                        <input type="text" class="form-control" placeholder="Name">
-                    </div>
-                    <div class="input-group mar-btm">
-                        <span class="input-group-addon">触发</span>
-                        <input type="text" class="form-control" placeholder="Name">
+                        <span class="input-group-addon">触发压力</span>
+                        <input id="act-force-input" type="text" class="form-control" placeholder="">
+                        <span class="input-group-addon">±</span>
+                        <input id="act-force-p-input" type="text" class="form-control" placeholder="">
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">规格</label>
+                <label class="col-sm-3 control-label"></label>
                 <div class="col-sm-6 form-inline">
                     <div class="input-group mar-btm">
-                        <span class="input-group-addon">触发</span>
-                        <input type="text" class="form-control" placeholder="Name">
-                    </div>
-                    <div class="input-group mar-btm">
-                        <span class="input-group-addon">触发</span>
-                        <input type="text" class="form-control" placeholder="Name">
+                        <span class="input-group-addon">触发行程</span>
+                        <input id="pre-travel-input" type="text" class="form-control" placeholder="">
+                        <span class="input-group-addon">±</span>
+                        <input id="pre-travel-p-input" type="text" class="form-control" placeholder="">
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">规格</label>
+                <label class="col-sm-3 control-label"></label>
                 <div class="col-sm-6 form-inline">
                     <div class="input-group mar-btm">
-                        <span class="input-group-addon">触发</span>
-                        <input type="text" class="form-control" placeholder="Name">
+                        <span class="input-group-addon">触底压力</span>
+                        <input id="end-force-input" type="text" class="form-control" placeholder="">
+                        <span class="input-group-addon">±</span>
+                        <input id="end-force-p-input" type="text" class="form-control" placeholder="">
                     </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"></label>
+                <div class="col-sm-6 form-inline">
                     <div class="input-group mar-btm">
-                        <span class="input-group-addon">触发</span>
-                        <input type="text" class="form-control" placeholder="Name">
+                        <span class="input-group-addon">触底行程</span>
+                        <input id="total-travel-input" type="text" class="form-control" placeholder="">
+                        <span class="input-group-addon">±</span>
+                        <input id="total-travel-p-input" type="text" class="form-control" placeholder="">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">PIN</label>
+                <div class="col-sm-6 form-inline">
+                    <div class="radio" id="pin-radio">
+                        <input id="pin-3-inline-form-radio" class="magic-radio" type="radio" name="pin-inline-form-radio" value="三脚">
+                        <label for="pin-3-inline-form-radio">三脚</label>
+                        <input id="pin-5-inline-form-radio" class="magic-radio" type="radio" name="pin-inline-form-radio" value="五脚">
+                        <label for="pin-5-inline-form-radio">五脚</label>
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">库存</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" value="{{ '0' if keyboard_switch.quantity == None else keyboard_switch.quantity }}">
+                    <input id="quantity-input" type="text" class="form-control" value="{{ '0' if keyboard_switch.quantity == None else keyboard_switch.quantity }}">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">价格</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" value="{{ '' if keyboard_switch.price == None else keyboard_switch.price }}">
+                    <input id="price-input" type="text" class="form-control" value="{{ '' if keyboard_switch.price == None else keyboard_switch.price }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">材料</label>
+                <div class="col-sm-6 form-inline">
+                    <div class="input-group mar-btm">
+                        <span class="input-group-addon">上盖</span>
+                        <input id="top-input" type="text" class="form-control" placeholder="">
+                        <span class="input-group-addon">底壳</span>
+                        <input id="bottom-input" type="text" class="form-control" placeholder="">
+                        <span class="input-group-addon">轴心</span>
+                        <input id="stem-input" type="text" class="form-control" placeholder="">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">导光柱</label>
+                <div class="col-sm-6 form-inline">
+                    <div class="radio">
+                        <input id="light-pipe-y-inline-form-radio" class="magic-radio" type="radio" name="light-pipe-inline-form-radio" value="有">
+                        <label for="light-pipe-y-inline-form-radio">有</label>
+                        <input id="light-pipe-n-inline-form-radio" class="magic-radio" type="radio" name="light-pipe-inline-form-radio" value="无">
+                        <label for="light-pipe-n-inline-form-radio">无</label>
+                        <input id="light-pipe-other-inline-form-radio" class="magic-radio" type="radio" name="light-pipe-inline-form-radio" value="其它">
+                        <label for="light-pipe-other-inline-form-radio">其它</label>
+                        <input id="light-pipe-other-input" type="text" class="form-control input-sm">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="spring-inputlarge" class="col-sm-3 control-label">弹簧</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control input-sm" value="" id="spring-inputlarge">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">相关描述</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" value="{{ '' if keyboard_switch.desc == None else keyboard_switch.desc }}">
+                    <input id="desc-input" type="text" class="form-control" value="{{ '' if keyboard_switch.desc == None else keyboard_switch.desc }}">
                 </div>
             </div>
         </div>
         <div class="panel-footer">
             <div class="row">
                 <div class="col-sm-9 col-sm-offset-3">
-                    <button class="btn btn-mint" type="submit">保存</button>
+                    <button class="btn btn-mint" id="save-btn">保存</button>
                     <button class="btn btn-warning" type="reset">Reset</button>
                 </div>
             </div>
