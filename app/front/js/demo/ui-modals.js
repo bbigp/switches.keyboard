@@ -38,6 +38,19 @@
                  light_pipe: light_pipe,
              }
          }
+         $.ajax({
+             type: 'POST',
+             url: '/api/mks',
+             contentType: 'application/json',
+             data: JSON.stringify(data),
+             dataType: 'json',
+             success: function (data) {
+                 console.log(data)
+             },
+             error: function (err) {
+                 console.log(err)
+             }
+         })
          console.log(data)
      })
 

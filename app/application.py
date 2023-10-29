@@ -198,7 +198,7 @@ class Specs(BaseModel):
     spring: str=None
     light_pipe: str=None
 
-class MksRequest(BaseModel):
+class MksVO(BaseModel):
     id: int=None
     name: str
     pic: str=None
@@ -212,11 +212,11 @@ class MksRequest(BaseModel):
     specs: Specs=None
 
 @app.post('/api/mks', response_class=RedirectResponse)
-async def save_mks(req: MksRequest):
+async def save_mks(req: MksVO):
     now = datetime.now().timestamp()
     id = req.id
     is_update = True
-    if req.id is None or req.id == '':
+    if req.id is None or req.id == 0:
         is_update = False
         id = id_worker.next_id()
     keyboard_switch = KeyboardSwitch(
@@ -257,36 +257,17 @@ async def save_mks(req: MksRequest):
 
 
 
-@app.post("/api/mks", response_class=HTMLResponse)
 async def add(request: Request, name=Form(None), studio=Form(None), foundry=Form(None), type=Form(None),
               pic=Form(None), remark=Form(None),
               operating_force=Form(None), pre_travel=Form(None), end_force=Form(None), full_travel=Form(None),
               upper=Form(None), bottom=Form(None), shaft=Form(None), light_pipe=Form(None),
               price=Form(None), desc=Form(None)):
-
-
-    with SqlSession() as session:
-        ax = session.fetchone(
-            select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.columns.name==keyboard_switch.name),
-            KeyboardSwitch
-        )
-        if ax is not None:
-            pass
             # headers = {'Location': '/add1'}
             # return Response(content={
             #     'axial': '222'
             # }, headers=headers, status_code=status.HTTP_302_FOUND)
-            return RedirectResponseWraper(url='/add1', status_code=status.HTTP_302_FOUND, query={
-                'axial': ax
-            })
-        else:
-            pass
-        # session.execute(
-        #     insert()
-        # )
-        pass
-    print(name)
-    return RedirectResponse(url='/', status_code=302)
+    return RedirectResponseWraper(url='/add1', status_code=status.HTTP_302_FOUND, query={'axial': {}})
+
 
 
 import uvicorn

@@ -70,7 +70,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <input type="text" id="id-input" hidden value="{{ '' if keyboard_switch.id == None else keyboard_switch.id }}">
+                <input type="text" id="id-input" hidden value="{{ 0 if keyboard_switch.id == None else keyboard_switch.id }}">
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="main-pic-img">主图</label>
