@@ -38,7 +38,7 @@ def register_route(app):
     app.mount('/css', StaticFiles(directory='front/css'), name='css')
     app.mount('/plugins', StaticFiles(directory='front/plugins'), name='plugins')
     app.mount('/img', StaticFiles(directory='front/img'), name='img')
-# app.mount('/fonts', StaticFiles(directory='front/fonts'), name='fonts')
+    app.mount('/fonts', StaticFiles(directory='front/fonts'), name='fonts')
     logger.debug('route_provider registering')
     if app.debug:
         for route in app.routes:
@@ -108,15 +108,58 @@ async def index():
 async def index(request: Request):
     return templates.TemplateResponse('index.html', context={'request': request})
 
+class Specs(BaseModel):
+    actuation_force: str=None
+    actuation_force_p: str=None
+    end_force: str=None
+    end_force_p: str=None
+    pre_travel: str=None
+    pre_travel_p: str=None
+    total_travel: str=None
+    total_travel_p: str=None
+    pin: str
+    top: str=None
+    bottom: str=None
+    stem: str=None
+    spring: str=None
+    light_pipe: str=None
+
+class MksVO(BaseModel):
+    id: str=None
+    name: str
+    pic: str=None
+    studio: str
+    manufacturer: str=None
+    type: str=None
+    tag: str=None
+    quantity: int
+    price: str=None
+    desc: str=None
+    specs: Specs=None
+    create_time: int=None
+    update_time: int=None
+
+def convert_vo(model: KeyboardSwitch) -> MksVO:
+    return MksVO(
+        id=str(model.id), name=model.name, pic=model.pic, studio=model.studio, manufacturer=model.manufacturer,
+        type=model.type, tag=model.tag, quantity=model.quantity, price=model.price, desc=model.desc,
+        specs=json.loads(model.specs), create_time=model.create_time, update_time=model.update_time
+    )
+
+def convert_sqlm(mks: MksVO) -> KeyboardSwitch:
+    pass
+
 @app.get("/p/mks", response_class=HTMLResponse)
+@app.get("/p/mks/{id}", response_class=HTMLResponse)
 async def index(request: Request, id: Optional[int]=None):
     with SqlSession() as session:
         if id is not None:
             model = session.fetchone(
                 select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.columns.id==id), KeyboardSwitch
             )
+            mks = convert_vo(model) if model is not None else MksVO(name='')
         else:
-            model = KeyboardSwitch(name='')
+            mks = MksVO(name='')
         switch_types = session.fetchall(
             select(sqlm_keyword).where(sqlm_keyword.columns.type=='switch_type'),
             Keyword
@@ -127,14 +170,14 @@ async def index(request: Request, id: Optional[int]=None):
         )
     return templates.TemplateResponse('add.html', context={
         'request': request,
-        'keyboard_switch': model,
+        'keyboard_switch': mks,
         'switch_types': switch_types,
         'manufacturers': manufacturers,
         'error_msg': []
     })
 
 @app.get('/api/mkslist')
-async def axlist(draw: Optional[int]=None, start: Optional[int]=1, length: Optional[int]=10, search: str=Query(alias='s', default=None)):
+async def mkslist(draw: Optional[int]=None, start: Optional[int]=1, length: Optional[int]=10, search: str=Query(alias='s', default=None)):
     with SqlSession() as session:
         stmt_list = select(sqlm_keyboard_switch).offset(start).limit(length)
         stmt_count = select(func.count(sqlm_keyboard_switch.columns.id))
@@ -151,8 +194,9 @@ async def axlist(draw: Optional[int]=None, start: Optional[int]=1, length: Optio
             stmt_list = stmt_list.where(search_expression)
             stmt_count = stmt_count.where(search_expression)
         list = session.fetchall(stmt_list, KeyboardSwitch)
+        mkslist = [convert_vo(i) for i in list]
         total = session.count(stmt_count)
-    return {'draw': draw, 'page_list': list, 'recordsTotal': total, 'recordsFiltered': total}
+    return {'draw': draw, 'page_list': mkslist, 'recordsTotal': total, 'recordsFiltered': total}
 
 class DownloadRequest(BaseModel):
     url: str
@@ -181,35 +225,6 @@ async def show_pic(path: str, source: str):
     else:
         full_path = ''
     return FileResponse(full_path, media_type='image/jpg')
-
-class Specs(BaseModel):
-    actuation_force: str=None
-    actuation_force_p: str=None
-    end_force: str=None
-    end_force_p: str=None
-    pre_travel: str=None
-    pre_travel_p: str=None
-    total_travel: str=None
-    total_travel_p: str=None
-    pin: str
-    top: str=None
-    bottom: str=None
-    stem: str=None
-    spring: str=None
-    light_pipe: str=None
-
-class MksVO(BaseModel):
-    id: int=None
-    name: str
-    pic: str=None
-    studio: str
-    manufacturer: str=None
-    type: str=None
-    tag: str=None
-    quantity: int
-    price: str=None
-    desc: str=None
-    specs: Specs=None
 
 @app.post('/api/mks', response_class=RedirectResponse)
 async def save_mks(req: MksVO):

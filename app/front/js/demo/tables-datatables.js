@@ -52,13 +52,6 @@ $(window).on('load', function () {
             type: 'GET',
             dateType: 'json',
             dataSrc: function (json) {
-                for (var i = 0; i < json.page_list.length; i++){
-                     if (json.page_list[i].specs !== '' && json.page_list[i].specs !== null) {
-                         json.page_list[i]._specs = JSON.parse(json.page_list[i].specs)
-                     }else {
-                         json.page_list[i]._specs = null
-                     }
-                }
                 return json.page_list
             }
         },
@@ -66,52 +59,52 @@ $(window).on('load', function () {
             {
                 data: "pic",
                 render: function (data, type, row, meta) {
-                    return '<img src="' + row.pic +'"/>'
+                    return '<img style="width: 96px;height: 74px;" class="main-pic" src="' + row.pic +'"/>'
                 }
             },
             {data: "name"},
             {data: "studio"},
+            {data: "manufacturer", defaultContent: ""},
             {
                 data: "type",
                 render: function (data, type, row, meta) {
                     return data == null ? '' : data
                 }
             },
-            {data: "manufacturer", defaultContent: ""},
             {data: "tag", defaultContent: ""},
             {
                 render: function (data, type, row, meta) {
-                    if (row._specs == null) {
+                    if (row.specs == null) {
                         return ''
                     }
-                    return '<div>触发压力: ' + row._specs.actuation_force + '±' + row._specs.actuation_force_p + 'g<div/>'
-                        + '<div>触发行程: ' + row._specs.pre_travel + '±' + row._specs.pre_travel_p + 'mm<div/>'
-                        + '<div>触底压力: ' + row._specs.end_force + '±' + row._specs.end_force_p + 'g<div/>'
-                        + '<div>触底行程: ' + row._specs.total_travel + '±' + row._specs.total_travel_p + 'mm<div/>'
+                    return '<div>触发压力: ' + row.specs.actuation_force + '±' + row.specs.actuation_force_p + 'g<div/>'
+                        + '<div>触底压力: ' + row.specs.end_force + '±' + row.specs.end_force_p + 'g<div/>'
+                        + '<div>触发行程: ' + row.specs.pre_travel + '±' + row.specs.pre_travel_p + 'mm<div/>'
+                        + '<div>触底行程: ' + row.specs.total_travel + '±' + row.specs.total_travel_p + 'mm<div/>'
                 }
             },
             {
                 render: function (data, type, row, meta) {
-                    if (row._specs == null) {
+                    if (row.specs == null) {
                         return ''
                     }
-                    return '<div>上盖: ' + row._specs.top + '</div>'
-                        + '<div>底壳: ' + row._specs.bottom + '</div>'
-                        +'<div>轴心: ' + row._specs.stem + '</div>'
-                        + '<div>弹簧: ' + row._specs.spring +'</div>'
+                    return '<div>上盖: ' + row.specs.top + '</div>'
+                        + '<div>底壳: ' + row.specs.bottom + '</div>'
+                        +'<div>轴心: ' + row.specs.stem + '</div>'
+                        + '<div>弹簧: ' + row.specs.spring +'</div>'
                 }
             },
             {
                 render: function (data, type, row, meta) {
-                    if (row._specs == null) {
+                    if (row.specs == null) {
                         return ''
                     }
-                    return '<span>' + row._specs.pin + ',' + row._specs.light_pipe +'导光柱</span>'
+                    return '<span>' + row.specs.pin + ',' + row.specs.light_pipe +'导光柱</span>'
                 }
             },
             {data: "quantity", defaultContent: ""},
             {data: "price", defaultContent: ""},
-            {data: "create_time"},
+            {data: "create_time", defaultContent: ""},
             {data: null}
         ],
         columnDefs: [
@@ -124,6 +117,21 @@ $(window).on('load', function () {
             }
         ]
     });
+
+
+
+    $('#demo-dt-addrow').on('click', '.main-pic', function () {
+        // console.log(this.attributes.src.value)
+        $('#demo-default-modal').modal('show')
+        $('#show-main-pic-img').attr('src', $(this).attr("src"))
+    })
+
+    $('#close-btn').click(function (){
+        $('#show-main-pic-img').attr('src', '')
+        $('#demo-default-modal').modal('hide')
+    })
+
+
     $('#demo-custom-toolbar2').appendTo($("div.newtoolbar"));
 
     $('#refresh-btn').click(function(){

@@ -12,8 +12,12 @@
 <link href="/plugins/ionicons/css/ionicons.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
-
-
+<!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">-->
+<!--<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>-->
+<link rel="stylesheet" href="/plugins/simplemde/simplemde.min.css">
+<script src="/plugins/simplemde/simplemde.min.js"></script>
+<!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">-->
+<!--<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>-->
 {% endblock %}
 
 {% block content %}
@@ -75,7 +79,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="main-pic-img">主图</label>
                 <div class="col-sm-3">
-                    <img id="main-pic-img" width="80px" height="60px" data-target="#demo-default-modal" data-toggle="modal"/>
+                    <img src="{{ keyboard_switch.pic }}" id="main-pic-img" width="80px" height="60px" data-target="#demo-default-modal" data-toggle="modal"/>
                 </div>
             </div>
             <div class="form-group">
@@ -121,20 +125,10 @@
                 <div class="col-sm-6 form-inline">
                     <div class="input-group mar-btm">
                         <span class="input-group-addon">触发压力</span>
-                        <input id="act-force-input" type="text" class="form-control" placeholder="">
+                        <input value="{{ keyboard_switch.specs.actuation_force }}" id="act-force-input" type="text" class="form-control" placeholder="">
                         <span class="input-group-addon">±</span>
-                        <input id="act-force-p-input" type="text" class="form-control" placeholder="">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label"></label>
-                <div class="col-sm-6 form-inline">
-                    <div class="input-group mar-btm">
-                        <span class="input-group-addon">触发行程</span>
-                        <input id="pre-travel-input" type="text" class="form-control" placeholder="">
-                        <span class="input-group-addon">±</span>
-                        <input id="pre-travel-p-input" type="text" class="form-control" placeholder="">
+                        <input value="{{ keyboard_switch.specs.actuation_force_p }}" id="act-force-p-input" type="text" class="form-control" placeholder="">
+                        <span class="input-group-addon">g</span>
                     </div>
                 </div>
             </div>
@@ -143,9 +137,22 @@
                 <div class="col-sm-6 form-inline">
                     <div class="input-group mar-btm">
                         <span class="input-group-addon">触底压力</span>
-                        <input id="end-force-input" type="text" class="form-control" placeholder="">
+                        <input value="{{ keyboard_switch.specs.end_force }}" id="end-force-input" type="text" class="form-control" placeholder="">
                         <span class="input-group-addon">±</span>
-                        <input id="end-force-p-input" type="text" class="form-control" placeholder="">
+                        <input value="{{ keyboard_switch.specs.end_force_p }}" id="end-force-p-input" type="text" class="form-control" placeholder="">
+                        <span class="input-group-addon">g</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"></label>
+                <div class="col-sm-6 form-inline">
+                    <div class="input-group mar-btm">
+                        <span class="input-group-addon">触发行程</span>
+                        <input value="{{ keyboard_switch.specs.pre_travel }}" id="pre-travel-input" type="text" class="form-control" placeholder="">
+                        <span class="input-group-addon">±</span>
+                        <input value="{{ keyboard_switch.specs.pre_travel_p }}" id="pre-travel-p-input" type="text" class="form-control" placeholder="">
+                        <span class="input-group-addon">mm</span>
                     </div>
                 </div>
             </div>
@@ -154,9 +161,10 @@
                 <div class="col-sm-6 form-inline">
                     <div class="input-group mar-btm">
                         <span class="input-group-addon">触底行程</span>
-                        <input id="total-travel-input" type="text" class="form-control" placeholder="">
+                        <input value="{{ keyboard_switch.specs.total_travel }}" id="total-travel-input" type="text" class="form-control" placeholder="">
                         <span class="input-group-addon">±</span>
-                        <input id="total-travel-p-input" type="text" class="form-control" placeholder="">
+                        <input value="{{ keyboard_switch.specs.total_travel_p }}" id="total-travel-p-input" type="text" class="form-control" placeholder="">
+                        <span class="input-group-addon">mm</span>
                     </div>
                 </div>
             </div>
@@ -164,9 +172,9 @@
                 <label class="col-sm-3 control-label">PIN</label>
                 <div class="col-sm-6 form-inline">
                     <div class="radio" id="pin-radio">
-                        <input id="pin-3-inline-form-radio" class="magic-radio" type="radio" name="pin-inline-form-radio" value="三脚">
+                        <input id="pin-3-inline-form-radio" {{ 'checked' if keyboard_switch.specs.pin == '三脚' else '' }} class="magic-radio" type="radio" name="pin-inline-form-radio" value="三脚">
                         <label for="pin-3-inline-form-radio">三脚</label>
-                        <input id="pin-5-inline-form-radio" class="magic-radio" type="radio" name="pin-inline-form-radio" value="五脚">
+                        <input id="pin-5-inline-form-radio" {{ 'checked' if keyboard_switch.specs.pin == '五脚' else '' }} class="magic-radio" type="radio" name="pin-inline-form-radio" value="五脚">
                         <label for="pin-5-inline-form-radio">五脚</label>
                     </div>
                 </div>
@@ -188,11 +196,11 @@
                 <div class="col-sm-6 form-inline">
                     <div class="input-group mar-btm">
                         <span class="input-group-addon">上盖</span>
-                        <input id="top-input" type="text" class="form-control" placeholder="">
+                        <input value="{{ keyboard_switch.specs.top }}" id="top-input" type="text" class="form-control" placeholder="">
                         <span class="input-group-addon">底壳</span>
-                        <input id="bottom-input" type="text" class="form-control" placeholder="">
+                        <input value="{{ keyboard_switch.specs.bottom }}" id="bottom-input" type="text" class="form-control" placeholder="">
                         <span class="input-group-addon">轴心</span>
-                        <input id="stem-input" type="text" class="form-control" placeholder="">
+                        <input value="{{ keyboard_switch.specs.stem }}" id="stem-input" type="text" class="form-control" placeholder="">
                     </div>
                 </div>
             </div>
@@ -200,26 +208,27 @@
                 <label class="col-sm-3 control-label">导光柱</label>
                 <div class="col-sm-6 form-inline">
                     <div class="radio">
-                        <input id="light-pipe-y-inline-form-radio" class="magic-radio" type="radio" name="light-pipe-inline-form-radio" value="有">
+                        <input id="light-pipe-y-inline-form-radio" {{ 'checked' if keyboard_switch.specs.light_pipe == '有' else '' }}  class="magic-radio" type="radio" name="light-pipe-inline-form-radio" value="有">
                         <label for="light-pipe-y-inline-form-radio">有</label>
-                        <input id="light-pipe-n-inline-form-radio" class="magic-radio" type="radio" name="light-pipe-inline-form-radio" value="无">
+                        <input id="light-pipe-n-inline-form-radio" {{ 'checked' if keyboard_switch.specs.light_pipe == '无' else '' }} class="magic-radio" type="radio" name="light-pipe-inline-form-radio" value="无">
                         <label for="light-pipe-n-inline-form-radio">无</label>
-                        <input id="light-pipe-other-inline-form-radio" class="magic-radio" type="radio" name="light-pipe-inline-form-radio" value="其它">
+                        <input id="light-pipe-other-inline-form-radio" {{ 'checked' if keyboard_switch.specs.light_pipe != '有' and keyboard_switch.specs.light_pipe != '无' else '' }} class="magic-radio" type="radio" name="light-pipe-inline-form-radio" value="其它">
                         <label for="light-pipe-other-inline-form-radio">其它</label>
-                        <input id="light-pipe-other-input" type="text" class="form-control input-sm">
+                        <input id="light-pipe-other-input" value="{{ keyboard_switch.specs.light_pipe if keyboard_switch.specs.light_pipe != '有' and keyboard_switch.specs.light_pipe != '无' else ''}}" type="text" class="form-control input-sm">
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <label for="spring-inputlarge" class="col-sm-3 control-label">弹簧</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control input-sm" value="" id="spring-inputlarge">
+                    <input type="text" class="form-control input-sm" value="{{ keyboard_switch.specs.spring }}" id="spring-inputlarge">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">相关描述</label>
-                <div class="col-sm-3">
-                    <input id="desc-input" type="text" class="form-control" value="{{ '' if keyboard_switch.desc == None else keyboard_switch.desc }}">
+                <div class="col-sm-7">
+                    <textarea id="editor"></textarea>
+                    <input id="desc-input" hidden type="text" class="form-control" value="{{ '' if keyboard_switch.desc == None else keyboard_switch.desc }}">
                 </div>
             </div>
         </div>

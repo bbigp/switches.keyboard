@@ -5,7 +5,12 @@
 
  $(document).ready(function() {
 
+     var simplemde = new SimpleMDE({
+         element: document.getElementById("editor"),
+     });
+     simplemde.value($('#desc-input').val())
      $('#save-btn').click(function () {
+         console.log(simplemde.markdown(simplemde.value()))
          let light_pipe = $('input[name=light-pipe-inline-form-radio]:checked').val()
          if (light_pipe === '其它') {
              light_pipe = $('#light-pipe-other-input').val()
@@ -20,7 +25,7 @@
              tag: $('#tag-inputlarge').val(),
              quantity: $('#quantity-input').val(),
              price: $('#price-input').val(),
-             desc: $('#desc-input').val(),
+             desc: simplemde.value(),
              specs: {
                  actuation_force: $('#act-force-input').val(),
                  actuation_force_p: $('#act-force-p-input').val(),
@@ -46,6 +51,8 @@
              dataType: 'json',
              success: function (data) {
                  console.log(data)
+                 window.location.replace('/p/mkslist')
+                 // window.location.href = ''
              },
              error: function (err) {
                  console.log(err)
@@ -105,7 +112,7 @@
      }
 
      $('#confirm-cropper-btn').click(function (){
-         cropper.getCroppedCanvas({width: 100, height: 100}).toBlob((blob) => {
+         cropper.getCroppedCanvas().toBlob((blob) => {
              const formData = new FormData();
              formData.append('image', blob/*, 'example.png' */);
              $.ajax('/api/upload_pic', {
