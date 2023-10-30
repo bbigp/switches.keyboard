@@ -59,7 +59,7 @@ $(window).on('load', function () {
             {
                 data: "pic",
                 render: function (data, type, row, meta) {
-                    return '<img style="width: 96px;height: 74px;" class="main-pic" src="' + row.pic +'"/>'
+                    return '<img style="width: 96px;height: 74px;display: block;margin: auto auto;" class="main-pic" src="' + row.pic +'"/>'
                 }
             },
             {data: "name"},
@@ -112,7 +112,7 @@ $(window).on('load', function () {
                 targets: [-1],
                 render: function (data, type, row, meta) {
                     var jumpUrl = '/p/mks/' + row.id
-                    return '<a href="' +  jumpUrl + '" target="_blank"><button class="btn btn-xs btn-default">编辑</button></a>'
+                    return '<a href="' +  jumpUrl + '"><button class="btn btn-xs btn-default">编辑</button></a>'
                 }
             }
         ]

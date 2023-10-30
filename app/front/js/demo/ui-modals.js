@@ -5,8 +5,70 @@
 
  $(document).ready(function() {
 
+     $('#cancel-btn').click(function (){
+         window.location.replace('/p/mkslist')
+     })
+
+    let uploadType = 1;
+
      var simplemde = new SimpleMDE({
          element: document.getElementById("editor"),
+         toolbar: [
+             {
+                 name: 'bold',
+                 action: SimpleMDE.toggleBold,
+                 className: "fa fa-bold",
+                 title: "粗体",
+             },
+             {
+                 name: 'italic',
+                 action: SimpleMDE.toggleItalic,
+                 className: 'fa fa-italic',
+                 title: '斜体'
+             },
+             '|',
+             {
+                 name: 'link',
+                 action: SimpleMDE.drawLink,
+                 className: 'fa fa-link',
+                 title: '链接'
+             },
+             {
+                 name: 'image',
+                 action: SimpleMDE.drawImage,
+                 className: 'fa fa-picture-o',
+                 title: '图片'
+             },
+             '|',
+             {
+                 name: 'preview',
+                 action: SimpleMDE.togglePreview,
+                 className: 'fa fa-eye no-disable',
+                 title: '预览'
+             },
+             {
+                 name: 'side-by-side',
+                 action: SimpleMDE.toggleSideBySide,
+                 className: 'fa fa-columns no-disable no-mobile',
+                 title: '预览模式'
+             },
+             {
+                 name: 'fullscreen',
+                 action: SimpleMDE.toggleFullScreen,
+                 className: 'fa fa-arrows-alt no-disable no-mobile',
+                 title: '全屏'
+             },
+             '|',
+             {
+                 name: 'custom',
+                 action: function customFunction(editor) {
+                     uploadType = 2
+                     $('#demo-default-modal').modal('show')
+                 },
+                 className: 'fa fa-unsorted',
+                 title: '插入图片'
+             }
+         ]
      });
      simplemde.value($('#desc-input').val())
      $('#save-btn').click(function () {
@@ -51,7 +113,11 @@
              dataType: 'json',
              success: function (data) {
                  console.log(data)
-                 window.location.replace('/p/mkslist')
+                 if (data.status === 'ok') {
+                     window.location.replace('/p/mkslist')
+                 }else {
+
+                 }
                  // window.location.href = ''
              },
              error: function (err) {
@@ -121,10 +187,14 @@
                  processData: false,
                  contentType: false,
                  success(data) {
-                     $('#main-pic-img').attr('src', data.data)
+                     if (uploadType === 1) {
+                         $('#main-pic-img').attr('src', data.data)
+                     }
                      $('#download-pic-input').val('')
+                     $('#cropper-main-pic-img').attr('src', '')
                      cropper.destroy()
                      $('#demo-default-modal').modal('hide')
+                     uploadType = 1
                  },
                  error(err) {
                      console.log(err);

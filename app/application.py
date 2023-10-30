@@ -109,33 +109,33 @@ async def index(request: Request):
     return templates.TemplateResponse('index.html', context={'request': request})
 
 class Specs(BaseModel):
-    actuation_force: str=None
-    actuation_force_p: str=None
-    end_force: str=None
-    end_force_p: str=None
-    pre_travel: str=None
-    pre_travel_p: str=None
-    total_travel: str=None
-    total_travel_p: str=None
-    pin: str
-    top: str=None
-    bottom: str=None
-    stem: str=None
-    spring: str=None
-    light_pipe: str=None
+    actuation_force: str=''
+    actuation_force_p: str=''
+    end_force: str=''
+    end_force_p: str=''
+    pre_travel: str=''
+    pre_travel_p: str=''
+    total_travel: str=''
+    total_travel_p: str=''
+    pin: str=''
+    top: str=''
+    bottom: str=''
+    stem: str=''
+    spring: str=''
+    light_pipe: str=''
 
 class MksVO(BaseModel):
-    id: str=None
+    id: str=''
     name: str
-    pic: str=None
-    studio: str
-    manufacturer: str=None
-    type: str=None
-    tag: str=None
-    quantity: int
-    price: str=None
-    desc: str=None
-    specs: Specs=None
+    pic: str=''
+    studio: str=''
+    manufacturer: str=''
+    type: str=''
+    tag: str=''
+    quantity: int=0
+    price: str=''
+    desc: str=''
+    specs: Specs=''
     create_time: int=None
     update_time: int=None
 
@@ -159,7 +159,7 @@ async def index(request: Request, id: Optional[int]=None):
             )
             mks = convert_vo(model) if model is not None else MksVO(name='')
         else:
-            mks = MksVO(name='')
+            mks = MksVO(name='', specs=Specs())
         switch_types = session.fetchall(
             select(sqlm_keyword).where(sqlm_keyword.columns.type=='switch_type'),
             Keyword
@@ -226,12 +226,12 @@ async def show_pic(path: str, source: str):
         full_path = ''
     return FileResponse(full_path, media_type='image/jpg')
 
-@app.post('/api/mks', response_class=RedirectResponse)
+@app.post('/api/mks', response_class=JSONResponse)
 async def save_mks(req: MksVO):
     now = datetime.now().timestamp()
     id = req.id
     is_update = True
-    if req.id is None or req.id == 0:
+    if req.id == '':
         is_update = False
         id = id_worker.next_id()
     keyboard_switch = KeyboardSwitch(
@@ -249,7 +249,7 @@ async def save_mks(req: MksVO):
             if _ks is None:
                 etd = Etd(id=uuid.uuid4(), data=keyboard_switch.json(), error=json.dumps(['不存在的轴体']))
                 session.execute(insert(sqlm_etd).values(etd.dict()))
-                return RedirectResponseWraper(url='/p/mks?_etd=' + etd.id, status_code=status.HTTP_302_FOUND)
+                return {'status': 'error', 'msg': '不存在的轴体'}
             else:
                 session.execute(
                     update(sqlm_keyboard_switch).values(manufacturer=keyboard_switch.manufacturer,
@@ -264,10 +264,10 @@ async def save_mks(req: MksVO):
                                                         update_time=keyboard_switch.update_time)
                         .where(sqlm_keyboard_switch.columns.id == id)
                 )
-                return RedirectResponseWraper(url='/p/mkslist', status_code=status.HTTP_302_FOUND)
+                return {'status': 'ok'}
         else:
             session.execute(insert(sqlm_keyboard_switch).values(keyboard_switch.dict()))
-            return RedirectResponseWraper(url='/p/mkslist', status_code=status.HTTP_302_FOUND)
+            return {'status': 'ok'}
 
 
 

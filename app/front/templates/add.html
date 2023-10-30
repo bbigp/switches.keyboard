@@ -38,7 +38,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-sm-8 col-xs-9">
-                            <input type="text" class="form-control" value="https://img.alicdn.com/imgextra/i3/2214933827694/O1CN01kNVZUI26huDQ0foGc_!!2214933827694.jpg" id="download-pic-input">
+                            <input type="text" class="form-control" id="download-pic-input">
                         </div>
                         <button id="download-pic-btn" class="col-sm-2 col-xs-3 btn btn-primary btn-sm">
                             下载图片
@@ -59,7 +59,6 @@
     </div>
 
 
-
     <!--Input Size-->
     <!--===================================================-->
 <!--    <form class="form-horizontal" action="/a/add" enctype="application/x-www-form-urlencoded" method="post">-->
@@ -74,7 +73,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <input type="text" id="id-input" hidden value="{{ 0 if keyboard_switch.id == None else keyboard_switch.id }}">
+                <input type="text" id="id-input" hidden value="{{ keyboard_switch.id }}">
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="main-pic-img">主图</label>
@@ -91,7 +90,7 @@
             <div class="form-group">
                 <label for="studio-inputnormal" class="col-sm-3 control-label">工作室</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="studio-inputnormal" value="{{ '' if keyboard_switch.studio == None else keyboard_switch.studio }}" name="studio">
+                    <input type="text" class="form-control" id="studio-inputnormal" value="{{ keyboard_switch.studio }}" name="studio">
                 </div>
             </div>
             <div class="form-group">
@@ -117,7 +116,7 @@
             <div class="form-group">
                 <label for="tag-inputlarge" class="col-sm-3 control-label">TAG</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control input-sm" value="{{ '' if keyboard_switch.tag == None else keyboard_switch.tag }}" id="tag-inputlarge">
+                    <input type="text" class="form-control input-sm" value="{{ keyboard_switch.tag }}" id="tag-inputlarge">
                 </div>
             </div>
             <div class="form-group">
@@ -182,13 +181,13 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">库存</label>
                 <div class="col-sm-3">
-                    <input id="quantity-input" type="text" class="form-control" value="{{ '0' if keyboard_switch.quantity == None else keyboard_switch.quantity }}">
+                    <input id="quantity-input" type="text" class="form-control" value="{{ keyboard_switch.quantity }}">
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">价格</label>
                 <div class="col-sm-3">
-                    <input id="price-input" type="text" class="form-control" value="{{ '' if keyboard_switch.price == None else keyboard_switch.price }}">
+                    <input id="price-input" type="text" class="form-control" value="{{ keyboard_switch.price }}">
                 </div>
             </div>
             <div class="form-group">
@@ -228,7 +227,7 @@
                 <label class="col-sm-3 control-label">相关描述</label>
                 <div class="col-sm-7">
                     <textarea id="editor"></textarea>
-                    <input id="desc-input" hidden type="text" class="form-control" value="{{ '' if keyboard_switch.desc == None else keyboard_switch.desc }}">
+                    <textarea id="desc-input" type="text" hidden>{{ keyboard_switch.desc }}</textarea>
                 </div>
             </div>
         </div>
@@ -236,7 +235,7 @@
             <div class="row">
                 <div class="col-sm-9 col-sm-offset-3">
                     <button class="btn btn-mint" id="save-btn">保存</button>
-                    <button class="btn btn-warning" type="reset">Reset</button>
+                    <button class="btn btn-warning" id="cancel-btn">取消</button>
                 </div>
             </div>
         </div>

@@ -7,15 +7,15 @@ from pydantic.main import BaseModel
 class KeyboardSwitch(BaseModel):
     id: int = None
     name: str
-    manufacturer: str = None
-    studio: str = None
-    pic: str = None
-    type: str = None
-    tag: str = None
+    manufacturer: str = ''
+    studio: str = ''
+    pic: str = ''
+    type: str = ''
+    tag: str = ''
     specs: str = None
     quantity: int = 0
-    price: str = None
-    desc: str = None
+    price: str = ''
+    desc: str = ''
     create_time: int = None
     update_time: int = None
     # buy_address: str=None 购买地址
