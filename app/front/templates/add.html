@@ -1,38 +1,37 @@
 {% extends "main.html" %}
 {% block head %}
-<link href="/plugins/magic-check/css/magic-check.min.css" rel="stylesheet">
-<script src="/plugins/dropzone/dropzone.min.js"></script>
-<!--<script src="/js/demo/form-file-upload.js"></script>-->
+    <link href="/plugins/magic-check/css/magic-check.min.css" rel="stylesheet">
+    <script src="/plugins/dropzone/dropzone.min.js"></script>
+    <!--<script src="/js/demo/form-file-upload.js"></script>-->
 
-<link href="/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
-<script src="/plugins/bootstrap-select/bootstrap-select.min.js"></script>
+    <link href="/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+    <script src="/plugins/bootstrap-select/bootstrap-select.min.js"></script>
 
-<link href="/plugins/animate-css/animate.min.css" rel="stylesheet">
-<script src="/js/demo/ui-modals.js"></script>
-<link href="/plugins/ionicons/css/ionicons.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
-<!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">-->
-<!--<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>-->
-<link rel="stylesheet" href="/plugins/simplemde/simplemde.min.css">
-<script src="/plugins/simplemde/simplemde.min.js"></script>
-<script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.js" type="application/javascript"></script>
-<!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">-->
-<!--<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>-->
+    <link href="/plugins/animate-css/animate.min.css" rel="stylesheet">
+    <script src="/js/demo/ui-modals.js"></script>
+    <link href="/plugins/ionicons/css/ionicons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">-->
+    <!--<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>-->
+    <link rel="stylesheet" href="/plugins/simplemde/simplemde.min.css">
+    <script src="/plugins/simplemde/simplemde.min.js"></script>
+    <script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.js"
+            type="application/javascript"></script>
+    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">-->
+    <!--<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>-->
 {% endblock %}
 
 {% block content %}
-<div class="panel">
-    <div class="panel-heading">
-        <h3 class="panel-title">Input size</h3>
-    </div>
 
-    <div class="modal fade" id="demo-default-modal" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+    <div class="modal fade" id="demo-default-modal" role="dialog" tabindex="-1"
+         aria-labelledby="demo-default-modal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                    <button type="button" class="close" data-dismiss="modal"><i
+                            class="pci-cross pci-circle"></i></button>
                     <h4 class="modal-title">图片</h4>
                 </div>
 
@@ -46,206 +45,277 @@
                         </button>
                     </div>
                     <div class="row">
-		                <img id="cropper-main-pic-img" style="height: 300px;" class="col-sm-12"></img>
+                        <img id="cropper-main-pic-img" style="height: 300px;" class="col-sm-12"></img>
                     </div>
                 </div>
 
                 <div class="modal-footer">
                     <button id="cropper-btn" class="col-sm-2 col-xs-3 btn btn-default btn-sm">裁切</button>
-                    <button id="confirm-cropper-btn" class="col-sm-2 col-xs-3 btn btn-primary btn-sm">确认</button>
-                    <button id="cancel-cropper-btn" class="col-sm-2 col-xs-3 btn btn-danger btn-sm">取消</button>
+                    <button id="confirm-cropper-btn" class="col-sm-2 col-xs-3 btn btn-primary btn-sm">确认
+                    </button>
+                    <button id="cancel-cropper-btn" class="col-sm-2 col-xs-3 btn btn-danger btn-sm">取消
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+    <!--Page Title-->
+    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <div id="page-title">
+        <h1 class="page-header text-overflow">General Elements</h1>
+
+        <!--Searchbox-->
+        <div class="searchbox">
+            <div class="input-group custom-search-form">
+                <input type="text" class="form-control" placeholder="Search..">
+                <span class="input-group-btn">
+                                <button class="text-muted" type="button"><i class="demo-pli-magnifi-glass"></i></button>
+                            </span>
+            </div>
+        </div>
+    </div>
+    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <!--End page title-->
 
 
-    <!--Input Size-->
+    <!--Breadcrumb-->
+    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <ol class="breadcrumb">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Forms</a></li>
+        <li class="active">General Elements</li>
+    </ol>
+    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <!--End breadcrumb-->
+
+
+
+
+    <!--Page content-->
     <!--===================================================-->
-<!--    <form class="form-horizontal" action="/a/add" enctype="application/x-www-form-urlencoded" method="post">-->
-        <div class="panel-body form-horizontal">
-            <div class="form-group">
-                <div class="col-sm-3 col-sm-offset-3">
-                    <div id="demo-error-container" class="bg-gray-light">
-                        {% for item in error_msg %}
-                        <small class="help-block" style="">{{ item }}</small>
-                        {% endfor %}
+    <div id="page-content">
+
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">Inline Form</h3>
+            </div>
+            <div class="panel-body">
+
+                <div class="panel-body form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-3 col-sm-offset-3">
+                            <div id="demo-error-container" class="bg-gray-light">
+                                {% for item in error_msg %}
+                                    <small class="help-block" style="">{{ item }}</small>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="id-input" hidden value="{{ keyboard_switch.id }}">
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="main-pic-img">主图</label>
+                        <div class="col-sm-3">
+                            <img src="{{ keyboard_switch.pic }}" id="main-pic-img" width="80px" height="60px"
+                                 data-target="#demo-default-modal" data-toggle="modal"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="name-inputsmall">名字</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control input-sm" value="{{ keyboard_switch.name }}"
+                                   id="name-inputsmall" name="name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="studio-inputnormal" class="col-sm-3 control-label">工作室</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="studio-inputnormal"
+                                   value="{{ keyboard_switch.studio }}" name="studio">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="manufacturer-select" class="col-sm-3 control-label">生厂商</label>
+                        <div class="col-sm-3">
+                            <select class="selectpicker" id="manufacturer-select">
+                                {% for item in manufacturers %}
+                                    <option value="{{ item.word }}" {{ 'selected' if item.word == keyboard_switch.manufacturer else '' }}>{{ item.word }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="type-select">类型</label>
+                        <div class="col-sm-3">
+                            <select class="selectpicker" id="type-select">
+                                {% for item in switch_types %}
+                                    <option value="{{ item.word }}" {{ 'selected' if item.word == keyboard_switch.type else '' }}>{{ item.word }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="tag-inputlarge" class="col-sm-3 control-label">TAG</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control input-sm" value="{{ keyboard_switch.tag }}"
+                                   id="tag-inputlarge">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">规格</label>
+                        <div class="col-sm-6 form-inline">
+                            <div class="input-group mar-btm">
+                                <span class="input-group-addon">触发压力</span>
+                                <input value="{{ keyboard_switch.specs.actuation_force }}" id="act-force-input"
+                                       type="text"
+                                       class="form-control" placeholder="">
+                                <span class="input-group-addon">±</span>
+                                <input value="{{ keyboard_switch.specs.actuation_force_p }}" id="act-force-p-input"
+                                       type="text" class="form-control" placeholder="">
+                                <span class="input-group-addon">g</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label"></label>
+                        <div class="col-sm-6 form-inline">
+                            <div class="input-group mar-btm">
+                                <span class="input-group-addon">触底压力</span>
+                                <input value="{{ keyboard_switch.specs.end_force }}" id="end-force-input" type="text"
+                                       class="form-control" placeholder="">
+                                <span class="input-group-addon">±</span>
+                                <input value="{{ keyboard_switch.specs.end_force_p }}" id="end-force-p-input"
+                                       type="text"
+                                       class="form-control" placeholder="">
+                                <span class="input-group-addon">g</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label"></label>
+                        <div class="col-sm-6 form-inline">
+                            <div class="input-group mar-btm">
+                                <span class="input-group-addon">触发行程</span>
+                                <input value="{{ keyboard_switch.specs.pre_travel }}" id="pre-travel-input" type="text"
+                                       class="form-control" placeholder="">
+                                <span class="input-group-addon">±</span>
+                                <input value="{{ keyboard_switch.specs.pre_travel_p }}" id="pre-travel-p-input"
+                                       type="text"
+                                       class="form-control" placeholder="">
+                                <span class="input-group-addon">mm</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label"></label>
+                        <div class="col-sm-6 form-inline">
+                            <div class="input-group mar-btm">
+                                <span class="input-group-addon">触底行程</span>
+                                <input value="{{ keyboard_switch.specs.total_travel }}" id="total-travel-input"
+                                       type="text"
+                                       class="form-control" placeholder="">
+                                <span class="input-group-addon">±</span>
+                                <input value="{{ keyboard_switch.specs.total_travel_p }}" id="total-travel-p-input"
+                                       type="text" class="form-control" placeholder="">
+                                <span class="input-group-addon">mm</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">PIN</label>
+                        <div class="col-sm-6 form-inline">
+                            <div class="radio" id="pin-radio">
+                                <input id="pin-3-inline-form-radio" {{ 'checked' if keyboard_switch.specs.pin == '三脚' else '' }}
+                                       class="magic-radio" type="radio" name="pin-inline-form-radio" value="三脚">
+                                <label for="pin-3-inline-form-radio">三脚</label>
+                                <input id="pin-5-inline-form-radio" {{ 'checked' if keyboard_switch.specs.pin == '五脚' else '' }}
+                                       class="magic-radio" type="radio" name="pin-inline-form-radio" value="五脚">
+                                <label for="pin-5-inline-form-radio">五脚</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">库存</label>
+                        <div class="col-sm-3">
+                            <input id="quantity-input" type="text" class="form-control"
+                                   value="{{ keyboard_switch.quantity }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">价格</label>
+                        <div class="col-sm-3">
+                            <input id="price-input" type="text" class="form-control"
+                                   value="{{ keyboard_switch.price }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">材料</label>
+                        <div class="col-sm-6 form-inline">
+                            <div class="input-group mar-btm">
+                                <span class="input-group-addon">上盖</span>
+                                <input value="{{ keyboard_switch.specs.top }}" id="top-input" type="text"
+                                       class="form-control" placeholder="">
+                                <span class="input-group-addon">底壳</span>
+                                <input value="{{ keyboard_switch.specs.bottom }}" id="bottom-input" type="text"
+                                       class="form-control" placeholder="">
+                                <span class="input-group-addon">轴心</span>
+                                <input value="{{ keyboard_switch.specs.stem }}" id="stem-input" type="text"
+                                       class="form-control" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">导光柱</label>
+                        <div class="col-sm-6 form-inline">
+                            <div class="radio">
+                                <input id="light-pipe-y-inline-form-radio" {{ 'checked' if keyboard_switch.specs.light_pipe == '有' else '' }}
+                                       class="magic-radio" type="radio" name="light-pipe-inline-form-radio" value="有">
+                                <label for="light-pipe-y-inline-form-radio">有</label>
+                                <input id="light-pipe-n-inline-form-radio" {{ 'checked' if keyboard_switch.specs.light_pipe == '无' else '' }}
+                                       class="magic-radio" type="radio" name="light-pipe-inline-form-radio" value="无">
+                                <label for="light-pipe-n-inline-form-radio">无</label>
+                                <input id="light-pipe-other-inline-form-radio" {{ 'checked' if keyboard_switch.specs.light_pipe != '有' and keyboard_switch.specs.light_pipe != '无' else '' }}
+                                       class="magic-radio" type="radio" name="light-pipe-inline-form-radio"
+                                       value="其它">
+                                <label for="light-pipe-other-inline-form-radio">其它</label>
+                                <input id="light-pipe-other-input"
+                                       value="{{ keyboard_switch.specs.light_pipe if keyboard_switch.specs.light_pipe != '有' and keyboard_switch.specs.light_pipe != '无' else '' }}"
+                                       type="text" class="form-control input-sm">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="spring-inputlarge" class="col-sm-3 control-label">弹簧</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control input-sm" value="{{ keyboard_switch.specs.spring }}"
+                                   id="spring-inputlarge">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">相关描述</label>
+                        <div class="col-sm-7">
+                            <textarea id="editor"></textarea>
+                            <textarea id="desc-input" type="text" hidden>{{ keyboard_switch.desc }}</textarea>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <input type="text" id="id-input" hidden value="{{ keyboard_switch.id }}">
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label" for="main-pic-img">主图</label>
-                <div class="col-sm-3">
-                    <img src="{{ keyboard_switch.pic }}" id="main-pic-img" width="80px" height="60px" data-target="#demo-default-modal" data-toggle="modal"/>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label" for="name-inputsmall">名字</label>
-                <div class="col-sm-3">
-                    <input type="text" class="form-control input-sm" value="{{ keyboard_switch.name }}" id="name-inputsmall" name="name">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="studio-inputnormal" class="col-sm-3 control-label">工作室</label>
-                <div class="col-sm-3">
-                    <input type="text" class="form-control" id="studio-inputnormal" value="{{ keyboard_switch.studio }}" name="studio">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="manufacturer-select" class="col-sm-3 control-label">生厂商</label>
-                <div class="col-sm-3">
-                    <select class="selectpicker" id="manufacturer-select">
-                        {% for item in manufacturers %}
-                            <option value="{{ item.word }}" {{ 'selected' if item.word == keyboard_switch.manufacturer else '' }}>{{ item.word }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label" for="type-select">类型</label>
-                <div class="col-sm-3">
-                    <select class="selectpicker" id="type-select">
-                        {% for item in switch_types %}
-                        <option value="{{ item.word }}" {{ 'selected' if item.word == keyboard_switch.type else '' }}>{{ item.word }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="tag-inputlarge" class="col-sm-3 control-label">TAG</label>
-                <div class="col-sm-3">
-                    <input type="text" class="form-control input-sm" value="{{ keyboard_switch.tag }}" id="tag-inputlarge">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">规格</label>
-                <div class="col-sm-6 form-inline">
-                    <div class="input-group mar-btm">
-                        <span class="input-group-addon">触发压力</span>
-                        <input value="{{ keyboard_switch.specs.actuation_force }}" id="act-force-input" type="text" class="form-control" placeholder="">
-                        <span class="input-group-addon">±</span>
-                        <input value="{{ keyboard_switch.specs.actuation_force_p }}" id="act-force-p-input" type="text" class="form-control" placeholder="">
-                        <span class="input-group-addon">g</span>
+                <div>
+                    <div class="row">
+                        <div class="col-sm-9 col-sm-offset-3">
+                            <button class="btn btn-mint" id="save-btn">保存</button>
+                            <button class="btn btn-warning" id="cancel-btn">取消</button>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label"></label>
-                <div class="col-sm-6 form-inline">
-                    <div class="input-group mar-btm">
-                        <span class="input-group-addon">触底压力</span>
-                        <input value="{{ keyboard_switch.specs.end_force }}" id="end-force-input" type="text" class="form-control" placeholder="">
-                        <span class="input-group-addon">±</span>
-                        <input value="{{ keyboard_switch.specs.end_force_p }}" id="end-force-p-input" type="text" class="form-control" placeholder="">
-                        <span class="input-group-addon">g</span>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label"></label>
-                <div class="col-sm-6 form-inline">
-                    <div class="input-group mar-btm">
-                        <span class="input-group-addon">触发行程</span>
-                        <input value="{{ keyboard_switch.specs.pre_travel }}" id="pre-travel-input" type="text" class="form-control" placeholder="">
-                        <span class="input-group-addon">±</span>
-                        <input value="{{ keyboard_switch.specs.pre_travel_p }}" id="pre-travel-p-input" type="text" class="form-control" placeholder="">
-                        <span class="input-group-addon">mm</span>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label"></label>
-                <div class="col-sm-6 form-inline">
-                    <div class="input-group mar-btm">
-                        <span class="input-group-addon">触底行程</span>
-                        <input value="{{ keyboard_switch.specs.total_travel }}" id="total-travel-input" type="text" class="form-control" placeholder="">
-                        <span class="input-group-addon">±</span>
-                        <input value="{{ keyboard_switch.specs.total_travel_p }}" id="total-travel-p-input" type="text" class="form-control" placeholder="">
-                        <span class="input-group-addon">mm</span>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">PIN</label>
-                <div class="col-sm-6 form-inline">
-                    <div class="radio" id="pin-radio">
-                        <input id="pin-3-inline-form-radio" {{ 'checked' if keyboard_switch.specs.pin == '三脚' else '' }} class="magic-radio" type="radio" name="pin-inline-form-radio" value="三脚">
-                        <label for="pin-3-inline-form-radio">三脚</label>
-                        <input id="pin-5-inline-form-radio" {{ 'checked' if keyboard_switch.specs.pin == '五脚' else '' }} class="magic-radio" type="radio" name="pin-inline-form-radio" value="五脚">
-                        <label for="pin-5-inline-form-radio">五脚</label>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">库存</label>
-                <div class="col-sm-3">
-                    <input id="quantity-input" type="text" class="form-control" value="{{ keyboard_switch.quantity }}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">价格</label>
-                <div class="col-sm-3">
-                    <input id="price-input" type="text" class="form-control" value="{{ keyboard_switch.price }}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">材料</label>
-                <div class="col-sm-6 form-inline">
-                    <div class="input-group mar-btm">
-                        <span class="input-group-addon">上盖</span>
-                        <input value="{{ keyboard_switch.specs.top }}" id="top-input" type="text" class="form-control" placeholder="">
-                        <span class="input-group-addon">底壳</span>
-                        <input value="{{ keyboard_switch.specs.bottom }}" id="bottom-input" type="text" class="form-control" placeholder="">
-                        <span class="input-group-addon">轴心</span>
-                        <input value="{{ keyboard_switch.specs.stem }}" id="stem-input" type="text" class="form-control" placeholder="">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">导光柱</label>
-                <div class="col-sm-6 form-inline">
-                    <div class="radio">
-                        <input id="light-pipe-y-inline-form-radio" {{ 'checked' if keyboard_switch.specs.light_pipe == '有' else '' }}  class="magic-radio" type="radio" name="light-pipe-inline-form-radio" value="有">
-                        <label for="light-pipe-y-inline-form-radio">有</label>
-                        <input id="light-pipe-n-inline-form-radio" {{ 'checked' if keyboard_switch.specs.light_pipe == '无' else '' }} class="magic-radio" type="radio" name="light-pipe-inline-form-radio" value="无">
-                        <label for="light-pipe-n-inline-form-radio">无</label>
-                        <input id="light-pipe-other-inline-form-radio" {{ 'checked' if keyboard_switch.specs.light_pipe != '有' and keyboard_switch.specs.light_pipe != '无' else '' }} class="magic-radio" type="radio" name="light-pipe-inline-form-radio" value="其它">
-                        <label for="light-pipe-other-inline-form-radio">其它</label>
-                        <input id="light-pipe-other-input" value="{{ keyboard_switch.specs.light_pipe if keyboard_switch.specs.light_pipe != '有' and keyboard_switch.specs.light_pipe != '无' else ''}}" type="text" class="form-control input-sm">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="spring-inputlarge" class="col-sm-3 control-label">弹簧</label>
-                <div class="col-sm-3">
-                    <input type="text" class="form-control input-sm" value="{{ keyboard_switch.specs.spring }}" id="spring-inputlarge">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label">相关描述</label>
-                <div class="col-sm-7">
-                    <textarea id="editor"></textarea>
-                    <textarea id="desc-input" type="text" hidden>{{ keyboard_switch.desc }}</textarea>
                 </div>
             </div>
         </div>
-        <div class="panel-footer">
-            <div class="row">
-                <div class="col-sm-9 col-sm-offset-3">
-                    <button class="btn btn-mint" id="save-btn">保存</button>
-                    <button class="btn btn-warning" id="cancel-btn">取消</button>
-                </div>
-            </div>
-        </div>
-<!--    </form>-->
+
+
+    </div>
     <!--===================================================-->
-    <!--End Input Size-->
+    <!--End page content-->
 
-
-</div>
 {% endblock %}
 
 

@@ -74,51 +74,51 @@
                 </ul>
                 <ul class="nav navbar-top-links pull-right">
                     <li id="dropdown-user" class="dropdown">
-                            <a href="#" data-toggle="dropdown" class="dropdown-toggle text-right" aria-expanded="false">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle text-right" aria-expanded="false">
                                 <span class="pull-right">
                                     <!--<img class="img-circle img-user media-object" src="img/profile-photos/1.png" alt="Profile Picture">-->
                                     <i class="demo-pli-male ic-user"></i>
                                 </span>
-                                <div class="username hidden-xs">Aaron Chavez</div>
-                            </a>
+                            <div class="username hidden-xs">Aaron Chavez</div>
+                        </a>
 
 
-                            <div class="dropdown-menu dropdown-menu-md dropdown-menu-right panel-default">
+                        <div class="dropdown-menu dropdown-menu-md dropdown-menu-right panel-default">
 
-                                <!-- Dropdown heading  -->
-                                <div class="pad-all bord-btm">
-                                    <p class="text-main mar-btm"><span class="text-bold">750GB</span> of 1,000GB Used</p>
-                                    <div class="progress progress-sm">
-                                        <div class="progress-bar" style="width: 70%;">
-                                            <span class="sr-only">70%</span>
-                                        </div>
+                            <!-- Dropdown heading  -->
+                            <div class="pad-all bord-btm">
+                                <p class="text-main mar-btm"><span class="text-bold">750GB</span> of 1,000GB Used</p>
+                                <div class="progress progress-sm">
+                                    <div class="progress-bar" style="width: 70%;">
+                                        <span class="sr-only">70%</span>
                                     </div>
                                 </div>
-
-
-                                <!-- User dropdown menu -->
-                                <ul class="head-list">
-                                    <li>
-                                        <a href="#">
-                                            <i class="demo-pli-male icon-lg icon-fw"></i> Profile
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <span class="badge badge-danger pull-right">9</span>
-                                            <i class="demo-pli-mail icon-lg icon-fw"></i> Messages
-                                        </a>
-                                    </li>
-                                </ul>
-
-                                <!-- Dropdown footer -->
-                                <div class="pad-all text-right">
-                                    <a href="pages-login.html" class="btn btn-primary">
-                                        <i class="demo-pli-unlock"></i> Logout
-                                    </a>
-                                </div>
                             </div>
-                        </li>
+
+
+                            <!-- User dropdown menu -->
+                            <ul class="head-list">
+                                <li>
+                                    <a href="#">
+                                        <i class="demo-pli-male icon-lg icon-fw"></i> Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <span class="badge badge-danger pull-right">9</span>
+                                        <i class="demo-pli-mail icon-lg icon-fw"></i> Messages
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <!-- Dropdown footer -->
+                            <div class="pad-all text-right">
+                                <a href="pages-login.html" class="btn btn-primary">
+                                    <i class="demo-pli-unlock"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
             </div>
             <!--================================-->
@@ -131,54 +131,10 @@
 
     <div class="boxed">
 
-        <!--CONTENT CONTAINER-->
-        <!--===================================================-->
         <div id="content-container">
-
-            <!--Page Title-->
-            <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-            <div id="page-title">
-                <h1 class="page-header text-overflow">Data Tables</h1>
-
-                <!--Searchbox-->
-                <div class="searchbox">
-                    <div class="input-group custom-search-form">
-                        <input type="text" class="form-control" placeholder="Search..">
-                        <span class="input-group-btn">
-                                <button class="text-muted" type="button"><i class="demo-pli-magnifi-glass"></i></button>
-                            </span>
-                    </div>
-                </div>
-            </div>
-            <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-            <!--End page title-->
-
-
-            <!--Breadcrumb-->
-            <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-            <ol class="breadcrumb">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Tables</a></li>
-                <li class="active">Data Tables</li>
-            </ol>
-            <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-            <!--End breadcrumb-->
-
-
-            <!--Page content-->
-            <!--===================================================-->
-            <div id="page-content">
-                {% block content %}
-                {% endblock %}
-
-            </div>
-            <!--===================================================-->
-            <!--End page content-->
-
-
+            {% block content %}
+            {% endblock %}
         </div>
-        <!--===================================================-->
-        <!--END CONTENT CONTAINER-->
 
 
         <!--MAIN NAVIGATION-->
@@ -272,6 +228,16 @@
                                     </a>
                                 </li>
 
+                                <li>
+                                    <a href="/p/mks">
+                                        <i class="demo-psi-gear-2"></i>
+                                        <span class="menu-title">
+												<strong>Add</strong>
+												<span class="pull-right badge badge-warning">24</span>
+											</span>
+                                    </a>
+                                </li>
+
                                 <!--Menu list item-->
                                 <li>
                                     <a href="#">
@@ -292,15 +258,7 @@
                                 </li>
 
                                 <!--Menu list item-->
-                                <li>
-                                    <a href="/p/mks">
-                                        <i class="demo-psi-gear-2"></i>
-                                        <span class="menu-title">
-												<strong>Add</strong>
-												<span class="pull-right badge badge-warning">24</span>
-											</span>
-                                    </a>
-                                </li>
+
 
                                 <li class="list-divider"></li>
 
@@ -416,8 +374,6 @@
 </div>
 <!--===================================================-->
 <!-- END OF CONTAINER -->
-
-
 
 
 </body>
