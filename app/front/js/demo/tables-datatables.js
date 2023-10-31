@@ -77,10 +77,10 @@ $(window).on('load', function () {
                     if (row.specs == null) {
                         return ''
                     }
-                    return '<div>触发压力: ' + row.specs.actuation_force + '±' + row.specs.actuation_force_p + 'g<div/>'
-                        + '<div>触底压力: ' + row.specs.end_force + '±' + row.specs.end_force_p + 'g<div/>'
-                        + '<div>触发行程: ' + row.specs.pre_travel + '±' + row.specs.pre_travel_p + 'mm<div/>'
-                        + '<div>触底行程: ' + row.specs.total_travel + '±' + row.specs.total_travel_p + 'mm<div/>'
+                    return appendP('触发压力', row.specs.actuation_force, row.specs.actuation_force_p, 'g')
+                        + appendP('触底压力', row.specs.end_force, row.specs.end_force_p, 'g')
+                        + appendP('触发行程', row.specs.pre_travel, row.specs.pre_travel_p, 'mm')
+                        + appendP('触底行程', row.specs.total_travel, row.specs.total_travel_p, 'mm')
                 }
             },
             {
@@ -112,18 +112,49 @@ $(window).on('load', function () {
                 targets: [-1],
                 render: function (data, type, row, meta) {
                     var jumpUrl = '/p/mks/' + row.id
-                    return '<a href="' +  jumpUrl + '"><button class="btn btn-xs btn-default">编辑</button></a>'
+                    let _r = '<a href="' +  jumpUrl + '"><button class="btn btn-xs btn-pink-basic">编辑</button></a>';
+                    if (row.desc !== ''){
+                        _r += '<button style="margin-left: 5px;" class="btn btn-xs btn-default other-btn" data="' + row.desc + '">其他</button>'
+                    }
+                    return _r;
                 }
             }
         ]
     });
 
+    function appendP(s, a, b, e){
+        let r = '<div>' + s + ': '
+        if (a === '') {
+            return r;
+        }
+        r += a
+        if (b === '') {
+            r = r + e + '</div>'
+            return r;
+        }
+        r = r + '±' + b + e + '</div>'
+        return r;
+    }
+
 
 
     $('#demo-dt-addrow').on('click', '.main-pic', function () {
-        // console.log(this.attributes.src.value)
+        $('#modal-body').empty()
         $('#demo-default-modal').modal('show')
         $('#show-main-pic-img').attr('src', $(this).attr("src"))
+    })
+
+    $('#demo-dt-addrow').on('click', '.other-btn', function () {
+        // console.log(this.attributes.data.value)
+        $('#show-main-pic-img').attr('src', '')
+        let data = this.attributes.data.value
+        if (data !== '') {
+            // console.log(SimpleMDE.prototype.markdown(data))
+            let d = SimpleMDE.prototype.markdown(data).replaceAll('<img', '<img style="max-width:100%;height:auto;"')
+            $('#modal-body').empty().append(d)
+        }
+        $('#demo-default-modal').modal('show')
+
     })
 
     $('#close-btn').click(function (){

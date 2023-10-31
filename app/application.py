@@ -224,6 +224,8 @@ async def show_pic(path: str, source: str):
         full_path = app_config.file_dir + path
     else:
         full_path = ''
+    if not os.path.isfile(full_path):
+        return FileResponse('front/img/_d.png', media_type='image/png', headers={'Etag': str(datetime.now().timestamp())})
     return FileResponse(full_path, media_type='image/jpg')
 
 @app.post('/api/mks', response_class=JSONResponse)

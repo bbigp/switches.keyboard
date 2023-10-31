@@ -152,9 +152,13 @@
 
      var cropper = null
      function initcropper(){
+         let aspectRatio;
+         if (uploadType === 1) {
+             aspectRatio = 13 / 10
+         }
          cropper = new Cropper(document.getElementById('cropper-main-pic-img'),
          {
-             aspectRatio: 13 / 10,
+             aspectRatio: aspectRatio,
              viewMode: 1,
              preview:'.small',//开启预览效果
              dragMode:'move',//参数：move-能够移动图片和框，crop-拖拽新建框
@@ -189,6 +193,8 @@
                  success(data) {
                      if (uploadType === 1) {
                          $('#main-pic-img').attr('src', data.data)
+                     } else{
+                         simplemde.value(simplemde.value() + '\n![](' + data.data + ')')
                      }
                      $('#download-pic-input').val('')
                      $('#cropper-main-pic-img').attr('src', '')
@@ -207,6 +213,7 @@
          if (cropper){
              cropper.destroy()
          }
+         uploadType = 1
          $('#demo-default-modal').modal('hide')
      })
 

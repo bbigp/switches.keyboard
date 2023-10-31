@@ -12,6 +12,7 @@
 <script src="/plugins/datatables/extensions/Responsive/js/dataTables.responsive.min.js"></script>
 <!--DataTables Sample [ SAMPLE ]-->
 <script src="/js/demo/tables-datatables.js"></script>
+<script src="/plugins/simplemde/simplemde.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -26,8 +27,9 @@
 
                 <div class="modal-body">
                     <div class="row">
-                        <img id="show-main-pic-img" style="width: 100%" class="col-sm-12"></img>
+                        <img id="show-main-pic-img" style="width: 100%" class="col-sm-12"/>
                     </div>
+                    <div id="modal-body"></div>
                 </div>
 
                 <div class="modal-footer">
