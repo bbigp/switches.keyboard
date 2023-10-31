@@ -24,6 +24,7 @@ class KeyboardSwitch(BaseModel):
 class Keyword(BaseModel):
     word: str
     type: str
+    rank: int
 
 class Etd(BaseModel):
     id: str
@@ -61,5 +62,6 @@ sqlm_keyboard_switch = Table('keyboard_switch', metadata,
 
 sqlm_keyword = Table('keyword', metadata,
                 Column('word', String(50), primary_key=True),
-                Column('type', String(10))
+                Column('type', String(10)),
+                Column('rank', Integer())
                 )

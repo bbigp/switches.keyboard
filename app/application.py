@@ -10,7 +10,7 @@ from urllib.parse import urlencode
 import requests
 from fastapi import FastAPI, Request, Form, Query, UploadFile
 from pydantic.main import BaseModel
-from sqlalchemy import select, insert, func, and_, or_, update
+from sqlalchemy import select, insert, func, and_, or_, update, desc
 from starlette import status
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse, RedirectResponse, Response, JSONResponse, FileResponse
@@ -161,11 +161,11 @@ async def index(request: Request, id: Optional[int]=None):
         else:
             mks = MksVO(name='', specs=Specs())
         switch_types = session.fetchall(
-            select(sqlm_keyword).where(sqlm_keyword.columns.type=='switch_type'),
+            select(sqlm_keyword).where(sqlm_keyword.columns.type=='switch_type').order_by(desc(sqlm_keyword.columns.rank)),
             Keyword
         )
         manufacturers = session.fetchall(
-            select(sqlm_keyword).where(sqlm_keyword.columns.type=='manufacturer'),
+            select(sqlm_keyword).where(sqlm_keyword.columns.type=='manufacturer').order_by(desc(sqlm_keyword.columns.rank)),
             Keyword
         )
     return templates.TemplateResponse('add.html', context={
@@ -185,7 +185,7 @@ async def keyword():
 @app.get('/api/mkslist')
 async def mkslist(draw: Optional[int]=None, start: Optional[int]=1, length: Optional[int]=10, search: str=Query(alias='s', default=None)):
     with SqlSession() as session:
-        stmt_list = select(sqlm_keyboard_switch).offset(start).limit(length)
+        stmt_list = select(sqlm_keyboard_switch).offset(start).limit(length).order_by(desc(sqlm_keyboard_switch.columns.id))
         stmt_count = select(func.count(sqlm_keyboard_switch.columns.id))
         if search is not None:
             s = '%' + search + '%'
@@ -248,7 +248,16 @@ async def save_mks(req: MksVO):
         specs=req.specs.json(),
         create_time=now, update_time=now, id=id
     )
+    if keyboard_switch.studio == '':
+        return {'status': 'error', 'msg': '工作室为空'}
     with SqlSession() as session:
+        kw = session.fetchone(
+            select(sqlm_keyword).where(sqlm_keyword.columns.word==keyboard_switch.studio, sqlm_keyword.columns.type=='studio'), Keyword
+        )
+        if kw is None:
+            row = session.execute(
+                insert(sqlm_keyword).values(Keyword(word=keyboard_switch.studio, type='studio', rank=0).dict())
+            )
         if is_update:
             _ks = session.fetchone(
                 select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.columns.name==keyboard_switch.name),
