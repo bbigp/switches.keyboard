@@ -5,6 +5,20 @@
 
  $(document).ready(function() {
 
+     var myData = [];
+     $('#studio-inputnormal').typeahead({
+         source: function (query, process) {
+             if (myData.length === 0) {
+                 $.get('/api/keyword', function (data, status) {
+                     myData = data
+                 })
+             }
+             return process(myData)
+         }
+     });
+
+
+
      $('#cancel-btn').click(function (){
          window.location.replace('/p/mkslist')
      })

@@ -176,6 +176,12 @@ async def index(request: Request, id: Optional[int]=None):
         'error_msg': []
     })
 
+@app.get("/api/keyword", response_class=JSONResponse)
+async def keyword():
+    with SqlSession() as session:
+        list = session.fetchall(select(sqlm_keyword).where(sqlm_keyword.columns.type=='studio'), Keyword)
+        return [m.word for m in list]
+
 @app.get('/api/mkslist')
 async def mkslist(draw: Optional[int]=None, start: Optional[int]=1, length: Optional[int]=10, search: str=Query(alias='s', default=None)):
     with SqlSession() as session:
