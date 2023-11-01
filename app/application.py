@@ -189,7 +189,7 @@ async def keyword(
         type: str=Query(alias='t', default=None)
 ):
     with SqlSession() as session:
-        stmt_list = select(sqlm_keyword).where(sqlm_keyword.columns.type==type, sqlm_keyword.columns.deleted==0)
+        stmt_list = select(sqlm_keyword).where(sqlm_keyword.columns.type==type, sqlm_keyword.columns.deleted==0).order_by(desc(sqlm_keyword.columns.create_time))
         stmt_count = select(func.count(sqlm_keyword.columns.word)).where(sqlm_keyword.columns.type==type, sqlm_keyword.columns.deleted==0)
         if search is not None:
             stmt_list = stmt_list.where(sqlm_keyword.columns.word.like('%' + search + '%'))
@@ -220,10 +220,11 @@ async def save_keyword(req: KeywordVO):
             Keyword
         )
         if _k is None:
-            session.execute(insert(sqlm_keyword).values(convert_keywrod_sqlm(req).dict()))
+            dd = convert_keywrod_sqlm(req).dict()
+            session.execute(insert(sqlm_keyword).values(dd))
             return {'status': 'ok'}
         else:
-            now = datetime.now().timestamp()
+            now = int(datetime.now().timestamp())
             session.execute(
                 update(sqlm_keyword)
                 .values(rank=req.rank, update_time=now, deleted=0)
@@ -312,7 +313,10 @@ async def save_mks(req: MksVO):
         return {'status': 'error', 'msg': '工作室为空'}
     with SqlSession() as session:
         kw = session.fetchone(
-            select(sqlm_keyword).where(sqlm_keyword.columns.word==keyboard_switch.studio, sqlm_keyword.columns.type=='studio'), Keyword
+            select(sqlm_keyword)
+            .where(sqlm_keyword.columns.word==keyboard_switch.studio,
+                   sqlm_keyword.columns.type=='studio'),
+            Keyword
         )
         if kw is None:
             row = session.execute(
@@ -320,7 +324,8 @@ async def save_mks(req: MksVO):
             )
         if is_update:
             _ks = session.fetchone(
-                select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.columns.name==keyboard_switch.name),
+                select(sqlm_keyboard_switch)
+                .where(sqlm_keyboard_switch.columns.name==keyboard_switch.name),
                 KeyboardSwitch
             )
             if _ks is None:
