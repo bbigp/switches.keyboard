@@ -176,11 +176,31 @@ async def index(request: Request, id: Optional[int]=None):
         'error_msg': []
     })
 
+@app.get("/p/keyword", response_class=HTMLResponse)
+async def keyword(request: Request):
+    return templates.TemplateResponse('keyword.html', context={'request': request})
+
 @app.get("/api/keyword", response_class=JSONResponse)
-async def keyword():
+async def keyword(
+        draw: Optional[int]=None,
+        start: Optional[int]=None,
+        length: Optional[int]=None,
+        search: str=Query(alias='s', default=None),
+        type: str=Query(alias='t', default=None)
+):
     with SqlSession() as session:
-        list = session.fetchall(select(sqlm_keyword).where(sqlm_keyword.columns.type=='studio'), Keyword)
-        return [m.word for m in list]
+        stmt_list = select(sqlm_keyword).where(sqlm_keyword.columns.type==type)
+        stmt_count = select(func.count(sqlm_keyword.columns.word)).where(sqlm_keyword.columns.type==type)
+        if search is not None:
+            stmt_list = stmt_list.where(sqlm_keyword.columns.word.like('%' + search + '%'))
+            stmt_count = stmt_count.where(sqlm_keyword.columns.word.like('%' + search + '%'))
+        if start is None:
+            list = session.fetchall(stmt_list, Keyword)
+            return [m.word for m in list]
+        else:
+            list = session.fetchall(stmt_list.offset(start).limit(length), Keyword)
+            total = session.count(stmt_count)
+            return {'draw': draw, 'page_list': list, 'recordsTotal': total, 'recordsFiltered': total}
 
 @app.get('/api/mkslist')
 async def mkslist(draw: Optional[int]=None, start: Optional[int]=1, length: Optional[int]=10, search: str=Query(alias='s', default=None)):

@@ -9,7 +9,7 @@
      $('#studio-inputnormal').typeahead({
          source: function (query, process) {
              if (myData.length === 0) {
-                 $.get('/api/keyword', function (data, status) {
+                 $.get('/api/keyword?type=studio', function (data, status) {
                      myData = data
                  })
              }

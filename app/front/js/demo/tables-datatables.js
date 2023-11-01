@@ -30,8 +30,8 @@ $(window).on('load', function () {
         ordering: false,// 排序功能
         responsive: true,
         info: true,
-        // "lengthChange": true,
-        // "lengthMenu": [10, 20, 100],
+        lengthChange: true,
+        lengthMenu: [10, 20, 100],
         language: {
             processing: "数据加载中...",
             infoEmpty: "无记录",
@@ -42,7 +42,7 @@ $(window).on('load', function () {
                 next: '<i class="demo-psi-arrow-right"></i>'
             }
         },
-        dom: '<"newtoolbar">frtip',
+        dom: '<"newtoolbar">frtlip',//https://blog.csdn.net/WuLex/article/details/86385619
         ajax: {
             url: '/api/mkslist',
             data: function (data) {
@@ -64,7 +64,12 @@ $(window).on('load', function () {
             },
             {data: "name"},
             {data: "studio"},
-            {data: "manufacturer", defaultContent: ""},
+            {
+                data: "manufacturer",
+                render: function (data) {
+                    return '<span class="label label-default" style="font-size: 90%">' + data + '</span>'
+                }
+            },
             {
                 data: "type",
                 render: function (data, type, row, meta) {
