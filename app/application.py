@@ -189,8 +189,8 @@ async def keyword(
         type: str=Query(alias='t', default=None)
 ):
     with SqlSession() as session:
-        stmt_list = select(sqlm_keyword).where(sqlm_keyword.columns.type==type)
-        stmt_count = select(func.count(sqlm_keyword.columns.word)).where(sqlm_keyword.columns.type==type)
+        stmt_list = select(sqlm_keyword).where(sqlm_keyword.columns.type==type, sqlm_keyword.columns.deleted==0)
+        stmt_count = select(func.count(sqlm_keyword.columns.word)).where(sqlm_keyword.columns.type==type, sqlm_keyword.columns.deleted==0)
         if search is not None:
             stmt_list = stmt_list.where(sqlm_keyword.columns.word.like('%' + search + '%'))
             stmt_count = stmt_count.where(sqlm_keyword.columns.word.like('%' + search + '%'))
@@ -201,6 +201,46 @@ async def keyword(
             list = session.fetchall(stmt_list.offset(start).limit(length), Keyword)
             total = session.count(stmt_count)
             return {'draw': draw, 'page_list': list, 'recordsTotal': total, 'recordsFiltered': total}
+
+class KeywordVO(BaseModel):
+    word: str=''
+    type: str=''
+    rank: int=0
+
+def convert_keywrod_sqlm(v: KeywordVO) -> Keyword:
+    now = datetime.now().timestamp()
+    return Keyword(word=v.word, type=v.type, rank=v.rank, deleted=0, create_time=now, update_time=now)
+
+@app.post('/api/keyword', response_class=JSONResponse)
+async def save_keyword(req: KeywordVO):
+    with SqlSession() as session:
+        _k = session.fetchone(
+            select(sqlm_keyword)
+            .where(sqlm_keyword.columns.word==req.word, sqlm_keyword.columns.type==req.type),
+            Keyword
+        )
+        if _k is None:
+            session.execute(insert(sqlm_keyword).values(convert_keywrod_sqlm(req).dict()))
+            return {'status': 'ok'}
+        else:
+            now = datetime.now().timestamp()
+            session.execute(
+                update(sqlm_keyword)
+                .values(rank=req.rank, update_time=now, deleted=0)
+                .where(sqlm_keyword.columns.word==req.word, sqlm_keyword.columns.type==req.type)
+            )
+            return {'status': 'ok'}
+
+@app.delete('/api/keyword', response_class=JSONResponse)
+async def delete_keyword(req: KeywordVO):
+    with SqlSession() as session:
+        session.execute(
+            update(sqlm_keyword)
+            .values(deleted=1)
+            .where(sqlm_keyword.columns.word==req.word, sqlm_keyword.columns.type==req.type)
+        )
+    return {'status': 'ok'}
+
 
 @app.get('/api/mkslist')
 async def mkslist(draw: Optional[int]=None, start: Optional[int]=1, length: Optional[int]=10, search: str=Query(alias='s', default=None)):

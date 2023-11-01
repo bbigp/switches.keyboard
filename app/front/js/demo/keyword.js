@@ -53,7 +53,8 @@ $(window).on('load', function () {
             {
                 targets: [-1],
                 render: function (data, type, row, meta) {
-                    let _r = '<button class="edit-btn btn btn-xs btn-pink-basic">编辑</button>';
+                    let _r = '<button class="edit-btn btn btn-xs btn-default">编辑</button>'
+                        + '<button class="delete-btn btn btn-xs btn-pink-basic">删除</button>';
                     return _r;
                 }
             }
@@ -69,19 +70,66 @@ $(window).on('load', function () {
 
 
     $('#add-btn').click(function () {
-        $('#rank-input').val('')
-        $('#word-input').val('')
+        $('#rank-input').val('0')
+        $('#word-input').val('').attr('disabled', false)
+        $('select[name=keyword-type]').selectpicker('val', [$('#type-select').val()]).attr('disabled', false)
         $('#demo-default-modal').modal('show')
     })
 
     $('#confirm-btn').click(function () {
+        $.ajax({
+             type: 'POST',
+             url: '/api/keyword',
+             contentType: 'application/json',
+             data: JSON.stringify({
+                 'rank': $('#rank-input').val(),
+                 'word': $('#word-input').val(),
+                 'type': $('#type-select-modal').val()
+             }),
+             dataType: 'json',
+             success: function (data) {
+                 console.log(data)
+                 if (data.status === 'ok') {
+                     $('#demo-default-modal').modal('hide')
+                     t.ajax.reload();
+                 }else {
 
-        $('#demo-default-modal').modal('hide')
+                 }
+             },
+             error: function (err) {
+                 console.log(err)
+             }
+         })
+
     })
 
     $('#demo-dt-addrow').on('click', 'button.edit-btn', function () {
-        console.log(this.attributes)
+        $('#word-input').val($(this).parent().parent().children().eq(0).text()).attr('disabled', true)
+        $('select[name=keyword-type]').selectpicker('val', [$(this).parent().parent().children().eq(1).text()]).attr('disabled', true)
+        $('#rank-input').val($(this).parent().parent().children().eq(2).text())
         $('#demo-default-modal').modal('show')
+    }).on('click', 'button.delete-btn', function (){
+        $.ajax({
+             type: 'DELETE',
+             url: '/api/keyword',
+             contentType: 'application/json',
+             data: JSON.stringify({
+                 'word': $(this).parent().parent().children().eq(0).text(),
+                 'type': $(this).parent().parent().children().eq(1).text()
+             }),
+             dataType: 'json',
+             success: function (data) {
+                 console.log(data)
+                 if (data.status === 'ok') {
+                    t.ajax.reload();
+                 }else {
+
+                 }
+             },
+             error: function (err) {
+                 console.log(err)
+             }
+         })
     })
 
 
