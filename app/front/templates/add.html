@@ -20,6 +20,7 @@
             type="application/javascript"></script>
     <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">-->
     <!--<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -37,15 +38,22 @@
 
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-sm-8 col-xs-9">
+                        <div class="col-sm-9 col-xs-7">
                             <input type="text" class="form-control" id="download-pic-input">
                         </div>
-                        <button id="download-pic-btn" class="col-sm-2 col-xs-3 btn btn-primary btn-sm">
-                            下载图片
-                        </button>
+                        <div class="col-sm-3 col-xs-5">
+                            <div class="btn-group">
+                                <button id="download-pic-btn" class="btn btn-primary">
+                                    下载
+                                </button>
+                                <button id="paste-btn" class="btn btn-primary">
+                                    粘贴
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
-                        <img id="cropper-main-pic-img" style="height: 300px;" class="col-sm-12"></img>
+                        <img id="cropper-main-pic-img" style="height: 300px; padding-left: 10px;padding-right: 10px; padding-top: 10px;" class="col-sm-12"></img>
                     </div>
                 </div>
 

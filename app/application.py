@@ -320,7 +320,8 @@ async def save_mks(req: MksVO):
         )
         if kw is None:
             row = session.execute(
-                insert(sqlm_keyword).values(Keyword(word=keyboard_switch.studio, type='studio', rank=0).dict())
+                insert(sqlm_keyword).values(Keyword(word=keyboard_switch.studio, type='studio', rank=0, deleted=0,
+                                                    create_time=now, update_time=now).dict())
             )
         if is_update:
             _ks = session.fetchone(

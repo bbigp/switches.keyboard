@@ -141,8 +141,60 @@
          console.log(data)
      })
 
+     $('#paste-btn').click(function (){
+         getClipboardContents()
+     })
 
-     $('#download-pic-btn').click(function () {
+     async function getClipboardContents() {
+         try {
+             const clipboardItems = await navigator.clipboard.read()
+             console.log(clipboardItems)
+             for (let clipboardItem of clipboardItems) {
+                 for (const type of clipboardItem.types) {
+                     if (type.indexOf('image') >= 0) {
+                         const blob = await clipboardItem.getType(type)
+                         if (blob) {
+                             var reader = new FileReader()
+                             reader.readAsDataURL(blob)
+                             reader.onload = function (evt) {
+                                 $('#cropper-main-pic-img').attr('src', evt.target.result)
+                             }
+                         }
+                     }
+                 }
+             }
+         } catch (err) {
+             console.log(err.name, err.message);
+         }
+     }
+
+
+
+//https://www.ruanyifeng.com/blog/2021/01/clipboard-api.html
+     //https://blog.csdn.net/qq_23521659/article/details/108048570
+     // document.addEventListener('paste', function (e){
+     //     var cbd = e.clipboardData
+     //     console.log(cbd)
+     //     for (var i = 0; i < cbd.items.length; i++){
+     //        console.log(cbd.items[i])
+     //         var item = cbd.items[i]
+     //         if (item.kind === 'file') {
+     //             var blob = item.getAsFile()
+     //             if (blob.size === 0) {
+     //                 return;
+     //             }
+     //             if (blob) {
+     //                 var reader = new FileReader()
+     //                 reader.readAsDataURL(blob)
+     //                 reader.onload=function (evt) {
+     //                     $('#cropper-main-pic-img').attr('src', evt.target.result)
+     //                 }
+     //             }
+     //         }
+     //     }
+     // }, false)
+
+     $('#download-pic-btn').click(function (event) {
          const url = $('#download-pic-input').val()
          $.ajax({
              type: 'POST',
