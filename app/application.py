@@ -138,12 +138,14 @@ class MksVO(BaseModel):
     specs: Specs=''
     create_time: int=None
     update_time: int=None
+    stash: str=''
 
 def convert_vo(model: KeyboardSwitch) -> MksVO:
     return MksVO(
         id=str(model.id), name=model.name, pic=model.pic, studio=model.studio, manufacturer=model.manufacturer,
         type=model.type, tag=model.tag, quantity=model.quantity, price=model.price, desc=model.desc,
-        specs=json.loads(model.specs), create_time=model.create_time, update_time=model.update_time
+        specs=json.loads(model.specs), create_time=model.create_time, update_time=model.update_time,
+        stash=model.stash
     )
 
 def convert_sqlm(mks: MksVO) -> KeyboardSwitch:
@@ -206,10 +208,11 @@ class KeywordVO(BaseModel):
     word: str=''
     type: str=''
     rank: int=0
+    memo: str=''
 
 def convert_keywrod_sqlm(v: KeywordVO) -> Keyword:
     now = datetime.now().timestamp()
-    return Keyword(word=v.word, type=v.type, rank=v.rank, deleted=0, create_time=now, update_time=now)
+    return Keyword(word=v.word, type=v.type, rank=v.rank, deleted=0, create_time=now, update_time=now, memo=v.memo)
 
 @app.post('/api/keyword', response_class=JSONResponse)
 async def save_keyword(req: KeywordVO):
@@ -227,7 +230,7 @@ async def save_keyword(req: KeywordVO):
             now = int(datetime.now().timestamp())
             session.execute(
                 update(sqlm_keyword)
-                .values(rank=req.rank, update_time=now, deleted=0)
+                .values(rank=req.rank, update_time=now, deleted=0, memo=req.memo)
                 .where(sqlm_keyword.columns.word==req.word, sqlm_keyword.columns.type==req.type)
             )
             return {'status': 'ok'}
@@ -244,7 +247,7 @@ async def delete_keyword(req: KeywordVO):
 
 
 @app.get('/api/mkslist')
-async def mkslist(draw: Optional[int]=None, start: Optional[int]=1, length: Optional[int]=10, search: str=Query(alias='s', default=None)):
+async def mkslist(draw: Optional[int]=None, start: Optional[int]=0, length: Optional[int]=10, search: str=Query(alias='s', default=None)):
     with SqlSession() as session:
         stmt_list = select(sqlm_keyboard_switch).offset(start).limit(length).order_by(desc(sqlm_keyboard_switch.columns.id))
         stmt_count = select(func.count(sqlm_keyboard_switch.columns.id))
@@ -307,7 +310,7 @@ async def save_mks(req: MksVO):
         name=req.name, studio=req.studio, manufacturer=req.manufacturer, type=req.type,
         pic=req.pic, tag=req.tag, quantity=req.quantity, price=req.price, desc=req.desc,
         specs=req.specs.json(),
-        create_time=now, update_time=now, id=id
+        create_time=now, update_time=now, id=id, stash=req.stash
     )
     if keyboard_switch.studio == '':
         return {'status': 'error', 'msg': '工作室为空'}
@@ -344,7 +347,8 @@ async def save_mks(req: MksVO):
                                                         quantity=keyboard_switch.quantity,
                                                         price=keyboard_switch.price,
                                                         desc=keyboard_switch.desc,
-                                                        update_time=keyboard_switch.update_time)
+                                                        update_time=keyboard_switch.update_time,
+                                                        stash=keyboard_switch.stash)
                         .where(sqlm_keyboard_switch.columns.id == id)
                 )
                 return {'status': 'ok'}

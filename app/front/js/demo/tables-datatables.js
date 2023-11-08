@@ -76,6 +76,7 @@ $(window).on('load', function () {
                     return data == null ? '' : data
                 }
             },
+            {data:"stash", defaultContent: ''},
             {data: "tag", defaultContent: ""},
             {
                 render: function (data, type, row, meta) {

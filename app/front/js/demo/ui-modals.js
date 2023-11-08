@@ -102,6 +102,7 @@
              quantity: $('#quantity-input').val(),
              price: $('#price-input').val(),
              desc: simplemde.value(),
+             stash: $('#stash-input').val(),
              specs: {
                  actuation_force: $('#act-force-input').val(),
                  actuation_force_p: $('#act-force-p-input').val(),

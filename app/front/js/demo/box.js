@@ -5,6 +5,19 @@
 
 $(window).on('load', function () {
 
+    var myData = [];
+     $('#word-input').typeahead({
+         source: function (query, process) {
+             if (myData.length === 0) {
+                 $.get('/api/mkslist?length=100000', function (data, status) {
+                     for (var i = 0; i < data.page_list.length; i++){
+                         myData.push(data.page_list[i].name)
+                     }
+                 })
+             }
+             return process(myData)
+         }
+     });
 
 
     $.fn.DataTable.ext.pager.numbers_length = 5;
@@ -13,7 +26,7 @@ $(window).on('load', function () {
         processing: true,//当表格在处理的时候（比如排序操作）是否显示“处理中...”,默认false
         serverSide: true,// 服务端分页
         searching: true,
-        pageLength: 10,
+        pageLength: 100,
         pagingType: "simple_numbers",
         ordering: false,// 排序功能
         responsive: true,
@@ -32,10 +45,10 @@ $(window).on('load', function () {
         },
         dom: '<"newtoolbar">frtlip',//https://blog.csdn.net/WuLex/article/details/86385619
         ajax: {
-            url: '/api/keyword',
+            url: '/api/box',
             data: function (data) {
                 console.log($.extend(data, {}))
-                return {"draw": data.draw, "start": data.start, "length": data.length, "t": $('#type-select').val(), "s": data.search.value}
+                return {"draw": data.draw, "name": $('#type-select').val()}
             },
             type: 'GET',
             dateType: 'json',
@@ -44,18 +57,16 @@ $(window).on('load', function () {
             }
         },
         columns: [
-            {data: "word"},
-            {data: "type"},
-            {data: "rank"},
-            {data: "memo"},
+            {data: "name"},
+            {data: "deleted"},
+            {data: "create_time"},
             {data: null},
         ],
         columnDefs: [
             {
                 targets: [-1],
                 render: function (data, type, row, meta) {
-                    let _r = '<button class="edit-btn btn btn-xs btn-default">编辑</button>'
-                        + '<button class="delete-btn btn btn-xs btn-pink-basic">删除</button>';
+                    let _r = '<button class="delete-btn btn btn-xs btn-pink-basic">删除</button>';
                     return _r;
                 }
             }
@@ -71,10 +82,7 @@ $(window).on('load', function () {
 
 
     $('#add-btn').click(function () {
-        $('#rank-input').val('0')
-        $('#memo-input').val('')
         $('#word-input').val('').attr('disabled', false)
-        $('select[name=keyword-type]').selectpicker('val', [$('#type-select').val()]).attr('disabled', false)
         $('#demo-default-modal').modal('show')
     })
 
@@ -86,8 +94,7 @@ $(window).on('load', function () {
              data: JSON.stringify({
                  'rank': $('#rank-input').val(),
                  'word': $('#word-input').val(),
-                 'type': $('#type-select-modal').val(),
-                 'memo': $('#memo-input').val()
+                 'type': $('#type-select-modal').val()
              }),
              dataType: 'json',
              success: function (data) {
@@ -106,13 +113,7 @@ $(window).on('load', function () {
 
     })
 
-    $('#demo-dt-addrow').on('click', 'button.edit-btn', function () {
-        $('#word-input').val($(this).parent().parent().children().eq(0).text()).attr('disabled', true)
-        $('select[name=keyword-type]').selectpicker('val', [$(this).parent().parent().children().eq(1).text()]).attr('disabled', true)
-        $('#rank-input').val($(this).parent().parent().children().eq(2).text())
-        $('#memo-input').val($(this).parent().parent().children().eq(3).text())
-        $('#demo-default-modal').modal('show')
-    }).on('click', 'button.delete-btn', function (){
+    $('#demo-dt-addrow').on('click', 'button.delete-btn', function (){
         $.ajax({
              type: 'DELETE',
              url: '/api/keyword',

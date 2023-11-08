@@ -18,6 +18,7 @@ class KeyboardSwitch(BaseModel):
     desc: str = ''
     create_time: int = None
     update_time: int = None
+    stash: str=''
     # buy_address: str=None 购买地址
 
 
@@ -28,6 +29,7 @@ class Keyword(BaseModel):
     deleted: int=0
     create_time: int
     update_time: int
+    memo: str=''
 
 class Etd(BaseModel):
     id: str
@@ -35,6 +37,22 @@ class Etd(BaseModel):
     error: str=None
     create_time: int = None
     update_time: int = None
+
+# class Box(BaseModel):
+#     id: int
+#     ks_id: int
+#     name: str
+#     create_time: int = None
+#     update_time: int = None
+#     deleted: int=0
+#
+# sqlm_box = Table('box', metadata,
+#                  Column('id', BIGINT()),
+#                  Column('ks_id', BIGINT()),
+#                  Column('name', String(50)),
+#                  Column('create_time', BIGINT()),
+#                  Column('update_time', BIGINT()),
+#                  Column('deleted', Integer()))
 
 sqlm_etd = Table('e_t_d', metadata,
                  Column('id', String(50), primary_key=True),
@@ -57,6 +75,7 @@ sqlm_keyboard_switch = Table('keyboard_switch', metadata,
                  Column('desc', Text()),
                  Column('create_time', BIGINT()),
                  Column('update_time', BIGINT()),
+                Column('stash', String(10))
                  )
 # specs  actuation bottom travel distance
 #       operating bottom force
@@ -70,4 +89,5 @@ sqlm_keyword = Table('keyword', metadata,
                 Column('create_time', BIGINT()),
                 Column('update_time', BIGINT()),
                 Column('deleted', Integer()),
+                     Column('memo', String(50))
                 )

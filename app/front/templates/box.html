@@ -8,7 +8,9 @@
 <script src="/plugins/datatables/media/js/jquery.dataTables.js"></script>
 <script src="/plugins/datatables/media/js/dataTables.bootstrap.js"></script>
 <script src="/plugins/datatables/extensions/Responsive/js/dataTables.responsive.min.js"></script>
-<script src="/js/demo/keyword.js"></script>
+        <script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.js"
+            type="application/javascript"></script>
+<script src="/js/demo/box.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -21,8 +23,8 @@
         <div class="input-group custom-search-form">
             <input type="text" class="form-control" placeholder="Search..">
             <span class="input-group-btn">
-                                <button class="text-muted" type="button"><i class="demo-pli-magnifi-glass"></i></button>
-                            </span>
+                <button class="text-muted" type="button"><i class="demo-pli-magnifi-glass"></i></button>
+            </span>
         </div>
     </div>
 </div>
@@ -45,7 +47,6 @@
             </div>
 
             <div class="modal-body">
-
                 <div class="row">
                     <div class="col-md-12">
                         <form class="form-horizontal">
@@ -53,29 +54,6 @@
                                 <label class="col-md-4 control-label">内容</label>
                                 <div class="col-md-4">
                                     <input id="word-input" type="text" class="form-control input-md">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">权重</label>
-                                <div class="col-md-4">
-                                    <input id="rank-input" type="number" value="0" class="form-control input-md">
-                                    <span class="help-block"><small>值越大排名越靠前</small></span></div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">类别</label>
-                                <div class="col-md-4">
-                                    <select name="keyword-type" class="selectpicker" id="type-select-modal">
-                                        <option value="stash">收纳盒</option>
-                                        <option value="studio">工作室</option>
-                                        <option value="switch_type">类型</option>
-                                        <option value="manufacturer">代工厂</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">备注</label>
-                                <div class="col-md-4">
-                                    <input type="text" id="memo-input" class="form-control input-md">
                                 </div>
                             </div>
                         </form>
@@ -99,10 +77,9 @@
 
         <div class="table-toolbar-left" id="type-select-div">
             <select class="selectpicker" id="type-select">
-                <option value="studio" checked>工作室</option>
-                <option value="switch_type">类型</option>
-                <option value="manufacturer">代工厂</option>
-                <option value="stash">收纳盒</option>
+                {% for item in boxlist %}
+                <option value="{{ item.word }}">{{ item.word }}</option>
+                {% endfor %}
             </select>
             <button id="add-btn" class="btn btn-primary">
                 <i class="ion-plus"></i> 添加
@@ -118,7 +95,6 @@
                     <th>内容</th>
                     <th>类别</th>
                     <th>权重</th>
-                    <th>备注</th>
                     <th>操作</th>
                 </tr>
                 </thead>
