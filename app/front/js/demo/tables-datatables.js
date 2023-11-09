@@ -67,13 +67,27 @@ $(window).on('load', function () {
             {
                 data: "manufacturer",
                 render: function (data) {
+                    if (data === '无') {
+                        return '<span class="label label-danger">' + data + '</span>'
+                    }
                     return '<span class="label label-default" style="font-size: 90%">' + data + '</span>'
                 }
             },
             {
                 data: "type",
                 render: function (data, type, row, meta) {
-                    return data == null ? '' : data
+                    if (data === '轻压力线性轴') {
+                        return '<span class="label" style="background-color: #F57AC0;font-size: 90%">' + data + '</span>'
+                    }else if (data === '线性快轴') {
+                        return '<span class="label" style="background-color: #049FD7;font-size: 90%">' + data + '</span>'
+                    }else if (data === '静音线性轴' || data === '静音段落轴'){
+                        return '<span class="label" style="background-color: #f38234;font-size: 90%">' + data + '</span>'
+                    } else if(data === '无') {
+                        return '<span class="label label-danger" style="">' + data + '</span>'
+                    } else if(data === '段落轴') {
+                        return '<span class="label" style="background-color: #8F4F04;font-size: 90%">' + data + '</span>'
+                    }
+                    return '<span class="label label-default" style="font-size: 90%">' + data + '</span>'
                 }
             },
             {data:"stash", defaultContent: ''},
@@ -94,10 +108,14 @@ $(window).on('load', function () {
                     if (row.specs == null) {
                         return ''
                     }
-                    return '<div>上盖: ' + row.specs.top + '</div>'
-                        + '<div>底壳: ' + row.specs.bottom + '</div>'
-                        +'<div>轴心: ' + row.specs.stem + '</div>'
-                        + '<div>弹簧: ' + row.specs.spring +'</div>'
+                    let top = row.specs.top === '' ? '<strong style="color: #d9534f;">???</strong>' : row.specs.top
+                    let bottom = row.specs.bottom === '' ? '<strong style="color: #d9534f;">???</strong>' : row.specs.bottom
+                    let stem = row.specs.stem === '' ? '<strong style="color: #d9534f;">???</strong>' : row.specs.stem
+                    let spring = row.specs.spring === '' ? '<strong style="color: #d9534f;">???</strong>' : row.specs.spring
+                    return '<div>上盖: ' + top + '</div>'
+                        + '<div>底壳: ' + bottom + '</div>'
+                        +'<div>轴心: ' + stem + '</div>'
+                        + '<div>弹簧: ' + spring +'</div>'
                 }
             },
             {
@@ -105,10 +123,17 @@ $(window).on('load', function () {
                     if (row.specs == null) {
                         return ''
                     }
-                    return '<span>' + row.specs.pin + ',' + row.specs.light_pipe +'导光柱</span>'
+                    let pin = row.specs.pin === '' ? '<strong style="color: #d9534f;">???</strong>脚' : row.specs.pin
+                    let light_pipe = row.specs.light_pipe === '' ? '<strong style="color: #d9534f;">???</strong>' : row.specs.light_pipe
+                    return '<span>' + pin + ',' + light_pipe +'导光柱</span>'
                 }
             },
-            {data: "quantity", defaultContent: ""},
+            {data: "quantity", render: function (data, type, row, meta){
+                    if (data > 0) {
+                        return data;
+                    }
+                    return '<span class="label label-danger">0</span>'
+                }},
             {data: "price", defaultContent: ""},
             {data: "create_time", defaultContent: ""},
             {data: null}
@@ -131,6 +156,7 @@ $(window).on('load', function () {
     function appendP(s, a, b, e){
         let r = '<div>' + s + ': '
         if (a === '') {
+            r = r + '<strong style="color: #d9534f;">???</strong>'
             return r;
         }
         r += a
