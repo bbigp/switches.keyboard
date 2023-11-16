@@ -102,7 +102,7 @@
              quantity: $('#quantity-input').val(),
              price: $('#price-input').val(),
              desc: simplemde.value(),
-             stash: $('#stash-input').val(),
+             stash: $('#type-stash').val(),
              specs: {
                  actuation_force: $('#act-force-input').val(),
                  actuation_force_p: $('#act-force-p-input').val(),
@@ -131,12 +131,25 @@
                  if (data.status === 'ok') {
                      window.location.replace('/p/mkslist')
                  }else {
-
+                    $.niftyNoty({
+                        type: 'danger',
+                        icon : 'pli-cross icon-2x',
+                        message : '保存失败: <strong>' + data.msg +'</strong>',
+                        container : 'floating',
+                        timer : 5000
+                    });
                  }
                  // window.location.href = ''
              },
              error: function (err) {
                  console.log(err)
+                 $.niftyNoty({
+                        type: 'danger',
+                        icon : 'pli-cross icon-2x',
+                        message : '保存失败',
+                        container : 'floating',
+                        timer : 5000
+                    });
              }
          })
          console.log(data)

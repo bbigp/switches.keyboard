@@ -177,11 +177,17 @@ async def index(request: Request, id: Optional[int]=None):
             select(sqlm_keyword).where(sqlm_keyword.columns.type=='manufacturer').order_by(desc(sqlm_keyword.columns.rank)),
             Keyword
         )
+        stashs = session.fetchall(
+            select(sqlm_keyword).where(sqlm_keyword.columns.type == 'stash', sqlm_keyword.columns.deleted==0).order_by(
+                desc(sqlm_keyword.columns.rank)),
+            Keyword
+        )
     return templates.TemplateResponse('add.html', context={
         'request': request,
         'keyboard_switch': mks,
         'switch_types': switch_types,
         'manufacturers': manufacturers,
+        'switch_stashs': stashs,
         'error_msg': []
     })
 
@@ -344,7 +350,7 @@ async def save_mks(req: MksVO):
             KeyboardSwitch
         )
         if is_update:
-            if _ks is not None:
+            if _ks is not None and _ks.id != keyboard_switch.id:
                 return {'status': 'error', 'msg': '轴体名字重复'}
             else:
                 session.execute(

@@ -146,7 +146,7 @@
                     <div class="form-group">
                         <label for="manufacturer-select" class="col-sm-3 control-label">生厂商</label>
                         <div class="col-sm-3">
-                            <select class="selectpicker" id="manufacturer-select">
+                            <select class="selectpicker" id="manufacturer-select" title="请选择">
                                 {% for item in manufacturers %}
                                     <option value="{{ item.word }}" {{ 'selected' if item.word == keyboard_switch.manufacturer else '' }}>{{ item.word }}</option>
                                 {% endfor %}
@@ -156,7 +156,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="type-select">类型</label>
                         <div class="col-sm-3">
-                            <select class="selectpicker" id="type-select">
+                            <select class="selectpicker" id="type-select" title="请选择">
                                 {% for item in switch_types %}
                                     <option value="{{ item.word }}" {{ 'selected' if item.word == keyboard_switch.type else '' }}>{{ item.word }}</option>
                                 {% endfor %}
@@ -303,8 +303,11 @@
                     <div class="form-group">
                         <label for="spring-inputlarge" class="col-sm-3 control-label">位置</label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control input-sm" value="{{ keyboard_switch.stash }}"
-                                   id="stash-input">
+                            <select class="selectpicker" id="type-stash" title="请选择">
+                                {% for item in switch_stashs %}
+                                    <option value="{{ item.word }}" {{ 'selected' if item.word == keyboard_switch.stash else '' }}>{{ item.memo }} - {{ item.word }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
