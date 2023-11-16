@@ -8,6 +8,7 @@ from typing import Optional
 from urllib.parse import urlencode
 
 import requests
+from aiohttp import ClientSession
 from fastapi import FastAPI, Request, Form, Query, UploadFile
 from pydantic.main import BaseModel
 from sqlalchemy import select, insert, func, and_, or_, update, desc
@@ -273,9 +274,14 @@ class DownloadRequest(BaseModel):
 @app.post('/api/download_pic', response_class=JSONResponse)
 async def download_pic(req: DownloadRequest):
     temp_image_id = str(id_worker.next_id())
-    response = requests.get(req.url)
-    with open(app_config.temp_dir + temp_image_id + '.jpg', 'wb') as f:
-        f.write(response.content)
+    async with ClientSession() as session:
+        async with session.get(req.url) as response:
+            with open(app_config.temp_dir + temp_image_id + '.jpg', 'wb') as f:
+                while True:
+                    chunk = await response.content.read(1024)
+                    if not chunk:
+                        break
+                    f.write(chunk)
     return {'status': 'ok', 'data': '/bfs/t/' + temp_image_id + '.jpg' }
 
 @app.post('/api/upload_pic')
