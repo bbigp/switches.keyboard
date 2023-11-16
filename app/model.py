@@ -63,7 +63,7 @@ sqlm_etd = Table('e_t_d', metadata,
 
 sqlm_keyboard_switch = Table('keyboard_switch', metadata,
                  Column('id', BIGINT()),
-                 Column('name', String(20), primary_key=True),
+                 Column('name', String(30), primary_key=True),
                  Column('manufacturer', String(50)),
                  Column('studio', String(50)),
                  Column('pic', String(200)),

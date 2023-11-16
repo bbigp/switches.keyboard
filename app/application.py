@@ -30,15 +30,17 @@ from app.core.database import SqlSession
 from app.core.response import RedirectResponseWraper
 from app.core.snowflake_id import id_worker
 from app.model import KeyboardSwitch, Keyword, sqlm_keyboard_switch, sqlm_keyword, Etd, sqlm_etd
+from app.web.stats import stats_router
 
 templates = Jinja2Templates(directory='front/templates')
 
 def register_route(app):
-    # app.include_router(routes.router, tags=['app'])
+    app.include_router(stats_router, tags=['stats_router'])
     app.mount('/js', StaticFiles(directory='front/js'), name='js')
     app.mount('/css', StaticFiles(directory='front/css'), name='css')
     app.mount('/plugins', StaticFiles(directory='front/plugins'), name='plugins')
     app.mount('/img', StaticFiles(directory='front/img'), name='img')
+    app.mount('/images', StaticFiles(directory='front/images'), name='images')
     app.mount('/fonts', StaticFiles(directory='front/fonts'), name='fonts')
     logger.debug('route_provider registering')
     if app.debug:
@@ -152,6 +154,10 @@ def convert_vo(model: KeyboardSwitch) -> MksVO:
 def convert_sqlm(mks: MksVO) -> KeyboardSwitch:
     pass
 
+@app.get("/test", response_class=HTMLResponse)
+async def test(request: Request):
+    return templates.TemplateResponse('layout.html', context={'request': request})
+
 @app.get("/p/mks", response_class=HTMLResponse)
 @app.get("/p/mks/{id}", response_class=HTMLResponse)
 async def index(request: Request, id: Optional[int]=None):
@@ -250,7 +256,7 @@ async def delete_keyword(req: KeywordVO):
 @app.get('/api/mkslist')
 async def mkslist(draw: Optional[int]=None, start: Optional[int]=0, length: Optional[int]=10, search: str=Query(alias='s', default=None)):
     with SqlSession() as session:
-        stmt_list = select(sqlm_keyboard_switch).offset(start).limit(length).order_by(desc(sqlm_keyboard_switch.columns.id))
+        stmt_list = select(sqlm_keyboard_switch).offset(start).limit(length).order_by(desc(sqlm_keyboard_switch.columns.update_time))
         stmt_count = select(func.count(sqlm_keyboard_switch.columns.id))
         if search is not None:
             s = '%' + search + '%'
@@ -332,16 +338,14 @@ async def save_mks(req: MksVO):
                 insert(sqlm_keyword).values(Keyword(word=keyboard_switch.studio, type='studio', rank=0, deleted=0,
                                                     create_time=now, update_time=now).dict())
             )
+        _ks = session.fetchone(
+            select(sqlm_keyboard_switch)
+            .where(sqlm_keyboard_switch.columns.name == keyboard_switch.name),
+            KeyboardSwitch
+        )
         if is_update:
-            _ks = session.fetchone(
-                select(sqlm_keyboard_switch)
-                .where(sqlm_keyboard_switch.columns.name==keyboard_switch.name),
-                KeyboardSwitch
-            )
-            if _ks is None:
-                etd = Etd(id=uuid.uuid4(), data=keyboard_switch.json(), error=json.dumps(['不存在的轴体']))
-                session.execute(insert(sqlm_etd).values(etd.dict()))
-                return {'status': 'error', 'msg': '不存在的轴体'}
+            if _ks is not None:
+                return {'status': 'error', 'msg': '轴体名字重复'}
             else:
                 session.execute(
                     update(sqlm_keyboard_switch).values(manufacturer=keyboard_switch.manufacturer,
@@ -354,13 +358,17 @@ async def save_mks(req: MksVO):
                                                         price=keyboard_switch.price,
                                                         desc=keyboard_switch.desc,
                                                         update_time=keyboard_switch.update_time,
+                                                        name=keyboard_switch.name,
                                                         stash=keyboard_switch.stash)
                         .where(sqlm_keyboard_switch.columns.id == id)
                 )
                 return {'status': 'ok'}
         else:
-            session.execute(insert(sqlm_keyboard_switch).values(keyboard_switch.dict()))
-            return {'status': 'ok'}
+            if _ks is None:
+                session.execute(insert(sqlm_keyboard_switch).values(keyboard_switch.dict()))
+                return {'status': 'ok'}
+            else:
+                return {'status': 'error', 'msg': '轴体名字已存在!'}
 
 
 
