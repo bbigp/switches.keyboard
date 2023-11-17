@@ -37,3 +37,4 @@ logs
 app/__pycache__/
 content/file/
 content/temp/
+content/switches.db
