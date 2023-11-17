@@ -182,6 +182,40 @@
          }
      }
 
+     $('#direct-use-btn').click(function () {
+         let url = $('#cropper-main-pic-img').attr('src')
+         if (url === '') {
+             $.niftyNoty({type: 'waring', icon : 'pli-cross icon-2x', container : 'floating', timer : 2000,
+                 message : '图片不存在'
+             });
+             return
+         }
+         $.ajax({type: 'POST', url: '/api/direct_use_pic',
+             contentType: 'application/json',
+             data: JSON.stringify({url: url}),
+             dataType: 'json',
+             success: function (data) {
+                 if (data.status === 'ok') {
+                     if (uploadType === 1) {
+                         $('#main-pic-img').attr('src', data.data)
+                     } else{
+                         simplemde.value(simplemde.value() + '\n![](' + data.data + ')')
+                     }
+                     $('#download-pic-input').val('')
+                     $('#cropper-main-pic-img').attr('src', '')
+                     $('#demo-default-modal').modal('hide')
+                     uploadType = 1
+                 } else {
+                     $.niftyNoty({type: 'danger', icon : 'pli-cross icon-2x', message : '系统错误: <strong>' + data.msg +'</strong>', container : 'floating', timer : 2000});
+                 }
+             },
+             error: function (err) {
+                 console.log(err)
+                 $.niftyNoty({type: 'danger', icon : 'pli-cross icon-2x', message : '系统错误', container : 'floating', timer : 2000});
+             }
+         })
+     })
+
 
 
 //https://www.ruanyifeng.com/blog/2021/01/clipboard-api.html
