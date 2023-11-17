@@ -286,7 +286,9 @@ class DownloadRequest(BaseModel):
 @app.post('/api/download_pic', response_class=JSONResponse)
 async def download_pic(req: DownloadRequest):
     temp_image_id = str(id_worker.next_id())
-    async with ClientSession() as session:
+    # https://blog.csdn.net/e5pool/article/details/131014343  https://blog.csdn.net/wq10_12/article/details/133944658 使用代理
+    headers = {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1'}
+    async with ClientSession(headers=headers) as session:
         async with session.get(req.url) as response:
             with open(app_config.temp_dir + temp_image_id + '.jpg', 'wb') as f:
                 while True:
