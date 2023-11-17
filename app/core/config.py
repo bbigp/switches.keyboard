@@ -8,8 +8,12 @@ class Config(BaseSettings):
 
 
     class Config:
-        env_file = '.env'
+        env_file = 'content/.env'
         env_file_encoding = 'utf-8'
 
 
 app_config = Config()
+
+import os
+os.makedirs(app_config.temp_dir, exist_ok=True)
+os.makedirs(app_config.file_dir, exist_ok=True)
