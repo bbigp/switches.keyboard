@@ -1,43 +1,27 @@
-import base64
-import json
-import os
 import time
-import uuid
-from datetime import datetime
-from typing import Optional
 from urllib.parse import urlencode
 
-import requests
-from aiohttp import ClientSession
-from fastapi import FastAPI, Request, Form, Query, UploadFile
-from pydantic.main import BaseModel
-from sqlalchemy import select, insert, func, and_, or_, update, desc
+from fastapi import FastAPI, Request
+from loguru import logger
 from starlette import status
 from starlette.middleware.cors import CORSMiddleware
-from starlette.responses import HTMLResponse, RedirectResponse, Response, JSONResponse, FileResponse
+from starlette.responses import HTMLResponse
 from starlette.routing import Mount
-
-# from app.config.setting import log_path
-from starlette.templating import Jinja2Templates
 from starlette.staticfiles import StaticFiles
-import logging
-from app import routes
-from loguru import logger
-import sys
 
-from app.core.config import app_config
-from app.core.database import SqlSession
 from app.core.response import RedirectResponseWraper
-from app.core.snowflake_id import id_worker
-from app.model import KeyboardSwitch, Keyword, sqlm_keyboard_switch, sqlm_keyword, Etd, sqlm_etd
+from app.web.api import api_router
+from app.web.page import page_router, templates
 from app.web.pic import pic_router
 from app.web.stats import stats_router
 
-templates = Jinja2Templates(directory='front/templates')
+
 
 def register_route(app):
     app.include_router(stats_router, tags=['stats_router'])
     app.include_router(pic_router, tags=['pic_router'])
+    app.include_router(page_router, tags=['page_router'])
+    app.include_router(api_router, tags=['api_router'])
     app.mount('/js', StaticFiles(directory='front/js'), name='js')
     app.mount('/css', StaticFiles(directory='front/css'), name='css')
     app.mount('/plugins', StaticFiles(directory='front/plugins'), name='plugins')
@@ -109,257 +93,6 @@ async def del_blank_str_query_param(request: Request, call_next):
 async def index():
     return RedirectResponseWraper(url='/p/mkslist', status_code=status.HTTP_302_FOUND)
 
-@app.get('/p/mkslist', response_class=HTMLResponse)
-async def index(request: Request):
-    return templates.TemplateResponse('index.html', context={'request': request})
-
-class Specs(BaseModel):
-    actuation_force: str=''
-    actuation_force_p: str=''
-    end_force: str=''
-    end_force_p: str=''
-    pre_travel: str=''
-    pre_travel_p: str=''
-    total_travel: str=''
-    total_travel_p: str=''
-    pin: str=''
-    top: str=''
-    bottom: str=''
-    stem: str=''
-    spring: str=''
-    light_pipe: str=''
-
-class MksVO(BaseModel):
-    id: str=''
-    name: str
-    pic: str=''
-    studio: str=''
-    manufacturer: str=''
-    type: str=''
-    tag: str=''
-    quantity: int=0
-    price: str=''
-    desc: str=''
-    specs: Specs=''
-    create_time: int=None
-    update_time: int=None
-    stash: str=''
-
-def convert_vo(model: KeyboardSwitch) -> MksVO:
-    return MksVO(
-        id=str(model.id), name=model.name, pic=model.pic, studio=model.studio, manufacturer=model.manufacturer,
-        type=model.type, tag=model.tag, quantity=model.quantity, price=model.price, desc=model.desc,
-        specs=json.loads(model.specs), create_time=model.create_time, update_time=model.update_time,
-        stash=model.stash
-    )
-
-def convert_sqlm(mks: MksVO) -> KeyboardSwitch:
-    pass
-
 @app.get("/test", response_class=HTMLResponse)
 async def test(request: Request):
     return templates.TemplateResponse('layout.html', context={'request': request})
-
-@app.get("/p/mks", response_class=HTMLResponse)
-@app.get("/p/mks/{id}", response_class=HTMLResponse)
-async def index(request: Request, id: Optional[int]=None):
-    with SqlSession() as session:
-        if id is not None:
-            model = session.fetchone(
-                select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.columns.id==id), KeyboardSwitch
-            )
-            mks = convert_vo(model) if model is not None else MksVO(name='')
-        else:
-            mks = MksVO(name='', specs=Specs())
-        switch_types = session.fetchall(
-            select(sqlm_keyword).where(sqlm_keyword.columns.type=='switch_type').order_by(desc(sqlm_keyword.columns.rank)),
-            Keyword
-        )
-        manufacturers = session.fetchall(
-            select(sqlm_keyword).where(sqlm_keyword.columns.type=='manufacturer').order_by(desc(sqlm_keyword.columns.rank)),
-            Keyword
-        )
-        stashs = session.fetchall(
-            select(sqlm_keyword).where(sqlm_keyword.columns.type == 'stash', sqlm_keyword.columns.deleted==0).order_by(
-                desc(sqlm_keyword.columns.rank)),
-            Keyword
-        )
-    return templates.TemplateResponse('add.html', context={
-        'request': request,
-        'keyboard_switch': mks,
-        'switch_types': switch_types,
-        'manufacturers': manufacturers,
-        'switch_stashs': stashs,
-        'error_msg': []
-    })
-
-@app.get("/p/keyword", response_class=HTMLResponse)
-async def keyword(request: Request):
-    return templates.TemplateResponse('keyword.html', context={'request': request})
-
-@app.get("/api/keyword", response_class=JSONResponse)
-async def keyword(
-        draw: Optional[int]=None,
-        start: Optional[int]=None,
-        length: Optional[int]=None,
-        search: str=Query(alias='s', default=None),
-        type: str=Query(alias='t', default=None)
-):
-    with SqlSession() as session:
-        stmt_list = select(sqlm_keyword).where(sqlm_keyword.columns.type==type, sqlm_keyword.columns.deleted==0).order_by(desc(sqlm_keyword.columns.create_time))
-        stmt_count = select(func.count(sqlm_keyword.columns.word)).where(sqlm_keyword.columns.type==type, sqlm_keyword.columns.deleted==0)
-        if search is not None:
-            stmt_list = stmt_list.where(sqlm_keyword.columns.word.like('%' + search + '%'))
-            stmt_count = stmt_count.where(sqlm_keyword.columns.word.like('%' + search + '%'))
-        if start is None:
-            list = session.fetchall(stmt_list, Keyword)
-            return [m.word for m in list]
-        else:
-            list = session.fetchall(stmt_list.offset(start).limit(length), Keyword)
-            total = session.count(stmt_count)
-            return {'draw': draw, 'page_list': list, 'recordsTotal': total, 'recordsFiltered': total}
-
-class KeywordVO(BaseModel):
-    word: str=''
-    type: str=''
-    rank: int=0
-    memo: str=''
-
-def convert_keywrod_sqlm(v: KeywordVO) -> Keyword:
-    now = datetime.now().timestamp()
-    return Keyword(word=v.word, type=v.type, rank=v.rank, deleted=0, create_time=now, update_time=now, memo=v.memo)
-
-@app.post('/api/keyword', response_class=JSONResponse)
-async def save_keyword(req: KeywordVO):
-    with SqlSession() as session:
-        _k = session.fetchone(
-            select(sqlm_keyword)
-            .where(sqlm_keyword.columns.word==req.word, sqlm_keyword.columns.type==req.type),
-            Keyword
-        )
-        if _k is None:
-            dd = convert_keywrod_sqlm(req).dict()
-            session.execute(insert(sqlm_keyword).values(dd))
-            return {'status': 'ok'}
-        else:
-            now = int(datetime.now().timestamp())
-            session.execute(
-                update(sqlm_keyword)
-                .values(rank=req.rank, update_time=now, deleted=0, memo=req.memo)
-                .where(sqlm_keyword.columns.word==req.word, sqlm_keyword.columns.type==req.type)
-            )
-            return {'status': 'ok'}
-
-@app.delete('/api/keyword', response_class=JSONResponse)
-async def delete_keyword(req: KeywordVO):
-    with SqlSession() as session:
-        session.execute(
-            update(sqlm_keyword)
-            .values(deleted=1)
-            .where(sqlm_keyword.columns.word==req.word, sqlm_keyword.columns.type==req.type)
-        )
-    return {'status': 'ok'}
-
-
-@app.get('/api/mkslist')
-async def mkslist(draw: Optional[int]=None, start: Optional[int]=0, length: Optional[int]=10, search: str=Query(alias='s', default=None)):
-    with SqlSession() as session:
-        stmt_list = select(sqlm_keyboard_switch).offset(start).limit(length).order_by(desc(sqlm_keyboard_switch.columns.update_time))
-        stmt_count = select(func.count(sqlm_keyboard_switch.columns.id))
-        if search is not None:
-            s = '%' + search + '%'
-            search_expression = and_(
-                or_(
-                    sqlm_keyboard_switch.columns.name.like(s),
-                    sqlm_keyboard_switch.columns.studio.like(s),
-                    sqlm_keyboard_switch.columns.manufacturer.like(s),
-                    sqlm_keyboard_switch.columns.tag.like(s)
-                )
-            )
-            stmt_list = stmt_list.where(search_expression)
-            stmt_count = stmt_count.where(search_expression)
-        list = session.fetchall(stmt_list, KeyboardSwitch)
-        mkslist = [convert_vo(i) for i in list]
-        total = session.count(stmt_count)
-    return {'draw': draw, 'page_list': mkslist, 'recordsTotal': total, 'recordsFiltered': total}
-
-@app.post('/api/mks', response_class=JSONResponse)
-async def save_mks(req: MksVO):
-    now = datetime.now().timestamp()
-    id = req.id
-    is_update = True
-    if req.id == '':
-        is_update = False
-        id = id_worker.next_id()
-    keyboard_switch = KeyboardSwitch(
-        name=req.name, studio=req.studio, manufacturer=req.manufacturer, type=req.type,
-        pic=req.pic, tag=req.tag, quantity=req.quantity, price=req.price, desc=req.desc,
-        specs=req.specs.json(),
-        create_time=now, update_time=now, id=id, stash=req.stash
-    )
-    if keyboard_switch.studio == '':
-        return {'status': 'error', 'msg': '工作室为空'}
-    with SqlSession() as session:
-        kw = session.fetchone(
-            select(sqlm_keyword)
-            .where(sqlm_keyword.columns.word==keyboard_switch.studio,
-                   sqlm_keyword.columns.type=='studio'),
-            Keyword
-        )
-        if kw is None:
-            row = session.execute(
-                insert(sqlm_keyword).values(Keyword(word=keyboard_switch.studio, type='studio', rank=0, deleted=0,
-                                                    create_time=now, update_time=now).dict())
-            )
-        _ks = session.fetchone(
-            select(sqlm_keyboard_switch)
-            .where(sqlm_keyboard_switch.columns.name == keyboard_switch.name),
-            KeyboardSwitch
-        )
-        if is_update:
-            if _ks is not None and _ks.id != keyboard_switch.id:
-                return {'status': 'error', 'msg': '轴体名字重复'}
-            else:
-                session.execute(
-                    update(sqlm_keyboard_switch).values(manufacturer=keyboard_switch.manufacturer,
-                                                        studio=keyboard_switch.studio,
-                                                        pic=keyboard_switch.pic,
-                                                        type=keyboard_switch.type,
-                                                        tag=keyboard_switch.tag,
-                                                        specs=keyboard_switch.specs,
-                                                        quantity=keyboard_switch.quantity,
-                                                        price=keyboard_switch.price,
-                                                        desc=keyboard_switch.desc,
-                                                        update_time=keyboard_switch.update_time,
-                                                        name=keyboard_switch.name,
-                                                        stash=keyboard_switch.stash)
-                        .where(sqlm_keyboard_switch.columns.id == id)
-                )
-                return {'status': 'ok'}
-        else:
-            if _ks is None:
-                session.execute(insert(sqlm_keyboard_switch).values(keyboard_switch.dict()))
-                return {'status': 'ok'}
-            else:
-                return {'status': 'error', 'msg': '轴体名字已存在!'}
-
-
-
-
-async def add(request: Request, name=Form(None), studio=Form(None), foundry=Form(None), type=Form(None),
-              pic=Form(None), remark=Form(None),
-              operating_force=Form(None), pre_travel=Form(None), end_force=Form(None), full_travel=Form(None),
-              upper=Form(None), bottom=Form(None), shaft=Form(None), light_pipe=Form(None),
-              price=Form(None), desc=Form(None)):
-            # headers = {'Location': '/add1'}
-            # return Response(content={
-            #     'axial': '222'
-            # }, headers=headers, status_code=status.HTTP_302_FOUND)
-    return RedirectResponseWraper(url='/add1', status_code=status.HTTP_302_FOUND, query={'axial': {}})
-
-
-
-import uvicorn
-
-if __name__ == '__main__':
-    uvicorn.run('application:app', host='0.0.0.0', port=8002, access_log=True)

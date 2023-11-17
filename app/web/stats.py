@@ -3,7 +3,7 @@ from pydantic.main import BaseModel
 from sqlalchemy import func, select
 
 from app.core.database import SqlSession
-from app.model import sqlm_keyboard_switch, sqlm_keyword
+from app.model.domain import sqlm_keyboard_switch
 
 stats_router = APIRouter(prefix='/api/stats')
 

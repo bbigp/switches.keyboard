@@ -5,13 +5,10 @@ from datetime import datetime
 from aiohttp import ClientSession
 from fastapi import APIRouter, UploadFile
 from pydantic.main import BaseModel
-from sqlalchemy import func, select
 from starlette.responses import FileResponse, JSONResponse
 
 from app.core.config import app_config
-from app.core.database import SqlSession
 from app.core.snowflake_id import id_worker
-from app.model import sqlm_keyboard_switch, sqlm_keyword
 
 pic_router = APIRouter(prefix='')
 
