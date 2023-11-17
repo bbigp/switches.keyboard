@@ -4,6 +4,7 @@
 #打包
 docker build -t switches.keyboard .
 #运行
+提前放置好sqlite数据库
 docker run -d --name switches.keyboard -p 8002:8002 \
   -v /home/switches.keyboard/content:/usr/main/content
   switches.keyboard
