@@ -18,7 +18,7 @@ page_router = APIRouter(prefix='/p')
 
 @page_router.get('/mkslist', response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse('index.html', context={'request': request})
+    return templates.TemplateResponse('switches-list.html', context={'request': request})
 
 @page_router.get("/mks", response_class=HTMLResponse)
 @page_router.get("/mks/{id}", response_class=HTMLResponse)
@@ -47,7 +47,7 @@ async def index(request: Request, id: Optional[int]=None):
                 stashs.append(item)
             else:
                 pass
-    return templates.TemplateResponse('add.html', context={
+    return templates.TemplateResponse('switches.html', context={
         'request': request,
         'keyboard_switch': mks,
         'switch_types': switch_types,
