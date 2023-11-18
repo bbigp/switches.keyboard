@@ -47,7 +47,8 @@ async def save_mks(req: MksVO):
         name=req.name, studio=req.studio, manufacturer=req.manufacturer, type=req.type,
         pic=req.pic, tag=req.tag, quantity=req.quantity, price=req.price, desc=req.desc,
         specs=req.specs.json(),
-        create_time=now, update_time=now, id=id, stash=req.stash
+        create_time=now, update_time=now, id=id, stash=req.stash,
+        logo=req.logo, variation=req.variation
     )
     if keyboard_switch.studio == '':
         return {'status': 'error', 'msg': '工作室为空'}
@@ -84,7 +85,9 @@ async def save_mks(req: MksVO):
                                                         desc=keyboard_switch.desc,
                                                         update_time=keyboard_switch.update_time,
                                                         name=keyboard_switch.name,
-                                                        stash=keyboard_switch.stash)
+                                                        stash=keyboard_switch.stash,
+                                                        logo=keyboard_switch.logo,
+                                                        variation=keyboard_switch.variation)
                         .where(sqlm_keyboard_switch.columns.id == id)
                 )
                 return {'status': 'ok'}

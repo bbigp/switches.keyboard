@@ -62,7 +62,15 @@ $(window).on('load', function () {
                     return '<img style="width: 96px;height: 74px;display: block;margin: auto auto;" class="main-pic" src="' + row.pic +'"/>'
                 }
             },
-            {data: "name"},
+            {
+                data: "name",
+                render: function (data, type, row, meta){
+                    if (row.variation === '') {
+                        return data;
+                    }
+                    return data + ' <span class="badge badge-danger">' + row.variation.split(' ').length + '</span>'
+                }
+            },
             {data: "studio"},
             {
                 data: "manufacturer",
@@ -91,7 +99,12 @@ $(window).on('load', function () {
                 }
             },
             {data:"stash", defaultContent: ''},
-            {data: "tag", defaultContent: ""},
+            {
+                data: "tag",
+                render: function (data, type, row, meta){
+                    return data + ' ' + row.variation
+                }
+            },
             {
                 render: function (data, type, row, meta) {
                     if (row.specs == null) {

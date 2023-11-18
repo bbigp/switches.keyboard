@@ -10,7 +10,7 @@ def convert_vo(model: KeyboardSwitch) -> MksVO:
         id=str(model.id), name=model.name, pic=model.pic, studio=model.studio, manufacturer=model.manufacturer,
         type=model.type, tag=model.tag, quantity=model.quantity, price=model.price, desc=model.desc,
         specs=json.loads(model.specs), create_time=model.create_time, update_time=model.update_time,
-        stash=model.stash
+        stash=model.stash, logo=model.logo, variation=model.variation
     )
 
 def convert_sqlm(mks: MksVO) -> KeyboardSwitch:

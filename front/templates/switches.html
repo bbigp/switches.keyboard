@@ -49,9 +49,9 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button id="cropper-btn" class="btn btn-default btn-sm">裁切</button>
+                    <button id="cropper-btn" class="btn btn-default btn-sm">剪切</button>
+                    <button id="confirm-cropper-btn" class="btn btn-primary btn-sm">确认剪切</button>
                     <button id="direct-use-btn" class="btn btn-primary btn-sm">直接使用</button>
-                    <button id="confirm-cropper-btn" class="btn btn-primary btn-sm">确认</button>
                     <button id="cancel-cropper-btn" class="btn btn-danger btn-sm">取消</button>
                 </div>
             </div>
@@ -241,6 +241,22 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="spring-inputlarge" class="col-sm-3 control-label">位置</label>
+                        <div class="col-sm-3">
+                            <select class="selectpicker" id="type-stash" title="请选择">
+                                {% for item in switch_stashs %}
+                                    <option value="{{ item.word }}" {{ 'selected' if item.word == keyboard_switch.stash else '' }}>{{ item.memo }} - {{ item.word }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="logo-input" class="col-sm-3 control-label">LOGO</label>
+                        <div class="col-sm-3">
+                            <input id="logo-input" type="text" class="form-control" value="{{ keyboard_switch.logo }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-sm-3 control-label">价格</label>
                         <div class="col-sm-3">
                             <input id="price-input" type="text" class="form-control"
@@ -291,13 +307,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="spring-inputlarge" class="col-sm-3 control-label">位置</label>
+                        <label for="variation-input" class="col-sm-3 control-label">轴体变化</label>
                         <div class="col-sm-3">
-                            <select class="selectpicker" id="type-stash" title="请选择">
-                                {% for item in switch_stashs %}
-                                    <option value="{{ item.word }}" {{ 'selected' if item.word == keyboard_switch.stash else '' }}>{{ item.memo }} - {{ item.word }}</option>
-                                {% endfor %}
-                            </select>
+                            <input id="variation-input" type="text" class="form-control" value="{{ keyboard_switch.variation }}">
                         </div>
                     </div>
                     <div class="form-group">

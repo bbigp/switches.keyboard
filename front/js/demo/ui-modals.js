@@ -103,6 +103,8 @@
              price: $('#price-input').val(),
              desc: simplemde.value(),
              stash: $('#type-stash').val(),
+             logo: $('#logo-input').val(),
+             variation: $('#variation-input').val(),
              specs: {
                  actuation_force: $('#act-force-input').val(),
                  actuation_force_p: $('#act-force-p-input').val(),
@@ -181,8 +183,12 @@
              console.log(err.name, err.message);
          }
      }
-
+    var cropper = null
      $('#direct-use-btn').click(function () {
+         if (cropper !== null) {
+             $.niftyNoty({type: 'danger', icon : 'pli-cross icon-2x', message : '裁切状态无法直接使用', container : 'floating', timer : 2000});
+             return;
+         }
          let url = $('#cropper-main-pic-img').attr('src')
          if (url === '') {
              $.niftyNoty({type: 'waring', icon : 'pli-cross icon-2x', container : 'floating', timer : 2000,
@@ -259,12 +265,17 @@
          })
      });
 
+
+
      $('#cropper-btn').click(function () {
+         if (cropper !== null) {
+             cropper.destroy()
+             cropper = null
+         }
          initcropper()
-         cropper.clear()
      })
 
-     var cropper = null
+
      function initcropper(){
          let aspectRatio;
          if (uploadType === 1) {
@@ -313,6 +324,8 @@
                      $('#download-pic-input').val('')
                      $('#cropper-main-pic-img').attr('src', '')
                      cropper.destroy()
+                     cropper = null
+                     console.log(cropper)
                      $('#demo-default-modal').modal('hide')
                      uploadType = 1
                  },
@@ -326,6 +339,7 @@
      $('#cancel-cropper-btn').click(function (){
          if (cropper){
              cropper.destroy()
+             cropper = null
          }
          uploadType = 1
          $('#demo-default-modal').modal('hide')

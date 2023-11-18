@@ -33,6 +33,8 @@ class MksVO(BaseModel):
     create_time: int=None
     update_time: int=None
     stash: str=''
+    logo: str=''
+    variation: str=''
 
 class KeywordVO(BaseModel):
     word: str=''
