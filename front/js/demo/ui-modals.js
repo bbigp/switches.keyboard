@@ -17,6 +17,18 @@
          }
      });
 
+     var logos = []
+     $('#logo-input').typeahead({
+         source: function (query, process) {
+             if (myData.length === 0) {
+                 $.get('/api/keyword?t=logo', function (data, status) {
+                     myData = data
+                 })
+             }
+             return process(myData)
+         }
+     })
+
 
 
      $('#cancel-btn').click(function (){
@@ -323,8 +335,6 @@
                      }
                      $('#download-pic-input').val('')
                      $('#cropper-main-pic-img').attr('src', '')
-                     cropper.destroy()
-                     cropper = null
                      console.log(cropper)
                      $('#demo-default-modal').modal('hide')
                      uploadType = 1
@@ -334,6 +344,8 @@
                  },
              });
          });
+         cropper.destroy()
+         cropper = null
      })
 
      $('#cancel-cropper-btn').click(function (){

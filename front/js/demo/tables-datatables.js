@@ -98,7 +98,16 @@ $(window).on('load', function () {
                     return '<span class="label label-default" style="font-size: 90%">' + data + '</span>'
                 }
             },
-            {data:"stash", defaultContent: ''},
+            {data: 'logo', defaultContent: ''},
+            {
+                data:"stash",
+                render: function (data) {
+                    if (data === '') {
+                        return '<span class="label label-danger">-</span>'
+                    }
+                    return data;
+                }
+            },
             {
                 data: "tag",
                 render: function (data, type, row, meta){
