@@ -1,7 +1,7 @@
 from typing import Optional
 
 from fastapi import Request, Form, APIRouter
-from sqlalchemy import select
+from sqlalchemy import select, func
 from starlette import status
 from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
@@ -18,7 +18,9 @@ page_router = APIRouter(prefix='/p')
 
 @page_router.get('/mkslist', response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse('switches-list.html', context={'request': request})
+    with SqlSession() as session:
+        t = session.count(select(func.count(sqlm_keyboard_switch.c.id)))
+    return templates.TemplateResponse('switches-list.html', context={'request': request, 'total': t})
 
 @page_router.get("/mks", response_class=HTMLResponse)
 @page_router.get("/mks/{id}", response_class=HTMLResponse)

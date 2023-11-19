@@ -94,11 +94,21 @@ $(window).on('load', function () {
                         return '<span class="label label-danger" style="">' + data + '</span>'
                     } else if(data === '段落轴') {
                         return '<span class="label" style="background-color: #8F4F04;font-size: 90%">' + data + '</span>'
+                    } else if (data === '') {
+                        return '<span class="label" style="background-color: #d9534f;font-size: 90%">-</span>'
                     }
                     return '<span class="label label-default" style="font-size: 90%">' + data + '</span>'
                 }
             },
-            {data: 'logo', defaultContent: ''},
+            {
+                data: 'logo',
+                render: function (data) {
+                    if (data === '') {
+                        return '<span class="label label-danger">-</span>'
+                    }
+                    return data;
+                }
+            },
             {
                 data:"stash",
                 render: function (data) {
@@ -108,6 +118,12 @@ $(window).on('load', function () {
                     return data;
                 }
             },
+            {data: "quantity", render: function (data, type, row, meta){
+                    if (data > 0) {
+                        return data;
+                    }
+                    return '<span class="label label-danger">0</span>'
+                }},
             {
                 data: "tag",
                 render: function (data, type, row, meta){
@@ -145,17 +161,18 @@ $(window).on('load', function () {
                     if (row.specs == null) {
                         return ''
                     }
-                    let pin = row.specs.pin === '' ? '<strong style="color: #d9534f;">???</strong>脚' : row.specs.pin
                     let light_pipe = row.specs.light_pipe === '' ? '<strong style="color: #d9534f;">???</strong>' : row.specs.light_pipe
-                    return '<span>' + pin + ',' + light_pipe +'导光柱</span>'
+                    let pin = '<strong style="color: #d9534f;">???</strong>'
+                    if (row.specs.pin === '五脚'){
+                        pin = 5
+                    }else if (row.specs.pin === '三脚') {
+                        pin = 3
+                    }else if(row.specs.pin !== ''){
+                        pin = row.specs.pin
+                    }
+                    return '<span>' + light_pipe + ' | ' + pin + '</span>'
                 }
             },
-            {data: "quantity", render: function (data, type, row, meta){
-                    if (data > 0) {
-                        return data;
-                    }
-                    return '<span class="label label-danger">0</span>'
-                }},
             {data: "price", defaultContent: ""},
             {data: "create_time", defaultContent: ""},
             {data: null}
