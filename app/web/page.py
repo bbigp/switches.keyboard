@@ -34,12 +34,15 @@ async def index(request: Request, id: Optional[int]=None):
         else:
             mks = MksVO(name='', specs=Specs())
         list = session.fetchall(
-            select(sqlm_keyword).where(sqlm_keyword.c.deleted==0, sqlm_keyword.c.type.in_(['switch_type', 'manufacturer', 'stash'])),
+            select(sqlm_keyword).where(sqlm_keyword.c.deleted==0, sqlm_keyword.c.type.in_(
+                ['switch_type', 'manufacturer', 'stash', 'logo', 'studio'])),
             Keyword
         )
         switch_types = []
         manufacturers = []
         stashs = []
+        logos = []
+        studios = []
         for item in list:
             if item.type == 'switch_type':
                 switch_types.append(item)
@@ -47,6 +50,10 @@ async def index(request: Request, id: Optional[int]=None):
                 manufacturers.append(item)
             elif item.type == 'stash':
                 stashs.append(item)
+            elif item.type == 'logo':
+                logos.append(item.word)
+            elif item.type == 'studio':
+                studios.append(item.word)
             else:
                 pass
     return templates.TemplateResponse('switches.html', context={
@@ -55,6 +62,8 @@ async def index(request: Request, id: Optional[int]=None):
         'switch_types': switch_types,
         'manufacturers': manufacturers,
         'switch_stashs': stashs,
+        'logos': logos,
+        'studios': studios,
         'error_msg': []
     })
 

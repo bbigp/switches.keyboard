@@ -123,14 +123,19 @@
                         <label class="col-sm-3 control-label" for="name-inputsmall">名字</label>
                         <div class="col-sm-3">
                             <input type="text" class="form-control input-sm" value="{{ keyboard_switch.name }}"
-                                   id="name-inputsmall" name="name">
+                                   autocomplete="off" id="name-inputsmall" name="name">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="studio-inputnormal" class="col-sm-3 control-label">工作室</label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" id="studio-inputnormal"
-                                   value="{{ keyboard_switch.studio }}" name="studio">
+                            <input list="studio-datalist" type="text" class="form-control" id="studio-inputnormal"
+                                   autocomplete="off" value="{{ keyboard_switch.studio }}" name="studio">
+                            <datalist id="studio-datalist">
+                                {% for item in studios %}
+                                <option value="{{ item }}"></option>
+                                {% endfor %}
+                            </datalist>
                         </div>
                     </div>
                     <div class="form-group">
@@ -289,7 +294,12 @@
                     <div class="form-group">
                         <label for="logo-input" class="col-sm-3 control-label">LOGO</label>
                         <div class="col-sm-3">
-                            <input id="logo-input" type="text" class="form-control" value="{{ keyboard_switch.logo }}">
+                            <input list="logo-datalist" id="logo-input" autocomplete="off" type="text" class="form-control" value="{{ keyboard_switch.logo }}">
+                            <datalist id="logo-datalist">
+                                {% for item in logos %}
+                                <option value="{{ item }}"></option>
+                                {% endfor %}
+                            </datalist>
                         </div>
                     </div>
                     <div class="form-group">

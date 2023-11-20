@@ -5,29 +5,29 @@
 
  $(document).ready(function() {
 
-     var myData = [];
-     $('#studio-inputnormal').typeahead({
-         source: function (query, process) {
-             if (myData.length === 0) {
-                 $.get('/api/keyword?t=studio', function (data, status) {
-                     myData = data
-                 })
-             }
-             return process(myData)
-         }
-     });
+     // var myData = [];
+     // $('#studio-inputnormal').typeahead({
+     //     source: function (query, process) {
+     //         if (myData.length === 0) {
+     //             $.get('/api/keyword?t=studio', function (data, status) {
+     //                 myData = data
+     //             })
+     //         }
+     //         return process(myData)
+     //     }
+     // });
 
-     var logos = []
-     $('#logo-input').typeahead({
-         source: function (query, process) {
-             if (myData.length === 0) {
-                 $.get('/api/keyword?t=logo', function (data, status) {
-                     myData = data
-                 })
-             }
-             return process(myData)
-         }
-     })
+     // var logos = []
+     // $('#logo-input').typeahead({
+     //     source: function (query, process) {
+     //         if (myData.length === 0) {
+     //             $.get('/api/keyword?t=logo', function (data, status) {
+     //                 myData = data
+     //             })
+     //         }
+     //         return process(myData)
+     //     }
+     // })
 
 
 
