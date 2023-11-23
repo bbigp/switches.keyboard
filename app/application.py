@@ -5,7 +5,7 @@ from fastapi import FastAPI, Request
 from loguru import logger
 from starlette import status
 from starlette.middleware.cors import CORSMiddleware
-from starlette.responses import HTMLResponse
+from starlette.responses import HTMLResponse, JSONResponse
 from starlette.routing import Mount
 from starlette.staticfiles import StaticFiles
 
@@ -88,6 +88,11 @@ async def del_blank_str_query_param(request: Request, call_next):
     response = await call_next(request)
     return response
 
+@app.exception_handler(Exception)
+async def exception_handler(request: Request, e: Exception):
+    msg = e.args[0]
+    msg = msg if len(msg) <= 100 else str(msg[0:100])
+    return JSONResponse(status_code=200, content={'status': 'error', 'msg': msg})
 
 @app.get("/", response_class=HTMLResponse)
 async def index():
