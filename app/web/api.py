@@ -53,17 +53,8 @@ async def save_mks(req: MksVO):
     if keyboard_switch.studio == '':
         return {'status': 'error', 'msg': '工作室为空'}
     with SqlSession() as session:
-        kw = session.fetchone(
-            select(sqlm_keyword)
-                .where(sqlm_keyword.columns.word==keyboard_switch.studio,
-                       sqlm_keyword.columns.type=='studio'),
-            Keyword
-        )
-        if kw is None:
-            row = session.execute(
-                insert(sqlm_keyword).values(Keyword(word=keyboard_switch.studio, type='studio', rank=0, deleted=0,
-                                                    create_time=now, update_time=now).dict())
-            )
+        save_or_ignore_keyword(keyboard_switch.studio, 'studio', session)
+        save_or_ignore_keyword(keyboard_switch.logo, 'logo', session)
         _ks = session.fetchone(
             select(sqlm_keyboard_switch)
                 .where(sqlm_keyboard_switch.columns.name == keyboard_switch.name),
@@ -99,7 +90,20 @@ async def save_mks(req: MksVO):
                 return {'status': 'error', 'msg': '轴体名字已存在!'}
 
 
-
+def save_or_ignore_keyword(word: str, type: str, session):
+    now = datetime.now().timestamp()
+    kw = session.fetchone(
+        select(sqlm_keyword)
+            .where(sqlm_keyword.columns.word==word,
+                   sqlm_keyword.columns.type==type),
+        Keyword
+    )
+    if kw is not None:
+        return
+    session.execute(
+        insert(sqlm_keyword).values(Keyword(word=word, type=type, rank=0, deleted=0,
+                                                create_time=now, update_time=now).dict())
+    )
 
 
 @api_router.get("/keyword", response_class=JSONResponse)

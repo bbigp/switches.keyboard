@@ -1,7 +1,7 @@
 from typing import Optional
 
 from fastapi import Request, Form, APIRouter
-from sqlalchemy import select, func
+from sqlalchemy import select, func, desc
 from starlette import status
 from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
@@ -34,8 +34,9 @@ async def index(request: Request, id: Optional[int]=None):
         else:
             mks = MksVO(name='', specs=Specs())
         list = session.fetchall(
-            select(sqlm_keyword).where(sqlm_keyword.c.deleted==0, sqlm_keyword.c.type.in_(
-                ['switch_type', 'manufacturer', 'stash', 'logo', 'studio'])),
+            select(sqlm_keyword)
+                .where(sqlm_keyword.c.deleted==0, sqlm_keyword.c.type.in_(['switch_type', 'manufacturer', 'stash', 'logo', 'studio']))
+                .order_by(desc(sqlm_keyword.c.update_time)),
             Keyword
         )
         switch_types = []
@@ -70,6 +71,10 @@ async def index(request: Request, id: Optional[int]=None):
 @page_router.get("/keyword", response_class=HTMLResponse)
 async def keyword(request: Request):
     return templates.TemplateResponse('keyword.html', context={'request': request})
+
+@page_router.get('/test')
+async def mx_switches_list(request: Request):
+    return templates.TemplateResponse('mx/switches-list.html', context={'request': request})
 
 
 async def add(request: Request, name=Form(None), studio=Form(None), foundry=Form(None), type=Form(None),

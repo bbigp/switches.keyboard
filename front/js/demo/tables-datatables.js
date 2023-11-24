@@ -75,8 +75,9 @@ $(window).on('load', function () {
             {
                 data: "manufacturer",
                 render: function (data) {
-                    if (data === '无') {
-                        return '<span class="label label-danger">' + data + '</span>'
+                    if (data === '无' || data === '') {
+                        return ''
+                        // return '<span class="label label-danger">' + data + '</span>'
                     }
                     return '<span class="label label-default" style="font-size: 90%">' + data + '</span>'
                 }

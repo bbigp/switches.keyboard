@@ -107,10 +107,15 @@
          if (light_pipe === '其它') {
              light_pipe = $('#light-pipe-other-input').val()
          }
+         var pic = $('#main-pic-img').attr('src')
+         if (pic === ''){
+             pic = '/bfs/fs/.jpg'
+         }
          const data = {
              id: $('#id-input').val(),
              name: $('#name-inputsmall').val(),
-             pic: $('#main-pic-img').attr('src'),
+             // pic: $('#main-pic-img').attr('src'),
+             pic: pic,
              studio: $('#studio-inputnormal').val(),
              manufacturer: $('#manufacturer-select').val(),
              type: $('#type-select').val(),
