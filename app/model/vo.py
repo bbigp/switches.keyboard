@@ -1,5 +1,6 @@
 from pydantic.main import BaseModel
 
+from app.model.domain import Keyword
 
 
 class Specs(BaseModel):
@@ -36,8 +37,12 @@ class MksVO(BaseModel):
     logo: str=''
     variation: str=''
 
-class KeywordVO(BaseModel):
+class KeywordVO(Keyword):
     word: str=''
     type: str=''
     rank: int=0
+    deleted: int=0
+    create_time: int
+    update_time: int
     memo: str=''
+    count: int=0

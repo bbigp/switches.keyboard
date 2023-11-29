@@ -286,7 +286,7 @@
                         <div class="col-sm-3">
                             <select class="selectpicker" id="type-stash" title="请选择">
                                 {% for item in switch_stashs %}
-                                    <option value="{{ item.word }}" {{ 'selected' if item.word == keyboard_switch.stash else '' }}>{{ item.memo }} - {{ item.word }}</option>
+                                    <option value="{{ item.word }}" {{ 'selected' if item.word == keyboard_switch.stash else '' }}>[{{ item.count }}] {{ item.memo }} - {{ item.word }}</option>
                                 {% endfor %}
                             </select>
                         </div>

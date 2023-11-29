@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 
 from app.model.domain import KeyboardSwitch, Keyword
+from app.model.request import KeywordRequest
 from app.model.vo import MksVO, KeywordVO
 
 
@@ -16,7 +17,7 @@ def convert_vo(model: KeyboardSwitch) -> MksVO:
 def convert_sqlm(mks: MksVO) -> KeyboardSwitch:
     pass
 
-def convert_keywrod_sqlm(v: KeywordVO) -> Keyword:
+def convert_keywrod_sqlm(v: KeywordRequest) -> Keyword:
     now = datetime.now().timestamp()
     return Keyword(word=v.word, type=v.type, rank=v.rank, deleted=0, create_time=now, update_time=now, memo=v.memo)
 

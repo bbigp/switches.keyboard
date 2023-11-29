@@ -10,7 +10,8 @@ from app.core.database import SqlSession
 from app.core.response import RedirectResponseWraper
 from app.model.assembler import convert_vo
 from app.model.domain import sqlm_keyboard_switch, KeyboardSwitch, sqlm_keyword, Keyword
-from app.model.vo import MksVO, Specs
+from app.model.vo import MksVO, Specs, KeywordVO
+from app.web.stats import count_stash
 
 templates = Jinja2Templates(directory='front/templates')
 
@@ -37,8 +38,9 @@ async def index(request: Request, id: Optional[int]=None):
             select(sqlm_keyword)
                 .where(sqlm_keyword.c.deleted==0, sqlm_keyword.c.type.in_(['switch_type', 'manufacturer', 'stash', 'logo', 'studio']))
                 .order_by(desc(sqlm_keyword.c.update_time)),
-            Keyword
+            KeywordVO
         )
+        scount = count_stash()
         switch_types = []
         manufacturers = []
         stashs = []
@@ -50,6 +52,7 @@ async def index(request: Request, id: Optional[int]=None):
             elif item.type == 'manufacturer':
                 manufacturers.append(item)
             elif item.type == 'stash':
+                item.count = scount[item.word]
                 stashs.append(item)
             elif item.type == 'logo':
                 logos.append(item.word)

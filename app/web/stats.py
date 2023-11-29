@@ -3,7 +3,7 @@ from pydantic.main import BaseModel
 from sqlalchemy import func, select
 
 from app.core.database import SqlSession
-from app.model.domain import sqlm_keyboard_switch
+from app.model.domain import sqlm_keyboard_switch, KeyboardSwitch
 
 stats_router = APIRouter(prefix='/api/stats')
 
@@ -24,3 +24,18 @@ async def stats_manufacturer():
             CountBO
         )
         return list
+
+def count_stash():
+    with SqlSession() as session:
+        list = session.fetchall(
+            select(sqlm_keyboard_switch.c.variation, sqlm_keyboard_switch.c.name, sqlm_keyboard_switch.c.stash),
+            KeyboardSwitch
+        )
+        result = {}
+        for item in list:
+            _len = item.variation.strip().split(' ').__len__()
+            if result.keys().__contains__(item.stash):
+                result[item.stash] += _len
+            else:
+                result[item.stash] = _len
+    return result
