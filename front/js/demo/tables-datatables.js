@@ -147,10 +147,10 @@ $(window).on('load', function () {
                     if (row.specs == null) {
                         return ''
                     }
-                    let top = row.specs.top === '' ? '<strong style="color: #d9534f;">???</strong>' : row.specs.top
-                    let bottom = row.specs.bottom === '' ? '<strong style="color: #d9534f;">???</strong>' : row.specs.bottom
-                    let stem = row.specs.stem === '' ? '<strong style="color: #d9534f;">???</strong>' : row.specs.stem
-                    let spring = row.specs.spring === '' ? '<strong style="color: #d9534f;">???</strong>' : row.specs.spring
+                    let top = row.specs.top === '' ? '<strong style="color: #d9534f;">--</strong>' : row.specs.top
+                    let bottom = row.specs.bottom === '' ? '<strong style="color: #d9534f;">--</strong>' : row.specs.bottom
+                    let stem = row.specs.stem === '' ? '<strong style="color: #d9534f;">--</strong>' : row.specs.stem
+                    let spring = row.specs.spring === '' ? '<strong style="color: #d9534f;">--</strong>' : row.specs.spring
                     return '<div>上盖: ' + top + '</div>'
                         + '<div>底壳: ' + bottom + '</div>'
                         +'<div>轴心: ' + stem + '</div>'
@@ -162,8 +162,8 @@ $(window).on('load', function () {
                     if (row.specs == null) {
                         return ''
                     }
-                    let light_pipe = row.specs.light_pipe === '' ? '<strong style="color: #d9534f;">???</strong>' : row.specs.light_pipe
-                    let pin = '<strong style="color: #d9534f;">???</strong>'
+                    let light_pipe = row.specs.light_pipe === '' ? '<strong style="color: #d9534f;">--</strong>' : row.specs.light_pipe
+                    let pin = '<strong style="color: #d9534f;">--</strong>'
                     if (row.specs.pin === '五脚'){
                         pin = 5
                     }else if (row.specs.pin === '三脚') {
@@ -196,7 +196,7 @@ $(window).on('load', function () {
     function appendP(s, a, b, e){
         let r = '<div>' + s + ': '
         if (a === '') {
-            r = r + '<strong style="color: #d9534f;">???</strong>'
+            r = r + '<strong style="color: #d9534f;">--</strong>'
             return r;
         }
         r += a
