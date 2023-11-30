@@ -2,19 +2,27 @@ from datetime import datetime
 from typing import Optional
 
 from fastapi import Query, APIRouter
-from sqlalchemy import select, insert, func, and_, or_, update, desc
+from sqlalchemy import select, insert, func, and_, or_, update, desc, text
 from starlette.responses import JSONResponse
 
 from app.core.database import SqlSession
 from app.core.snowflake_id import id_worker
 from app.model.assembler import convert_vo, convert_keywrod_sqlm
 from app.model.domain import sqlm_keyword, Keyword, sqlm_keyboard_switch, KeyboardSwitch
+from app.model.request import KeywordRequest
 from app.model.vo import MksVO, KeywordVO
+from app.web.stats import count_stash
 
 api_router = APIRouter(prefix='/api')
 
 @api_router.get('/mkslist')
-async def mkslist(draw: Optional[int]=None, start: Optional[int]=0, length: Optional[int]=10, search: str=Query(alias='s', default=None)):
+async def mkslist(
+        draw: Optional[int]=None,
+        start: Optional[int]=0,
+        length: Optional[int]=10,
+        search: str=Query(alias='s', default=None),
+        stash: Optional[str]=None
+):
     with SqlSession() as session:
         stmt_list = select(sqlm_keyboard_switch).offset(start).limit(length).order_by(desc(sqlm_keyboard_switch.columns.update_time))
         stmt_count = select(func.count(sqlm_keyboard_switch.columns.id))
@@ -30,6 +38,10 @@ async def mkslist(draw: Optional[int]=None, start: Optional[int]=0, length: Opti
             )
             stmt_list = stmt_list.where(search_expression)
             stmt_count = stmt_count.where(search_expression)
+        if stash is not None:
+            stash = stash if stash != '-1' else ''
+            stmt_list =  stmt_list.where(sqlm_keyboard_switch.c.stash==stash)
+            stmt_count = stmt_count.where(sqlm_keyboard_switch.c.stash==stash)
         list = session.fetchall(stmt_list, KeyboardSwitch)
         mkslist = [convert_vo(i) for i in list]
         total = session.count(stmt_count)
@@ -115,21 +127,31 @@ async def keyword(
         type: str=Query(alias='t', default=None)
 ):
     with SqlSession() as session:
-        stmt_list = select(sqlm_keyword).where(sqlm_keyword.columns.type==type, sqlm_keyword.columns.deleted==0).order_by(desc(sqlm_keyword.columns.create_time))
+        if type == 'switch_type':
+            as_stmt = select(func.count(sqlm_keyboard_switch.c.name)).where(sqlm_keyboard_switch.c.type==sqlm_keyword.c.word)
+        elif type == 'studio':
+            as_stmt = select(func.count(sqlm_keyboard_switch.c.name)).where(sqlm_keyboard_switch.c.studio==sqlm_keyword.c.word)
+        elif type == 'manufacturer':
+            as_stmt = select(func.count(sqlm_keyboard_switch.c.name)).where(sqlm_keyboard_switch.c.manufacturer==sqlm_keyword.c.word)
+        elif type == 'logo':
+            as_stmt = select(func.count(sqlm_keyboard_switch.c.name)).where(sqlm_keyboard_switch.c.logo==sqlm_keyword.c.word)
+        else:
+            as_stmt = select(-1)
+        stmt_list = select(sqlm_keyword, as_stmt.label('count')).where(sqlm_keyword.columns.type==type, sqlm_keyword.columns.deleted==0).order_by(desc(sqlm_keyword.columns.create_time))
         stmt_count = select(func.count(sqlm_keyword.columns.word)).where(sqlm_keyword.columns.type==type, sqlm_keyword.columns.deleted==0)
         if search is not None:
             stmt_list = stmt_list.where(sqlm_keyword.columns.word.like('%' + search + '%'))
             stmt_count = stmt_count.where(sqlm_keyword.columns.word.like('%' + search + '%'))
-        if start is None:
-            list = session.fetchall(stmt_list, Keyword)
-            return [m.word for m in list]
-        else:
-            list = session.fetchall(stmt_list.offset(start).limit(length), Keyword)
-            total = session.count(stmt_count)
-            return {'draw': draw, 'page_list': list, 'recordsTotal': total, 'recordsFiltered': total}
+        list = session.fetchall(stmt_list.offset(start).limit(length), KeywordVO)
+        total = session.count(stmt_count)
+        if type == 'stash':
+            scount = count_stash()
+            for item in list:
+                item.count = item.count = scount[item.word]
+        return {'draw': draw, 'page_list': list, 'recordsTotal': total, 'recordsFiltered': total}
 
 @api_router.post('/keyword', response_class=JSONResponse)
-async def save_keyword(req: KeywordVO):
+async def save_keyword(req: KeywordRequest):
     with SqlSession() as session:
         _k = session.fetchone(
             select(sqlm_keyword)
@@ -150,7 +172,7 @@ async def save_keyword(req: KeywordVO):
             return {'status': 'ok'}
 
 @api_router.delete('/keyword', response_class=JSONResponse)
-async def delete_keyword(req: KeywordVO):
+async def delete_keyword(req: KeywordRequest):
     with SqlSession() as session:
         session.execute(
             update(sqlm_keyword)

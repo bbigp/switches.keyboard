@@ -91,6 +91,7 @@ async def del_blank_str_query_param(request: Request, call_next):
 @app.exception_handler(AttributeError)
 @app.exception_handler(ValueError)
 async def exception_handler(request: Request, e):
+    logger.error(e)
     msg = str(e.args[0])
     msg = msg if len(msg) <= 100 else str(msg[0:100])
     return JSONResponse(status_code=200, content={'status': 'error', 'msg': msg})

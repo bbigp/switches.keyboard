@@ -20,8 +20,17 @@ page_router = APIRouter(prefix='/p')
 @page_router.get('/mkslist', response_class=HTMLResponse)
 async def index(request: Request):
     with SqlSession() as session:
+        stashlist = session.fetchall(
+            select(sqlm_keyword)
+                .where(sqlm_keyword.c.deleted==0, sqlm_keyword.c.type=='stash')
+                .order_by(desc(sqlm_keyword.c.update_time)),
+            KeywordVO
+        )
+        scount = count_stash()
+        for item in stashlist:
+            item.count = scount[item.word]
         t = session.count(select(func.count(sqlm_keyboard_switch.c.id)))
-    return templates.TemplateResponse('switches-list.html', context={'request': request, 'total': t})
+    return templates.TemplateResponse('switches-list.html', context={'request': request, 'total': t, 'stashlist': stashlist})
 
 @page_router.get("/mks", response_class=HTMLResponse)
 @page_router.get("/mks/{id}", response_class=HTMLResponse)

@@ -13,6 +13,8 @@
     <!--DataTables Sample [ SAMPLE ]-->
     <script src="/js/demo/tables-datatables.js"></script>
     <script src="/plugins/simplemde/simplemde.min.js"></script>
+    <link href="/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+    <script src="/plugins/bootstrap-select/bootstrap-select.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -73,12 +75,19 @@
             </div>
 
             <div id="demo-custom-toolbar2" class="table-toolbar-left">
+                <select class="selectpicker" id="stash-select">
+                    <option value="" selected>请选择</option>
+                    <option value="-1">无库存</option>
+                    {% for item in stashlist%}
+                    <option value="{{ item.word }}">[{{ item.count }}] {{ item.memo }} - {{ item.word }}</option>
+                    {% endfor %}
+                </select>
+                <button id="refresh-btn" class="btn btn-primary"><i class="ion-refresh"></i>刷新</button>
                 <a href="/p/mks">
                     <button data-target="#demo-modal-wo-anim" data-toggle="modal" class="btn btn-primary">
                         <i class="ion-plus"></i> 添加
                     </button>
                 </a>
-                <button id="refresh-btn" class="btn btn-primary"><i class="ion-refresh"></i>刷新</button>
             </div>
 
             <div class="panel-body">

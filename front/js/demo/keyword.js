@@ -52,10 +52,10 @@ $(window).on('load', function () {
             {
                 data: "count",
                 render: function (data, type, row, meta){
-                    if ($('#type-select').val() === 'stash') {
-                        return data
+                    if (data === -1) {
+                        return '--'
                     }
-                    return '--'
+                    return data
                 }
             },
             {data: null},

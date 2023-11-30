@@ -48,7 +48,8 @@ $(window).on('load', function () {
             url: '/api/mkslist',
             data: function (data) {
                 console.log($.extend(data, {}))
-                return {"draw": data.draw, "start": data.start, "length": data.length, "s": data.search.value}
+                let stash = $('#stash-select').val()
+                return {"draw": data.draw, "start": data.start, "length": data.length, "s": data.search.value, "stash": stash}
             },
             type: 'GET',
             dateType: 'json',
@@ -192,7 +193,22 @@ $(window).on('load', function () {
                 }
             }
         ]
-    });
+    }).on('click', '.main-pic', function () {
+        $('#modal-body').empty()
+        $('#demo-default-modal').modal('show')
+        $('#show-main-pic-img').attr('src', $(this).attr("src"))
+    }).on('click', '.other-btn', function () {
+        // console.log(this.attributes.data.value)
+        $('#show-main-pic-img').attr('src', '')
+        let data = this.attributes.data.value
+        if (data !== '') {
+            // console.log(SimpleMDE.prototype.markdown(data))
+            let d = SimpleMDE.prototype.markdown(data).replaceAll('<img', '<img style="max-width:100%;height:auto;"')
+            $('#modal-body').empty().append(d)
+        }
+        $('#demo-default-modal').modal('show')
+
+    })
 
     function appendP(s, a, b, e){
         let r = '<div>' + s + ': '
@@ -211,28 +227,13 @@ $(window).on('load', function () {
 
 
 
-    $('#demo-dt-addrow').on('click', '.main-pic', function () {
-        $('#modal-body').empty()
-        $('#demo-default-modal').modal('show')
-        $('#show-main-pic-img').attr('src', $(this).attr("src"))
-    })
-
-    $('#demo-dt-addrow').on('click', '.other-btn', function () {
-        // console.log(this.attributes.data.value)
-        $('#show-main-pic-img').attr('src', '')
-        let data = this.attributes.data.value
-        if (data !== '') {
-            // console.log(SimpleMDE.prototype.markdown(data))
-            let d = SimpleMDE.prototype.markdown(data).replaceAll('<img', '<img style="max-width:100%;height:auto;"')
-            $('#modal-body').empty().append(d)
-        }
-        $('#demo-default-modal').modal('show')
-
-    })
-
     $('#close-btn').click(function (){
         $('#show-main-pic-img').attr('src', '')
         $('#demo-default-modal').modal('hide')
+    })
+
+    $('#stash-select').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+        t.ajax.reload();
     })
 
 

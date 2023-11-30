@@ -366,4 +366,10 @@
          simplemde.value(simplemde.value().replaceAll('![]()', ''))
      })
 
+     $('#type-stash').on('changed.bs.select', function (e) {
+         if ($(this).val().indexOf('NL-') >= 0) {
+             $('#logo-input').val('无')
+         }
+     })
+
  })
