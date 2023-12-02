@@ -163,7 +163,7 @@ async def keyword(
         if type == 'stash':
             scount = count_stash()
             for item in list:
-                item.count = item.count = scount[item.word]
+                item.count = scount[item.word] if scount.keys().__contains__(item.word) else 0
         return {'draw': draw, 'page_list': list, 'recordsTotal': total, 'recordsFiltered': total}
 
 @api_router.post('/keyword', response_class=JSONResponse)

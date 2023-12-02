@@ -367,7 +367,7 @@
      })
 
      $('#type-stash').on('changed.bs.select', function (e) {
-         if ($(this).val().indexOf('NL-') >= 0) {
+         if ($(this).val().indexOf('N-') >= 0) {
              $('#logo-input').val('无')
          }
      })
