@@ -369,6 +369,18 @@
      $('#type-stash').on('changed.bs.select', function (e) {
          if ($(this).val().indexOf('N-') >= 0) {
              $('#logo-input').val('无')
+         } else if ($(this).val().indexOf('J-') >= 0) {
+             $('#logo-input').val('JERRZI')
+         } else if ($(this).val().indexOf('TC-') >= 0) {
+             $('#logo-input').val('TTC')
+         } else if ($(this).val().indexOf('G-') >= 0) {
+             $('#logo-input').val('GATERON')
+         } else if ($(this).val().indexOf('T-') >= 0) {
+             $('#logo-input').val('Tecsee')
+         } else if ($(this).val().indexOf('KH-') >= 0) {
+             $('#logo-input').val('Kailh')
+         } else if ($(this).val().indexOf('BY-') >= 0) {
+             $('#logo-input').val('BSUN YOK')
          }
      })
 

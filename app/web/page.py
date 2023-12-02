@@ -33,7 +33,7 @@ def list_stash(session):
     )
     scount = count_stash()
     for item in stashlist:
-        item.count = scount[item.word]
+        item.count = scount[item.word] if scount.keys().__contains__(item.word) else 0
     return stashlist
 
 @page_router.get("/mks", response_class=HTMLResponse)
@@ -65,7 +65,7 @@ async def index(request: Request, id: Optional[int]=None):
             elif item.type == 'manufacturer':
                 manufacturers.append(item)
             elif item.type == 'stash':
-                item.count = scount[item.word]
+                item.count = scount[item.word] if scount.keys().__contains__(item.word) else 0
                 stashs.append(item)
             elif item.type == 'logo':
                 logos.append(item.word)
