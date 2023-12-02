@@ -25,6 +25,7 @@ $(window).on('load', function () {
             infoEmpty: "无记录",
             info: "当前 _START_ 到 _END_ , 共 _TOTAL_ 条",
             sEmptyTable: "数据为空",
+            sZeroRecords: "数据为空",
             paginate: {
                 first: '首页',
                 previous: '<i class="demo-psi-arrow-left"></i>',

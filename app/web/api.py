@@ -12,8 +12,24 @@ from app.model.domain import sqlm_keyword, Keyword, sqlm_keyboard_switch, Keyboa
 from app.model.request import KeywordRequest
 from app.model.vo import MksVO, KeywordVO
 from app.web.stats import count_stash
+import numpy
 
 api_router = APIRouter(prefix='/api')
+
+@api_router.get('/mkstable')
+async def mkstable(stash: Optional[str]=None):
+    if stash is None:
+        return {'status': 'ok', 'data': [], 'recordsTotal': 100, 'recordsFiltered': 100}
+    with SqlSession() as session:
+        list = session.fetchall(
+            select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.c.stash==stash),
+            KeyboardSwitch
+        )
+        _u = [ item.name + '(' + item.studio + ')' for item in list]
+        for i in range(10 - len(list) % 10):
+            _u.append('')
+        result = numpy.array(_u).reshape(-1, 10).tolist()
+        return {'status': 'ok', 'data': result, 'recordsTotal': 100, 'recordsFiltered': 100}
 
 @api_router.get('/mkslist')
 async def mkslist(
