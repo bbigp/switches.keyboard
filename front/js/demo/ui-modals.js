@@ -381,6 +381,8 @@
              $('#logo-input').val('Kailh')
          } else if ($(this).val().indexOf('BY-') >= 0) {
              $('#logo-input').val('BSUN YOK')
+         } else if ($(this).val().indexOf('O-') >= 0) {
+             $('#logo-input').val('OUTEMU')
          }
      })
 

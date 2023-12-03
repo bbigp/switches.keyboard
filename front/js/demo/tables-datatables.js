@@ -50,7 +50,7 @@ $(window).on('load', function () {
             data: function (data) {
                 console.log($.extend(data, {}))
                 let stash = $('#stash-select').val()
-                return {"draw": data.draw, "start": data.start, "length": data.length, "s": data.search.value, "stash": stash}
+                return {"draw": data.draw, "start": data.start, "length": data.length, "s": data.search.value.trim(), "stash": stash}
             },
             type: 'GET',
             dateType: 'json',

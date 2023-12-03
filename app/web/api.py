@@ -26,8 +26,9 @@ async def mkstable(stash: Optional[str]=None):
             KeyboardSwitch
         )
         _u = [ item.name + '(' + item.studio + ')' for item in list]
-        for i in range(10 - len(list) % 10):
-            _u.append('')
+        if len(list) % 10 > 0:
+            for i in range(10 - len(list) % 10):
+                _u.append('')
         result = numpy.array(_u).reshape(-1, 10).tolist()
         return {'status': 'ok', 'data': result, 'recordsTotal': 100, 'recordsFiltered': 100}
 
