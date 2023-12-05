@@ -42,11 +42,7 @@ $(window).on('load', function () {
             type: 'GET',
             dateType: 'json',
             dataSrc: function (json) {
-                let result = []
-                json.data.forEach(function (e) {
-                    result.push({'_data': e})
-                })
-                return result
+                return json.data
             }
         },
         columns: [
@@ -54,10 +50,31 @@ $(window).on('load', function () {
         ],
     });
 
+    let showMode = 1;
+
+    // 'primary', 'info', 'success', 'warning', 'danger', 'default'
+    let sw = $('#pic-sw-unchecked').bootstrapSwitch({
+        onText: '图片',
+        offText: '文字',
+        offColor: 'success',
+        onSwitchChange: function (event, state) {
+            if (state) {
+                showMode = 2
+            }else {
+                showMode = 1
+            }
+            t.ajax.reload();
+        }
+    })
+
+
     function tE(i){
         return {
             render: function (data, type, row, meta){
-                return row._data[i]
+                if (showMode === 2) {
+                    return '<img style="width: 96px;height: 74px;display: block;margin: auto auto;" class="main-pic" src="' + row[i].pic +'"/>'
+                }
+                return row[i].name
             },
         }
     }

@@ -25,10 +25,10 @@ async def mkstable(stash: Optional[str]=None):
             select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.c.stash==stash),
             KeyboardSwitch
         )
-        _u = [ item.name + '(' + item.studio + ')' for item in list]
+        _u = [ {'name': item.name + '(' + item.studio + ')', 'pic': item.pic } for item in list]
         if len(list) % 10 > 0:
             for i in range(10 - len(list) % 10):
-                _u.append('')
+                _u.append({'name': '', 'pic': ''})
         result = numpy.array(_u).reshape(-1, 10).tolist()
         return {'status': 'ok', 'data': result, 'recordsTotal': 100, 'recordsFiltered': 100}
 
