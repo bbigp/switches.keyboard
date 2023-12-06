@@ -48,7 +48,10 @@ $(window).on('load', function () {
         columns: [
             tE(0), tE(1), tE(2), tE(3), tE(4), tE(5), tE(6), tE(7), tE(8), tE(9)
         ],
-    });
+    }).on('click', '.main-pic', function () {
+        $('#demo-default-modal').modal('show')
+        $('#show-main-pic-img').attr('src', $(this).attr("src"))
+    })
 
     let showMode = 1;
 
