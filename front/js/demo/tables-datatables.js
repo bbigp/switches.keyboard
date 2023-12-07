@@ -191,6 +191,7 @@ $(window).on('load', function () {
                         _r += '<button style="margin-left: 5px;" class="btn btn-xs btn-default other-btn" data="' + row.desc + '">其他</button>'
                     }
                     _r += '<button style="margin-left: 5px;" class="btn btn-xs btn-default copy-btn" data-id="' + row.id + '">创建副本</button>'
+                    _r += '<button style="margin-left: 5px;" class="btn btn-xs btn-default delete-btn" data-id="' + row.id + '">删除</button>'
                     return _r;
                 }
             }
@@ -212,6 +213,20 @@ $(window).on('load', function () {
     }).on('click', '.copy-btn', function () {
         let id = this.attributes['data-id'].value
         $.ajax({type: 'GET', url: '/api/copymks?id=' + id,
+            success: function (data) {
+                if (data.status === 'ok') {
+                    t.ajax.reload();
+                } else {
+                    $.niftyNoty({type: 'danger', icon : 'pli-cross icon-2x', message : '系统错误: <strong>' + data.msg +'</strong>', container : 'floating', timer : 2000});
+                }
+            },
+            error: function (err) {
+                $.niftyNoty({type: 'danger', icon : 'pli-cross icon-2x', message : '系统错误', container : 'floating', timer : 2000});
+            }
+        })
+    }).on('click', '.delete-btn', function () {
+        let id = this.attributes['data-id'].value
+        $.ajax({type: 'DELETE', url: '/api/mks?id=' + id,
             success: function (data) {
                 if (data.status === 'ok') {
                     t.ajax.reload();
