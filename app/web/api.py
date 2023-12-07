@@ -121,11 +121,11 @@ async def save_mks(req: MksVO):
         save_or_ignore_keyword(keyboard_switch.logo, 'logo', session)
         _ks = session.fetchone(
             select(sqlm_keyboard_switch)
-                .where(sqlm_keyboard_switch.columns.name == keyboard_switch.name, sqlm_keyboard_switch.c.deleted==0),
+                .where(sqlm_keyboard_switch.columns.name == keyboard_switch.name),
             KeyboardSwitch
         )
         if is_update:
-            if _ks is not None and _ks.id != keyboard_switch.id:
+            if _ks is not None and _ks.id != keyboard_switch.id and _ks.deleted == 0:
                 return {'status': 'error', 'msg': '轴体名字重复'}
             else:
                 session.execute(
@@ -142,7 +142,8 @@ async def save_mks(req: MksVO):
                                                         name=keyboard_switch.name,
                                                         stash=keyboard_switch.stash,
                                                         logo=keyboard_switch.logo,
-                                                        variation=keyboard_switch.variation)
+                                                        variation=keyboard_switch.variation,
+                                                        deleted=0)
                         .where(sqlm_keyboard_switch.columns.id == id)
                 )
                 return {'status': 'ok'}
