@@ -22,7 +22,7 @@ async def mkstable(stash: Optional[str]=None):
         return {'status': 'ok', 'data': [], 'recordsTotal': 100, 'recordsFiltered': 100}
     with SqlSession() as session:
         list = session.fetchall(
-            select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.c.stash==stash),
+            select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.c.stash==stash, sqlm_keyboard_switch.c.deleted==0),
             KeyboardSwitch
         )
         _u = [ {'name': item.name + '(' + item.studio + ')', 'pic': item.pic } for item in list]
@@ -51,6 +51,17 @@ async def copymks(id: int):
         session.execute(insert(sqlm_keyboard_switch).values(mks.dict()))
         return {'status': 'ok'}
 
+@api_router.delete('/mks')
+async def delete(id: int):
+    with SqlSession() as session:
+        row = session.execute(
+            update(sqlm_keyboard_switch).values(deleted=1, update_time=datetime.now().timestamp())
+            .where(sqlm_keyboard_switch.c.id==id)
+        )
+        if row > 0:
+            return {'status': 'ok'}
+        else:
+            return {'status': 'error', 'msg': '删除失败'}
 
 @api_router.get('/mkslist')
 async def mkslist(
@@ -61,8 +72,9 @@ async def mkslist(
         stash: Optional[str]=None
 ):
     with SqlSession() as session:
-        stmt_list = select(sqlm_keyboard_switch).offset(start).limit(length).order_by(desc(sqlm_keyboard_switch.columns.update_time))
-        stmt_count = select(func.count(sqlm_keyboard_switch.columns.id))
+        stmt_list = select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.c.deleted==0)\
+            .offset(start).limit(length).order_by(desc(sqlm_keyboard_switch.columns.update_time))
+        stmt_count = select(func.count(sqlm_keyboard_switch.columns.id)).where(sqlm_keyboard_switch.c.deleted==0)
         if search is not None:
             s = '%' + search + '%'
             search_expression = and_(
@@ -97,7 +109,7 @@ async def save_mks(req: MksVO):
         pic=req.pic, tag=req.tag, quantity=req.quantity, price=req.price, desc=req.desc,
         specs=req.specs.json(),
         create_time=now, update_time=now, id=id, stash=req.stash,
-        logo=req.logo, variation=req.variation
+        logo=req.logo, variation=req.variation, deleted=0
     )
     if keyboard_switch.studio == '':
         return {'status': 'error', 'msg': '工作室为空'}
@@ -106,7 +118,7 @@ async def save_mks(req: MksVO):
         save_or_ignore_keyword(keyboard_switch.logo, 'logo', session)
         _ks = session.fetchone(
             select(sqlm_keyboard_switch)
-                .where(sqlm_keyboard_switch.columns.name == keyboard_switch.name),
+                .where(sqlm_keyboard_switch.columns.name == keyboard_switch.name, sqlm_keyboard_switch.c.deleted==0),
             KeyboardSwitch
         )
         if is_update:
@@ -164,18 +176,22 @@ async def keyword(
         type: str=Query(alias='t', default=None)
 ):
     with SqlSession() as session:
+        as_stmt = select(func.count(sqlm_keyboard_switch.c.name))
         if type == 'switch_type':
-            as_stmt = select(func.count(sqlm_keyboard_switch.c.name)).where(sqlm_keyboard_switch.c.type==sqlm_keyword.c.word)
+            as_stmt = as_stmt.where(sqlm_keyboard_switch.c.type==sqlm_keyword.c.word, sqlm_keyboard_switch.c.deleted==0)
         elif type == 'studio':
-            as_stmt = select(func.count(sqlm_keyboard_switch.c.name)).where(sqlm_keyboard_switch.c.studio==sqlm_keyword.c.word)
+            as_stmt = as_stmt.where(sqlm_keyboard_switch.c.studio==sqlm_keyword.c.word, sqlm_keyboard_switch.c.deleted==0)
         elif type == 'manufacturer':
-            as_stmt = select(func.count(sqlm_keyboard_switch.c.name)).where(sqlm_keyboard_switch.c.manufacturer==sqlm_keyword.c.word)
+            as_stmt = as_stmt.where(sqlm_keyboard_switch.c.manufacturer==sqlm_keyword.c.word, sqlm_keyboard_switch.c.deleted==0)
         elif type == 'logo':
-            as_stmt = select(func.count(sqlm_keyboard_switch.c.name)).where(sqlm_keyboard_switch.c.logo==sqlm_keyword.c.word)
+            as_stmt = as_stmt.where(sqlm_keyboard_switch.c.logo==sqlm_keyword.c.word, sqlm_keyboard_switch.c.deleted==0)
         else:
             as_stmt = select(-1)
-        stmt_list = select(sqlm_keyword, as_stmt.label('count')).where(sqlm_keyword.columns.type==type, sqlm_keyword.columns.deleted==0).order_by(desc(sqlm_keyword.columns.create_time))
-        stmt_count = select(func.count(sqlm_keyword.columns.word)).where(sqlm_keyword.columns.type==type, sqlm_keyword.columns.deleted==0)
+        stmt_list = select(sqlm_keyword, as_stmt.label('count'))\
+            .where(sqlm_keyword.columns.type==type, sqlm_keyword.columns.deleted==0)\
+            .order_by(desc(sqlm_keyword.columns.create_time))
+        stmt_count = select(func.count(sqlm_keyword.columns.word))\
+            .where(sqlm_keyword.columns.type==type, sqlm_keyword.columns.deleted==0)
         if search is not None:
             stmt_list = stmt_list.where(sqlm_keyword.columns.word.like('%' + search + '%'))
             stmt_count = stmt_count.where(sqlm_keyword.columns.word.like('%' + search + '%'))

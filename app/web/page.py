@@ -21,7 +21,7 @@ page_router = APIRouter(prefix='/p')
 async def index(request: Request):
     with SqlSession() as session:
         stashlist = list_stash(session)
-        t = session.count(select(func.count(sqlm_keyboard_switch.c.id)))
+        t = session.count(select(func.count(sqlm_keyboard_switch.c.id)).where(sqlm_keyboard_switch.c.deleted==0))
     return templates.TemplateResponse('switches-list.html', context={'request': request, 'total': t, 'stashlist': stashlist})
 
 def list_stash(session):

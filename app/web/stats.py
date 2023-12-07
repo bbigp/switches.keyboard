@@ -20,6 +20,7 @@ async def stats_manufacturer():
     with SqlSession() as session:
         list = session.fetchall(
             select(sqlm_keyboard_switch.c.manufacturer, func.count(sqlm_keyboard_switch.c.name).label('count'))
+            .where(sqlm_keyboard_switch.c.deleted==0)
             .group_by('manufacturer'),
             CountBO
         )
@@ -28,7 +29,8 @@ async def stats_manufacturer():
 def count_stash():
     with SqlSession() as session:
         list = session.fetchall(
-            select(sqlm_keyboard_switch.c.variation, sqlm_keyboard_switch.c.name, sqlm_keyboard_switch.c.stash),
+            select(sqlm_keyboard_switch.c.variation, sqlm_keyboard_switch.c.name, sqlm_keyboard_switch.c.stash)
+            .where(sqlm_keyboard_switch.c.deleted==0),
             KeyboardSwitch
         )
         result = {}

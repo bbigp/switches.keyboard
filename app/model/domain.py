@@ -21,6 +21,7 @@ class KeyboardSwitch(BaseModel):
     stash: str=''
     logo: str=''
     variation: str=''
+    deleted: int=0
     # buy_address: str=None 购买地址
 
 
@@ -79,7 +80,8 @@ sqlm_keyboard_switch = Table('keyboard_switch', metadata,
                  Column('update_time', BIGINT()),
                 Column('stash', String(10)),
                              Column('logo', String(20)),
-                             Column('variation', String(50))
+                             Column('variation', String(50)),
+                             Column('deleted', Integer())
                  )
 # specs  actuation bottom travel distance
 #       operating bottom force
