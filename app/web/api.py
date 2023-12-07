@@ -73,8 +73,11 @@ async def mkslist(
 ):
     with SqlSession() as session:
         stmt_list = select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.c.deleted==0)\
-            .offset(start).limit(length).order_by(desc(sqlm_keyboard_switch.columns.update_time))
-        stmt_count = select(func.count(sqlm_keyboard_switch.columns.id)).where(sqlm_keyboard_switch.c.deleted==0)
+            .offset(start)\
+            .limit(length)\
+            .order_by(desc(sqlm_keyboard_switch.columns.update_time))
+        stmt_count = select(func.count(sqlm_keyboard_switch.columns.id))\
+            .where(sqlm_keyboard_switch.c.deleted==0)
         if search is not None:
             s = '%' + search + '%'
             search_expression = and_(
