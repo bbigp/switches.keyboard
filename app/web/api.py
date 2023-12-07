@@ -32,6 +32,26 @@ async def mkstable(stash: Optional[str]=None):
         result = numpy.array(_u).reshape(-1, 10).tolist()
         return {'status': 'ok', 'data': result, 'recordsTotal': 100, 'recordsFiltered': 100}
 
+@api_router.get('/copymks')
+async def copymks(id: int):
+    with SqlSession() as session:
+        mks = session.fetchone(
+            select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.c.id==id),
+            KeyboardSwitch
+        )
+        if mks is None:
+            return {'status': 'error', 'msg': '轴体不存在'}
+        now = datetime.now().timestamp()
+        mks.name=mks.name + '副本'
+        mks.id = id_worker.next_id()
+        mks.create_time = now
+        mks.update_time = now
+        mks.stash = ''
+        mks.quantity = 0
+        session.execute(insert(sqlm_keyboard_switch).values(mks.dict()))
+        return {'status': 'ok'}
+
+
 @api_router.get('/mkslist')
 async def mkslist(
         draw: Optional[int]=None,
