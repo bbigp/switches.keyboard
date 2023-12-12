@@ -6,6 +6,7 @@ from sqlalchemy import select, insert, func, and_, or_, update, desc, text
 from starlette.responses import JSONResponse
 
 from app.core.database import SqlSession
+from app.core.internal import generate_random_string
 from app.core.snowflake_id import id_worker
 from app.model.assembler import convert_vo, convert_keywrod_sqlm
 from app.model.domain import sqlm_keyword, Keyword, sqlm_keyboard_switch, KeyboardSwitch
@@ -42,7 +43,7 @@ async def copymks(id: int):
         if mks is None:
             return {'status': 'error', 'msg': '轴体不存在'}
         now = datetime.now().timestamp()
-        mks.name=mks.name + '副本'
+        mks.name=mks.name + '副本' + generate_random_string(4)
         mks.id = id_worker.next_id()
         mks.create_time = now
         mks.update_time = now
