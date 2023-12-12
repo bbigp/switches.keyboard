@@ -18,7 +18,7 @@ $(window).on('load', function () {
 
     $.fn.DataTable.ext.pager.numbers_length = 5;
 
-
+    let globalSearch = ''
     // Add Row
     // -----------------------------------------------------------------
     var t = $('#demo-dt-addrow').DataTable({
@@ -32,6 +32,21 @@ $(window).on('load', function () {
         info: true,
         lengthChange: true,
         lengthMenu: [10, 20, 100],
+        autoWidth: true,
+        stateSave: true,
+        stateDuration: 60 * 30,
+        stateSaveParams: function(settings, data){
+            data.stash = $('#stash-select').val()
+        },
+        stateLoadParams: function(settings, data) {
+            console.log(data)
+            console.log(new Date().getTime())
+            console.log(data.time)
+            console.log(new Date().getTime() - data.time)
+            if (new Date().getTime() - data.time < 60 * 30 * 1000) {
+                $('#stash-select').val(data.stash)
+            }
+        },
         language: {
             processing: "数据加载中...",
             infoEmpty: "无记录",
@@ -50,7 +65,8 @@ $(window).on('load', function () {
             data: function (data) {
                 console.log($.extend(data, {}))
                 let stash = $('#stash-select').val()
-                return {"draw": data.draw, "start": data.start, "length": data.length, "s": data.search.value.trim(), "stash": stash}
+                let search = data.search.value.trim()
+                return {"draw": data.draw, "start": data.start, "length": data.length, "s": search, "stash": stash}
             },
             type: 'GET',
             dateType: 'json',
@@ -188,10 +204,10 @@ $(window).on('load', function () {
                     var jumpUrl = '/p/mks/' + row.id
                     let _r = '<a href="' +  jumpUrl + '"><button class="btn btn-xs btn-pink-basic">编辑</button></a>';
                     if (row.desc !== ''){
-                        _r += '<button style="margin-left: 5px;" class="btn btn-xs btn-default other-btn" data="' + row.desc + '">其他</button>'
+                        _r += '<div><button class="btn btn-xs btn-default other-btn" data="' + row.desc + '">其他</button></div>'
                     }
-                    _r += '<button style="margin-left: 5px;" class="btn btn-xs btn-default copy-btn" data-id="' + row.id + '">创建副本</button>'
-                    _r += '<button style="margin-left: 5px;" class="btn btn-xs btn-default delete-btn" data-id="' + row.id + '">删除</button>'
+                    _r += '<div><button class="btn btn-xs btn-default copy-btn" data-id="' + row.id + '">创建副本</button></div>'
+                    _r += '<div><button class="btn btn-xs btn-default delete-btn" data-id="' + row.id + '">删除</button></div>'
                     return _r;
                 }
             }
