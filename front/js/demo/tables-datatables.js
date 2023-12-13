@@ -90,15 +90,16 @@ $(window).on('load', function () {
                     return data + ' <span class="badge badge-danger">' + row.variation.split(' ').length + '</span>'
                 }
             },
-            {data: "studio"},
             {
                 data: "manufacturer",
-                render: function (data) {
+                render: function (data, type, row, meta) {
+                    let _r = '<div>' + row.studio + '</div>'
                     if (data === '无' || data === '') {
-                        return ''
+                        return _r
                         // return '<span class="label label-danger">' + data + '</span>'
                     }
-                    return '<span class="label label-default" style="font-size: 90%">' + data + '</span>'
+                    _r += '<div><span class="label label-default" style="font-size: 90%">' + data + '</span></div>'
+                    return _r
                 }
             },
             {
@@ -203,11 +204,11 @@ $(window).on('load', function () {
                 render: function (data, type, row, meta) {
                     var jumpUrl = '/p/mks/' + row.id
                     let _r = '<a href="' +  jumpUrl + '"><button class="btn btn-xs btn-pink-basic">编辑</button></a>';
+                    _r += '<div><button class="btn btn-xs btn-default copy-btn" data-id="' + row.id + '">创建副本</button></div>'
+                    _r += '<div><button class="btn btn-xs btn-default delete-btn" data-id="' + row.id + '">删除</button></div>'
                     if (row.desc !== ''){
                         _r += '<div><button class="btn btn-xs btn-default other-btn" data="' + row.desc + '">其他</button></div>'
                     }
-                    _r += '<div><button class="btn btn-xs btn-default copy-btn" data-id="' + row.id + '">创建副本</button></div>'
-                    _r += '<div><button class="btn btn-xs btn-default delete-btn" data-id="' + row.id + '">删除</button></div>'
                     return _r;
                 }
             }
