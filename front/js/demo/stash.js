@@ -32,12 +32,18 @@ $(window).on('load', function () {
                 next: '<i class="demo-psi-arrow-right"></i>'
             }
         },
-        dom: '<"newtoolbar">rt',
+        dom: '<"newtoolbar">frt',
         ajax: {
             url: '/api/mkstable',
             data: function (data) {
                 console.log($.extend(data, {}))
-                return {"draw": data.draw, "start": 1, "length": 100, "stash": $('#stash-select').val()}
+                let search = data.search.value.trim()
+                let params = {"draw": data.draw, "start": 1, "length": 100, "search": search}
+                let stash = $('#stash-select').val()
+                if (stash !== 'ALL') {
+                    params.stash = stash
+                }
+                return params
             },
             type: 'GET',
             dateType: 'json',
@@ -53,7 +59,7 @@ $(window).on('load', function () {
         $('#show-main-pic-img').attr('src', $(this).attr("src"))
     })
 
-    let showMode = 1;
+    let showMode = 2;
 
     // 'primary', 'info', 'success', 'warning', 'danger', 'default'
     let sw = $('#pic-sw-unchecked').bootstrapSwitch({
@@ -75,7 +81,8 @@ $(window).on('load', function () {
         return {
             render: function (data, type, row, meta){
                 if (showMode === 2) {
-                    return '<img style="width: 96px;height: 74px;display: block;margin: auto auto;" class="main-pic" src="' + row[i].pic +'"/>'
+                    return '<div><img style="width: 96px;height: 74px;display: block;margin: auto auto;" class="main-pic" src="' + row[i].pic +'"/></div>'
+                        + '<div style="margin-top: 5px;">' + row[i].name + '</div>'
                 }
                 return row[i].name
             },

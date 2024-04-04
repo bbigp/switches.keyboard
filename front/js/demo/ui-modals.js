@@ -118,7 +118,7 @@
              quantity: $('#quantity-input').val(),
              price: $('#price-input').val(),
              desc: simplemde.value(),
-             stash: $('#type-stash').val(),
+             stash: $('#type-stash').find("option:selected").val(),
              logo: $('#logo-input').val(),
              variation: $('#variation-input').val(),
              specs: {
@@ -367,6 +367,10 @@
      })
 
      $('#type-stash').on('changed.bs.select', function (e) {
+         let nowValue = $('#logo-input').val()
+         if (nowValue !== '') {
+             return;
+         }
          if ($(this).val().indexOf('N-') >= 0) {
              $('#logo-input').val('无')
          } else if ($(this).val().indexOf('J-') >= 0) {
@@ -383,6 +387,20 @@
              $('#logo-input').val('BSUN YOK')
          } else if ($(this).val().indexOf('O-') >= 0) {
              $('#logo-input').val('OUTEMU')
+         } else if ($(this).val().indexOf('K-') >= 0 && $(this).val().indexOf('JK-') < 0) {
+             $('#logo-input').val('爪')
+         } else if ($(this).val().indexOf('H-') >= 0) {
+             $('#logo-input').val('HUANO')
+         } else if ($(this).val().indexOf('LB-') >= 0) {
+             $('#logo-input').val('LEOBOG')
+         } else if ($(this).val().indexOf('C-') >= 0 && $(this).val().indexOf('LC-') < 0) {
+             $('#logo-input').val('CHERRY')
+         } else if ($(this).val().indexOf('S-') >= 0 && $(this).val().indexOf('SS-') < 0) {
+             $('#logo-input').val('SWK')
+         } else if ($(this).val().indexOf('R-') >= 0) {
+             $('#logo-input').val('LICHICX')
+         } else if ($(this).val().indexOf('JK-') >= 0) {
+             $('#logo-input').val('无')
          }
      })
 

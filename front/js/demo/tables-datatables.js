@@ -59,7 +59,7 @@ $(window).on('load', function () {
                 next: '<i class="demo-psi-arrow-right"></i>'
             }
         },
-        dom: '<"newtoolbar">frtlip',//https://blog.csdn.net/WuLex/article/details/86385619
+        dom: '<"newtoolbar">frptlpi',//https://blog.csdn.net/WuLex/article/details/86385619
         ajax: {
             url: '/api/mkslist',
             data: function (data) {

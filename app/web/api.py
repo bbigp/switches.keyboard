@@ -18,12 +18,27 @@ import numpy
 api_router = APIRouter(prefix='/api')
 
 @api_router.get('/mkstable')
-async def mkstable(stash: Optional[str]=None):
-    if stash is None:
-        return {'status': 'ok', 'data': [], 'recordsTotal': 100, 'recordsFiltered': 100}
+async def mkstable(
+        stash: Optional[str]=None,
+        search: str=Query(alias='search', default=None),
+):
     with SqlSession() as session:
+        stmt = select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.c.deleted == 0).order_by(desc(sqlm_keyboard_switch.columns.update_time)).limit(100)
+        if stash is not None:
+            stmt = stmt.where(sqlm_keyboard_switch.c.stash == stash)
+        if search is not None:
+            s = '%' + search + '%'
+            stmt = stmt.where(
+                or_(
+                    sqlm_keyboard_switch.columns.name.like(s),
+                    sqlm_keyboard_switch.columns.studio.like(s),
+                    sqlm_keyboard_switch.columns.manufacturer.like(s),
+                    sqlm_keyboard_switch.columns.tag.like(s),
+                    sqlm_keyboard_switch.columns.logo.like(s)
+                )
+            )
         list = session.fetchall(
-            select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.c.stash==stash, sqlm_keyboard_switch.c.deleted==0),
+            stmt,
             KeyboardSwitch
         )
         _u = [ {'name': item.name + '(' + item.studio + ')', 'pic': item.pic } for item in list]
@@ -86,7 +101,8 @@ async def mkslist(
                     sqlm_keyboard_switch.columns.name.like(s),
                     sqlm_keyboard_switch.columns.studio.like(s),
                     sqlm_keyboard_switch.columns.manufacturer.like(s),
-                    sqlm_keyboard_switch.columns.tag.like(s)
+                    sqlm_keyboard_switch.columns.tag.like(s),
+                    sqlm_keyboard_switch.columns.logo.like(s)
                 )
             )
             stmt_list = stmt_list.where(search_expression)
