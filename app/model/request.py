@@ -6,3 +6,4 @@ class KeywordRequest(BaseModel):
     type: str=''
     rank: int=0
     memo: str=''
+    id: str=''

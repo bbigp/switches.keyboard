@@ -82,9 +82,10 @@ $(window).on('load', function () {
 
 
     $('#add-btn').click(function () {
+        $('#row-id').text('')
         $('#rank-input').val('0')
         $('#memo-input').val('')
-        $('#word-input').val('').attr('disabled', false)
+        $('#word-input').val('')
         $('select[name=keyword-type]').selectpicker('val', [$('#type-select').val()]).attr('disabled', false)
         $('#demo-default-modal').modal('show')
     })
@@ -95,6 +96,7 @@ $(window).on('load', function () {
              url: '/api/keyword',
              contentType: 'application/json',
              data: JSON.stringify({
+                 'id': $('#row-id').text(),
                  'rank': $('#rank-input').val(),
                  'word': $('#word-input').val(),
                  'type': $('#type-select-modal').val(),
@@ -118,7 +120,9 @@ $(window).on('load', function () {
     })
 
     $('#demo-dt-addrow').on('click', 'button.edit-btn', function () {
-        $('#word-input').val($(this).parent().parent().children().eq(0).text()).attr('disabled', true)
+        let w = $(this).parent().parent().children().eq(0).text()
+        $('#row-id').text(w)
+        $('#word-input').val(w)
         $('select[name=keyword-type]').selectpicker('val', [$(this).parent().parent().children().eq(1).text()]).attr('disabled', true)
         $('#rank-input').val($(this).parent().parent().children().eq(2).text())
         $('#memo-input').val($(this).parent().parent().children().eq(3).text())
@@ -138,7 +142,13 @@ $(window).on('load', function () {
                  if (data.status === 'ok') {
                     t.ajax.reload();
                  }else {
-
+                    $.niftyNoty({
+                        type: 'danger',
+                        icon : 'pli-cross icon-2x',
+                        message : '<strong>' + data.msg +'</strong>',
+                        container : 'floating',
+                        timer : 5000
+                    });
                  }
              },
              error: function (err) {

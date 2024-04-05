@@ -227,27 +227,52 @@ async def keyword(
 @api_router.post('/keyword', response_class=JSONResponse)
 async def save_keyword(req: KeywordRequest):
     with SqlSession() as session:
-        _k = session.fetchone(
-            select(sqlm_keyword)
-                .where(sqlm_keyword.columns.word==req.word, sqlm_keyword.columns.type==req.type),
-            Keyword
-        )
-        if _k is None:
+        if req.id is None or req.id == '':
             dd = convert_keywrod_sqlm(req).dict()
             session.execute(insert(sqlm_keyword).values(dd))
             return {'status': 'ok'}
         else:
             now = int(datetime.now().timestamp())
+            _old = session.fetchone(
+                select(sqlm_keyword)
+                .where(sqlm_keyword.columns.word == req.id, sqlm_keyword.columns.type == req.type),
+                Keyword
+            )
+            if _old is None:
+                return {'status': 'error', 'msg': '数据不存在'}
             session.execute(
                 update(sqlm_keyword)
-                    .values(rank=req.rank, update_time=now, deleted=0, memo=req.memo)
-                    .where(sqlm_keyword.columns.word==req.word, sqlm_keyword.columns.type==req.type)
+                    .values(word=req.word, rank=req.rank, update_time=now, deleted=0, memo=req.memo)
+                    .where(sqlm_keyword.columns.word==req.id, sqlm_keyword.columns.type==req.type)
             )
+            switcher = {
+                'stash': update(sqlm_keyboard_switch).values(stash=req.word).where(sqlm_keyboard_switch.c.stash==req.id),
+                'studio': update(sqlm_keyboard_switch).values(studio=req.word).where(sqlm_keyboard_switch.c.studio==req.id),
+                'manufacturer': update(sqlm_keyboard_switch).values(manufacturer=req.word).where(sqlm_keyboard_switch.c.manufacturer==req.id),
+                'logo': update(sqlm_keyboard_switch).values(logo=req.word).where(sqlm_keyboard_switch.c.logo==req.id),
+                'switch_type': update(sqlm_keyboard_switch).values(type=req.word).where(sqlm_keyboard_switch.c.type==req.id)
+            }
+            stmt = switcher.get(req.type)
+            if stmt is None:
+                return {'status': 'ok'}
+            session.execute(stmt)
             return {'status': 'ok'}
 
 @api_router.delete('/keyword', response_class=JSONResponse)
 async def delete_keyword(req: KeywordRequest):
     with SqlSession() as session:
+        switcher = {
+            'stash': select(func.count(sqlm_keyboard_switch.columns.id)).where(sqlm_keyboard_switch.c.stash == req.word),
+            'studio':  select(func.count(sqlm_keyboard_switch.columns.id)).where(sqlm_keyboard_switch.c.studio == req.word),
+            'manufacturer':  select(func.count(sqlm_keyboard_switch.columns.id)).where(sqlm_keyboard_switch.c.manufacturer == req.word),
+            'logo':  select(func.count(sqlm_keyboard_switch.columns.id)).where(sqlm_keyboard_switch.c.logo == req.word),
+            'switch_type':  select(func.count(sqlm_keyboard_switch.columns.id)).where(sqlm_keyboard_switch.c.type == req.word)
+        }
+        stmt = switcher.get(req.type)
+        if stmt is None:
+            return {'status': 'error', 'msg': '参数错误'}
+        if session.count(stmt) > 0:
+            return {'status': 'error', 'msg': '数据还在使用,无法删除'}
         session.execute(
             update(sqlm_keyword)
                 .values(deleted=1)
