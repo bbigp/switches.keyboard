@@ -28,6 +28,7 @@ def register_route(app):
     app.mount('/img', StaticFiles(directory='front/img'), name='img')
     app.mount('/images', StaticFiles(directory='front/images'), name='images')
     app.mount('/fonts', StaticFiles(directory='front/fonts'), name='fonts')
+    app.mount('/', StaticFiles(directory='front/img'), name='rootImg')
     logger.debug('route_provider registering')
     if app.debug:
         for route in app.routes:

@@ -6,7 +6,7 @@ from sqlalchemy import select, insert, func, and_, or_, update, desc, text
 from starlette.responses import JSONResponse
 
 from app.core.database import SqlSession
-from app.core.internal import generate_random_string
+from app.core.internal import generate_random_string, paginate_info
 from app.core.snowflake_id import id_worker
 from app.model.assembler import convert_vo, convert_keywrod_sqlm
 from app.model.domain import sqlm_keyword, Keyword, sqlm_keyboard_switch, KeyboardSwitch
@@ -88,6 +88,7 @@ async def mkslist(
         stash: Optional[str]=None
 ):
     with SqlSession() as session:
+        sql_params = {}
         stmt_list = select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.c.deleted==0)\
             .offset(start)\
             .limit(length)\
@@ -95,26 +96,45 @@ async def mkslist(
         stmt_count = select(func.count(sqlm_keyboard_switch.columns.id))\
             .where(sqlm_keyboard_switch.c.deleted==0)
         if search is not None:
-            s = '%' + search + '%'
-            search_expression = and_(
-                or_(
-                    sqlm_keyboard_switch.columns.name.like(s),
-                    sqlm_keyboard_switch.columns.studio.like(s),
-                    sqlm_keyboard_switch.columns.manufacturer.like(s),
-                    sqlm_keyboard_switch.columns.tag.like(s),
-                    sqlm_keyboard_switch.columns.logo.like(s)
-                )
-            )
-            stmt_list = stmt_list.where(search_expression)
-            stmt_count = stmt_count.where(search_expression)
+            if ' or ' in search:
+                str_list = []
+                list_search = [num for num in search.split(' or ') if num != '']
+                for index, _search in enumerate(list_search):
+                    search_key = 'search_' + str(index)
+                    sql_params[search_key] = '%' + _search + '%'
+                    str_list.append(
+                        "name like :{} or studio like :{} or manufacturer like :{} or tag like :{} or logo like :{}".replace("{}", search_key)
+                    )
+                search_sql = text(' or '.join(str_list)).bindparams(**sql_params)
+                stmt_list = stmt_list.where(and_(search_sql))
+                stmt_count = stmt_count.where(and_(search_sql))
+            else:
+                # 空格为且
+                list_search = [num for num in search.split(' and ') if num != '']
+                str_list = []
+                for index, _search in enumerate(list_search):
+                    search_key = 'search_' + str(index)
+                    sql_params[search_key] = '%' + _search + '%'
+                    str_list.append(
+                        "(name like :{} or studio like :{} or manufacturer like :{} or tag like :{} or logo like :{})".replace("{}", search_key)
+                    )
+                search_sql = text(' and '.join(str_list)).bindparams(**sql_params)
+                stmt_list = stmt_list.where(search_sql)
+                stmt_count = stmt_count.where(search_sql)
         if stash is not None:
             stash = stash if stash != '-1' else ''
             stmt_list =  stmt_list.where(sqlm_keyboard_switch.c.stash==stash)
             stmt_count = stmt_count.where(sqlm_keyboard_switch.c.stash==stash)
-        list = session.fetchall(stmt_list, KeyboardSwitch)
+        list = session.fetchall(stmt_list, KeyboardSwitch, params=sql_params)
         mkslist = [convert_vo(i) for i in list]
-        total = session.count(stmt_count)
-    return {'draw': draw, 'page_list': mkslist, 'recordsTotal': total, 'recordsFiltered': total}
+        total = session.count(stmt_count, params=sql_params)
+    return {
+        'draw': draw,
+        'page_list': mkslist,
+        'recordsTotal': total,
+        'recordsFiltered': total,
+        'page': paginate_info(total, start / length +1, length)
+    }
 
 @api_router.post('/mks', response_class=JSONResponse)
 async def save_mks(req: MksVO):

@@ -7,6 +7,8 @@ from app.model.vo import MksVO, KeywordVO
 
 
 def convert_vo(model: KeyboardSwitch) -> MksVO:
+    if model.pic is None or model.pic == '':
+        model.pic = '/bfs/fs/dummy_image.jpg'
     return MksVO(
         id=str(model.id), name=model.name, pic=model.pic, studio=model.studio, manufacturer=model.manufacturer,
         type=model.type, tag=model.tag, quantity=model.quantity, price=model.price, desc=model.desc,

@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html class="js sizes customelements history pointerevents postmessage webgl websockets cssanimations csscolumns csscolumns-width csscolumns-span csscolumns-fill csscolumns-gap csscolumns-rule csscolumns-rulecolor csscolumns-rulestyle csscolumns-rulewidth csscolumns-breakbefore csscolumns-breakafter csscolumns-breakinside flexbox picture srcset webworkers"
+      lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Keyboard Switches</title>
+    <meta name="robots" content="noindex, follow">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+
+
+    <!-- CSS
+	============================================ -->
+
+    <link rel="stylesheet" href="/css/dev/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/dev/bootstrap-icons.min.css">
+
+    <!-- Slick CSS -->
+{#    <link rel="stylesheet" href="./洋山芋轴馆YSYSwiches_files/slick.css">#}
+{#    <link rel="stylesheet" href="./洋山芋轴馆YSYSwiches_files/animation.css">#}
+{#    <link rel="stylesheet" href="./洋山芋轴馆YSYSwiches_files/jqueryui.min.js.下载">#}
+
+
+    <link rel="stylesheet" href="/css/dev/style.css">
+
+</head>
+
+<body>
+
+<div class="main-wrapper">
+
+
+
+    <!-- main-content-wrap start -->
+    <div class="main-content-wrap shop-page section-ptb">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 order-lg-1 order-1">
+                    <!-- Shop Sidebar Wrap Start -->
+                    <div class="shop-sidebar-wrap">
+
+                        <!-- Shop Sidebar Category Start -->
+<!--                        <div class="shop-sidebar mb-30">-->
+<!--                            <h4 class="title">分类 CATEGORIES</h4>-->
+<!--                            <ul class="text-capitalize" id="switchTypeList">-->
+<!--                                <li><a onclick="filterSwitchesType(this, 0)">线性</a></li>-->
+<!--                                <li><a onclick="filterSwitchesType(this, 1)">段落 </a></li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+                        <!-- Shop Sidebar End -->
+
+
+                        <!-- Shop Sidebar Price Start -->
+<!--                        <div class="shop-sidebar mb-30">-->
+<!--                            <h4 class="title">触发压力区间 OPERATION FORCE RANGE</h4>-->
+<!--                            &lt;!&ndash; filter-price-content start &ndash;&gt;-->
+<!--                            <div class="filter-price-content">-->
+<!--                                <form action="http://120.77.13.71/dev#" method="post">-->
+<!--                                    <div id="force-slider"-->
+<!--                                         class="price-slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all">-->
+<!--                                        <div class="ui-slider-range ui-widget-header ui-corner-all"-->
+<!--                                             style="left: 0%; width: 37.5%;"></div>-->
+<!--                                        <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"-->
+<!--                                              style="left: 0%;"></span><span-->
+<!--                                            class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0"-->
+<!--                                            style="left: 37.5%;"></span></div>-->
+<!--                                    <div class="filter-price-wapper">-->
+<!--                                        <div class="filter-price-cont">-->
+<!--                                            <span>压力:</span>-->
+<!--                                            <div class="input-type">-->
+<!--                                                <input type="text" id="min-force" readonly="" style="width: 53px;">-->
+<!--                                            </div>-->
+<!--                                            <span>—</span>-->
+<!--                                            <div class="input-type">-->
+<!--                                                <input type="text" id="max-force" readonly="" style="width: 57px;">-->
+<!--                                            </div>-->
+<!--                                            <a class="add-to-cart-button"-->
+<!--                                               onclick="filterSwitchesOperateForceRange(true)">-->
+<!--                                                <span>应用</span>-->
+<!--                                            </a>-->
+<!--                                            <a id="resetOperateForceButton" class="add-to-cart-button"-->
+<!--                                               style="display: none;" onclick="filterSwitchesOperateForceRange(false)">-->
+<!--                                                <span>重置</span>-->
+<!--                                            </a>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </form>-->
+<!--                            </div>-->
+<!--                            &lt;!&ndash; filter-price-content end &ndash;&gt;-->
+<!--                        </div>-->
+                        <!-- Shop Sidebar End -->
+
+
+
+
+                        <!-- Shop Sidebar Color Start -->
+<!--                        <div class="shop-sidebar mb-30">-->
+<!--                            <h4 class="title">导光 LIGHT</h4>-->
+<!--                            <ul id="switchLightList">-->
+<!--                                <li><a onclick="filterSwitchesLight(this, 0)">无 NONE</a></li>-->
+<!--                                <li><a onclick="filterSwitchesLight(this, 1)">凸透镜 CONVEX LENS</a></li>-->
+<!--                                <li><a onclick="filterSwitchesLight(this, 2)">平面镜 PLANE LENS</a></li>-->
+<!--                                <li><a onclick="filterSwitchesLight(this, 3)">导光柱 PIPE LIGHT</a></li>-->
+<!--                                <li><a onclick="filterSwitchesLight(this, 4)">一体式 INTEGRATED</a></li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+                        <!-- Shop Sidebar End -->
+
+
+                        <!-- Shop Sidebar Color Start -->
+                        <div class="shop-sidebar mb-30">
+                            <h4 class="title">代工 MANUFACTORY</h4>
+                            <ul id="switchFactoryList">
+                                {% for item in manufacturers %}
+                                <li><a class="switchFactory" data-value="{{ item.word }}">{{ item.word }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <!-- Shop Sidebar End -->
+
+                        <!-- Shop Sidebar Tag Start -->
+                        <!-- <div class="shop-sidebar mb-30">
+                            <h4 class="title">轴体标签 Tags</h4>
+                            <div class="sidebar-tag">
+                                <a href="#">轻压力</a>
+                                <a href="#">麻将音</a>
+                                <a href="#">闷</a>
+                                <a href="#">重压力</a>
+                                <a href="#">大键</a>
+                                <a href="#">肌无力</a>
+                                <a href="#">肉</a>
+                            </div>
+                        </div> -->
+                        <!-- Shop Sidebar End -->
+
+                        <!-- Shop Sidebar Best Product start -->
+                        <!-- <div class="sidbar-product shop-sidebar ">
+                            <h4 class="title">畅销榜 Best Product</h4>
+                            <div class="sidbar-product-inner">
+                                <div class="product-image">
+                                    <a href="product-details.html"><img src="static/picture/product2.jpg" alt=""></a>
+                                </div>
+                                <div class="product-content text-start">
+                                    <h3><a href="product-details.html">Apple Honey Scented Candle</a></h3>
+                                    <div class="price-box">
+                                        <span class="old-price">$45</span>
+                                        <span class="new-price">$40</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sidbar-product-inner">
+                                <div class="product-image">
+                                    <a href="product-details.html"><img src="static/picture/product15.jpg" alt=""></a>
+                                </div>
+                                <div class="product-content text-start">
+                                    <h3><a href="product-details.html">Amour Rose Crystal Candle</a></h3>
+                                    <div class="price-box">
+                                        <span class="old-price">$78</span>
+                                        <span class="new-price">$69</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="sidbar-product-inner">
+                                <div class="product-image">
+                                    <a href="product-details.html"><img src="static/picture/box-banner2.jpg" alt=""></a>
+                                </div>
+                                <div class="product-content text-start">
+                                    <h3><a href="product-details.html">Beeswax Rolled Candles</a></h3>
+                                    <div class="price-box">
+
+                                        <span class="old-price">$55</span>
+                                        <span class="new-price">$52</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+                <div class="col-lg-9 order-lg-2 order-2">
+                    <!-- shop-product-wrapper start -->
+                    <div class="shop-product-wrapper">
+                        <div class="row">
+                            <div class="col">
+                                <!-- shop-top-bar start -->
+                                <div class="shop-top-bar">
+                                    <!-- product-view-mode start -->
+
+                                    <div class="product-mode">
+                                        <!--shop-item-filter-list-->
+                                        <ul class="nav shop-item-filter-list" role="tablist">
+                                            <li id="nav-grid" onclick="page(-1, 'grid')" class="active">
+                                                <span style="font-size: 26px; font-weight: 500; margin-right: 20px;" data-bs-toggle="tab" href="" aria-selected="true" role="tab">
+                                                    <i class="bi bi-grid"></i>
+                                                </span>
+                                            </li>
+                                            <li id="nav-list" onclick="page(-1, 'list')">
+                                                <span style="font-size: 26px; font-weight: 500; margin-right: 20px;" data-bs-toggle="tab" href="" aria-selected="false" tabindex="-1" role="tab">
+                                                    <i class="bi bi-view-list"></i>
+                                                </span>
+                                            </li>
+                                        </ul>
+                                        <!-- shop-item-filter-list end -->
+                                    </div>
+                                    <div class="product-short">
+                                        <div class="form-search">
+                                            <input id="searchSwitch" class="input-text" value=""
+                                                   placeholder="输入轴体名字搜索..." type="search">
+                                            <button class="search-btn" type="button" onclick="page(1)">
+                                                <i class="bi bi-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- product-view-mode end -->
+                                    <!-- product-short start -->
+                                    <!-- <div class="product-short">
+                                        <select class="nice-select" name="sortby">
+                                            <option value="trending">Relevance</option>
+                                            <option value="sales">Name(A - Z)</option>
+                                            <option value="sales">Name(Z - A)</option>
+                                            <option value="rating">Price(Low > High)</option>
+                                            <option value="date">Rating(Lowest)</option>
+                                        </select>
+                                    </div> -->
+                                    <!-- product-short end -->
+                                </div>
+                                <!-- shop-top-bar end -->
+                            </div>
+                        </div>
+
+                        <!-- shop-products-wrap start -->
+                        <div class="shop-products-wrap">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="grid" role="tabpanel">
+                                    <div class="shop-product-wrap">
+                                        <div class="row" id="switchesContainer">
+                                            {% for item in list %}
+                                            <div class="col-lg-4 col-md-4 col-sm-6">
+                                                <div class="single-product-wrap">
+                                                    <div class="product-image">
+                                                        <a><img src="{{ item.pic }}" alt="Product Images"></a>
+                                                        <div class="product-action">
+                                                            <a onclick="" class="add-to-cart" tabindex="0">
+                                                                <i class="bi bi-basket"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="product-content">
+                                                        <h3><a>{{ item.name }}</a></h3>
+                                                        <div class="price-box">
+                                                            <span class="price">{{ (item.studio, item.manufacturer) | format_studio_with_manufacturer }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="list" role="tabpanel">
+                                    <div class="shop-product-list-wrap" id="switchesListContainer">
+
+{#                                        {% for item in list %}#}
+{#                                        <div class="row product-layout-list">#}
+{#                                            <div class="col-lg-4 col-md-5">#}
+{#                                                <div class="single-product-wrap">#}
+{#                                                    <div class="product-image">#}
+{#                                                        <a><img src="{{ item.pic }}" alt="Produce Images"></a>#}
+{#                                                    </div>#}
+{#                                                </div>#}
+{#                                            </div>#}
+{#                                            <div class="col-lg-8 col-md-7">#}
+{#                                                <div class="product-content text-start">#}
+{#                                                    <h3 style="text-align: left">#}
+{#                                                        <a href="">{{ item.name }}</a>#}
+{#                                                    </h3>#}
+{#                                                    <div class="price-box" style="text-align: left">#}
+{#                                                        <span class="price">2323</span>#}
+{#                                                    </div>#}
+{#                                                    <div style="display: flex;">#}
+{#                                                        <p class="switch-attribute">【成色】</p>#}
+{#                                                        <p>全新</p>#}
+{#                                                        <p class="switch-attribute">【类型】</p>#}
+{#                                                        <p>线性</p>#}
+{#                                                        <p class="switch-attribute">【代工】</p>#}
+{#                                                        <p>高特 OUTEMU</p>#}
+{#                                                        <br>#}
+{#                                                    </div>#}
+{#                                                    <div style="display: flex;">#}
+{#                                                        <p class="switch-attribute" style="margin-top: 0px;">【润滑】</p>#}
+{#                                                        <p style="margin-top: 0px;">厂润</p>#}
+{##}
+{#                                                    </div>#}
+{#                                                    <div style="display: flex;">#}
+{#                                                        <p style="margin-top: 0px;">#}
+{#                                                            32g触发#}
+{#                                                            38g触底#}
+{#                                                            - 预行程#}
+{#                                                            3.3mm总行程#}
+{#                                                        </p>#}
+{#                                                    </div>#}
+{#                                                </div>#}
+{#                                            </div>#}
+{#                                        </div>#}
+{#                                        {% endfor %}#}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- shop-products-wrap end -->
+                        <div class="paginatoin-area">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12">
+                                    <ul class="pagination-box" id="pageController">
+                                        {% if page.has_previous_page %}
+                                        <li onclick="page({{ page.current_page - 1 }})">
+                                            <a class="Previous" href="#"><i class="bi bi-chevron-left"></i></a>
+                                        </li>
+                                        {% endif %}
+                                        {% for item in page.adjacent_pages %}
+                                        <li onclick="page({{ item }})" class="{{ 'active' if item == page.current_page else '' }}">
+                                            <a href="#">{{ '....' if item == -1 else item }}</a>
+                                        </li>
+                                        {% endfor %}
+                                        {% if page.has_next_page %}
+                                        <li onclick="page({{ page.current_page + 1 }})">
+                                            <a class="Next" href="#"><i class="bi bi-chevron-right"></i></a>
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- shop-product-wrapper end -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- main-content-wrap end -->
+
+
+
+
+</div>
+
+<!-- JS
+============================================ -->
+
+{#<script src="./洋山芋轴馆YSYSwiches_files/modernizr-3.6.0.min.js.下载"></script>#}
+<script src="/js/jquery-2.2.4.min.js"></script>
+{#<script src="./洋山芋轴馆YSYSwiches_files/popper.min.js.下载"></script>#}
+<script src="/js/bootstrap.js"></script>
+<script src="/js/template-web.js"></script>
+{#<script src="./洋山芋轴馆YSYSwiches_files/slick.min.js.下载"></script>#}
+{#<script src="./洋山芋轴馆YSYSwiches_files/jqueryui.min.js.下载"></script>#}
+{#<script src="./洋山芋轴馆YSYSwiches_files/scrollup.min.js.下载"></script>#}
+{#<script src="./洋山芋轴馆YSYSwiches_files/ajax-contact.js.下载"></script>#}
+{#<script src="./洋山芋轴馆YSYSwiches_files/main.js.下载"></script>#}
+<a id="scrollUp" href="http://120.77.13.71/dev#top" style="position: fixed; z-index: 2147483647; display: none;"><i
+        class="bi bi-chevron-up"></i></a>
+
+<script>
+    template.defaults.imports.formatWithTolerance = function(value, tolerance, unit) {
+        if(!value){
+            return ''
+        }else if (!tolerance) {
+            return `${value}${unit}`;
+        }else{
+            return `${value}±${tolerance}${unit}`;
+        }
+    }
+    template.defaults.imports.format_studio_with_manufacturer = function(studio, manufacturer) {
+        if(studio && manufacturer) {
+            return `${studio} | ${manufacturer}`;
+        }else if(studio || manufacturer) {
+            return `${studio}${manufacturer}`;
+        }else {
+            return ''
+        }
+    }
+</script>
+
+<script id="pageControllerTpl" type="text/html">
+    {% raw %}
+        {{ if page.has_previous_page }}
+        <li onclick="page({{ page.current_page - 1 }})">
+            <a class="Previous" href="#" value="{{ page.current_page - 1 }}"><i class="bi bi-chevron-left"></i></a>
+        </li>
+        {{ /if }}
+        {{ each page.adjacent_pages item index }}
+        <li onclick="page({{ item }})" class="{{ if item == page.current_page }} active {{ /if }} ">
+            <a href="#">{{ if item == -1 }}...{{ else }} {{ item }} {{ /if }}</a>
+        </li>
+        {{ /each }}
+        {{ if page.has_next_page }}
+        <li onclick="page({{ page.current_page + 1 }})">
+            <a class="Next" href="#" value="{{ page.current_page + 1 }}"><i class="bi bi-chevron-right"></i></a>
+        </li>
+        {{ /if }}
+    {% endraw %}
+</script>
+
+<script id="switchesContainerTpl" type="text/html">
+    {% raw %}
+    {{ each list item index }}
+        <div class="col-lg-4 col-md-4 col-sm-6">
+            <div class="single-product-wrap">
+                <div class="product-image">
+                    <a><img src="{{ item.pic }}" alt="Product Images"></a>
+                    <div class="product-action">
+                        <a onclick="" class="add-to-cart" tabindex="0">
+                            <i class="bi bi-basket"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="product-content">
+                    <h3><a>{{ item.name }}</a></h3>
+                    <div class="price-box">
+                        <span class="price">{{ item.studio | format_studio_with_manufacturer:item.manufacturer }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{ /each }}
+    {% endraw %}
+</script>
+<script id="switchesListContainerTpl" type="text/html">
+    {% raw %}
+    {{ each list item index }}
+        <div class="row product-layout-list">
+            <div class="col-lg-4 col-md-5">
+                <div class="single-product-wrap">
+                    <div class="product-image">
+                        <a><img src="{{ item.pic }}" alt="Produce Images"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-7">
+                <div class="product-content text-start">
+                    <h3 style="text-align: left">
+                        <a href="">{{ item.name }}</a>
+                    </h3>
+                    <div class="price-box" style="text-align: left">
+                        <span class="price">{{ item.studio | format_studio_with_manufacturer:item.manufacturer }}</span>
+                    </div>
+                    <div style="display: flex;">
+                        <p class="switch-attribute">【类型】</p>
+                        <p>{{ item.type }}</p>
+                        <p class="switch-attribute">【标志】</p>
+                        <p>{{ item.logo }} </p>
+                        <p class="switch-attribute">【位置】</p>
+                        <p>{{ item.stash }}</p>
+                        <br>
+                    </div>
+                    <div style="display: flex;">
+                        <p class="switch-attribute" style="margin-top: 0px;">{{ item.specs.top === '' ? '' : '【上盖】' }}</p>
+                        <p style="margin-top: 0px;">{{ item.specs.top }}</p>
+                        <p class="switch-attribute" style="margin-top: 0px;">{{ item.specs.bottom === '' ? '' : '【底壳】' }}</p>
+                        <p style="margin-top: 0px;">{{ item.specs.bottom }}</p>
+                        <p class="switch-attribute" style="margin-top: 0px;">{{ item.specs.stem === '' ? '' : '【轴心】' }}</p>
+                        <p style="margin-top: 0px;">{{ item.specs.stem }}</p>
+                    </div>
+                    <div style="display: flex;">
+                        <p class="switch-attribute" style="margin-top: 0px;">{{ item.specs.pin === '' ? '' : '【PIN】' }}</p>
+                        <p style="margin-top: 0px;">{{ item.specs.pin }}</p>
+                        <p class="switch-attribute" style="margin-top: 0px;">{{ item.specs.light_pipe == '' ? '' : '【导光柱】' }}</p>
+                        <p style="margin-top: 0px;">{{ item.specs.light_pipe }}</p>
+                    </div>
+                    <div style="display: flex;">
+                        <p style="margin-top: 0px;">
+                            {{ item.specs.actuation_force | formatWithTolerance:item.specs.actuation_force_p,'g触发' }}
+                            {{ item.specs.end_force | formatWithTolerance:item.specs.end_force_p,'g触底' }}
+                        </p>
+                    </div>
+                    <div style="display: flex;">
+                        <p style="margin-top: 0px;">
+                            {{ item.specs.pre_travel | formatWithTolerance:item.specs.pre_travel_p,'mm触发' }}
+                            {{ item.specs.total_travel | formatWithTolerance:item.specs.total_travel_p,'mm触底' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{ /each }}
+    {% endraw %}
+</script>
+<script>
+    function page(page, type) {
+        if (!type) {
+            type = $('#nav-grid').hasClass('active') ? 'grid' : 'list'
+        }
+        if(page === -1){
+            page = $('#pageController').find('.active').find('a').text()
+        }
+        console.log(page, type)
+        let search = $('#searchSwitch').val()
+        $.ajax({
+            url: '/api/mkslist?start=' + (page - 1) * 15 + '&length=15&s=' + search,
+            method: 'GET',
+            success: function (data) {
+                if (type === 'grid') {
+                    $('#switchesListContainer').empty()
+                    $('#grid').addClass('active')
+                    $('#nav-grid').addClass('active')
+                    $('#list').removeClass('active')
+                    $('#nav-list').removeClass('active')
+                    $('#switchesContainer').html(template('switchesContainerTpl', {'list': data.page_list}))
+                }else {
+                    $('#switchesContainer').empty()
+                    $('#grid').removeClass('active')
+                    $('#nav-grid').removeClass('active')
+                    $('#list').addClass('active')
+                    $('#nav-list').addClass('active')
+                    $('#switchesListContainer').html(template('switchesListContainerTpl', {'list': data.page_list}))
+                }
+                $('#pageController').html(template('pageControllerTpl', {'page': data.page}))
+            }
+        });
+    }
+</script>
+<script>
+    $('.switchFactory').click(function(){
+        if($(this).text().indexOf('✓') > 0) {
+            $(this).text($(this).data('value'))
+            $(this).css({
+                'color': '',
+                'font-weight': ''
+            })
+        } else {
+            $(this).text($(this).data('value') + ' ✓')
+            $(this).css({
+                'color': 'red',
+                'font-weight': 'bold'
+            })
+        }
+        var selectedLinks = $("#switchFactoryList li:contains('✓') a");
+
+        var dataValues = selectedLinks.map(function() {
+            return $(this).data('value');
+        }).get();
+        $('#searchSwitch').val(dataValues.join(' or '))
+        page(1)
+    })
+</script>
+<script>
+    $('#searchSwitch').keyup(function (event){
+        if (event.keyCode === 13) {
+            page(1)
+        }
+    })
+</script>
+
+</body>
+</html>

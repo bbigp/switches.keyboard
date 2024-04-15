@@ -1,12 +1,13 @@
 from typing import Optional
 
 from fastapi import Request, Form, APIRouter
-from sqlalchemy import select, func, desc
+from sqlalchemy import select, func, desc, text
 from starlette import status
 from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
 
 from app.core.database import SqlSession
+from app.core.internal import paginate_info
 from app.core.response import RedirectResponseWraper
 from app.model.assembler import convert_vo
 from app.model.domain import sqlm_keyboard_switch, KeyboardSwitch, sqlm_keyword, Keyword
@@ -16,6 +17,27 @@ from app.web.stats import count_stash
 templates = Jinja2Templates(directory='front/templates')
 
 page_router = APIRouter(prefix='/p')
+
+def format_with_tolerance(value):
+    base_value, tolerance, unit = value
+    if base_value is None or base_value == '':
+        return '-'
+    elif tolerance is None or tolerance == '':
+        return f'{base_value}{unit}'
+    else:
+        return f'{base_value}±{tolerance}{unit}'
+
+def format_studio_with_manufacturer(value):
+    studio, manufacturer = value
+    if studio and manufacturer:
+        return f'{studio} | {manufacturer}'
+    elif studio or manufacturer:
+        return f'{studio}{manufacturer}'
+    else:
+        return ''
+
+templates.env.filters['format_with_tolerance'] = format_with_tolerance
+templates.env.filters['format_studio_with_manufacturer'] = format_studio_with_manufacturer
 
 @page_router.get('/mkslist', response_class=HTMLResponse)
 async def index(request: Request):
@@ -99,6 +121,36 @@ async def mx_switches_list(request: Request):
     with SqlSession() as session:
         stashlist = list_stash(session)
     return templates.TemplateResponse('mx/switches-list.html', context={'request': request})
+
+@page_router.get("/dev")
+@page_router.get('/dev/{page}')
+async def dev(
+        request: Request,
+        page: Optional[int]=1,
+        size: Optional[int]=15
+):
+    with SqlSession() as session:
+        list = session.fetchall(
+            select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.c.deleted == 0)
+                .limit(size)
+                .offset((page - 1) * size)
+                .order_by(desc(sqlm_keyboard_switch.columns.update_time)),
+            KeyboardSwitch
+        )
+        total = session.count(
+            select(func.count(sqlm_keyboard_switch.columns.id))
+                .where(sqlm_keyboard_switch.c.deleted == 0)
+        )
+        manufacturers = session.fetchall(
+            text('select * from keyword where deleted = 0 and type = :type').bindparams(type='manufacturer'),
+            Keyword
+        )
+    return templates.TemplateResponse('dev.html', context={
+        'request': request,
+        'list': [convert_vo(i) for i in list],
+        'page': paginate_info(total, page, size),
+        'manufacturers': manufacturers
+    })
 
 
 async def add(request: Request, name=Form(None), studio=Form(None), foundry=Form(None), type=Form(None),
