@@ -32,7 +32,7 @@
 
 
      $('#cancel-btn').click(function (){
-         window.location.replace('/p/mkslist')
+         window.location.replace('/dash/mkslist')
      })
 
     let uploadType = 1;
@@ -147,7 +147,7 @@
              success: function (data) {
                  console.log(data)
                  if (data.status === 'ok') {
-                     window.location.replace('/p/mkslist')
+                     window.location.replace('/dash/mkslist')
                  }else {
                     $.niftyNoty({
                         type: 'danger',

@@ -35,6 +35,6 @@ build/
 .docker_cache
 logs
 app/__pycache__/
-content/file/
-content/temp/
-content/switches.db
+data/images/
+data/temp/
+data/db/switches.db

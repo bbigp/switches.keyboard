@@ -1740,7 +1740,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 ;(function()
 {
     // CommonJS
-    SyntaxHighlighter = SyntaxHighlighter || (typeof require !== 'undefined'? require('front/plugins/datatables/examples/resources/syntax/shCore').SyntaxHighlighter : null);
+    SyntaxHighlighter = SyntaxHighlighter || (typeof require !== 'undefined'? require('ui/plugins/datatables/examples/resources/syntax/shCore').SyntaxHighlighter : null);
 
     function Brush()
     {
@@ -1780,7 +1780,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 ;(function()
 {
     // CommonJS
-    SyntaxHighlighter = SyntaxHighlighter || (typeof require !== 'undefined'? require('front/plugins/datatables/examples/resources/syntax/shCore').SyntaxHighlighter : null);
+    SyntaxHighlighter = SyntaxHighlighter || (typeof require !== 'undefined'? require('ui/plugins/datatables/examples/resources/syntax/shCore').SyntaxHighlighter : null);
 
     function Brush()
     {
@@ -1839,7 +1839,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 ;(function()
 {
     // CommonJS
-    SyntaxHighlighter = SyntaxHighlighter || (typeof require !== 'undefined'? require('front/plugins/datatables/examples/resources/syntax/shCore').SyntaxHighlighter : null);
+    SyntaxHighlighter = SyntaxHighlighter || (typeof require !== 'undefined'? require('ui/plugins/datatables/examples/resources/syntax/shCore').SyntaxHighlighter : null);
 
     function Brush()
     {
@@ -1918,7 +1918,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 ;(function()
 {
     // CommonJS
-    SyntaxHighlighter = SyntaxHighlighter || (typeof require !== 'undefined'? require('front/plugins/datatables/examples/resources/syntax/shCore').SyntaxHighlighter : null);
+    SyntaxHighlighter = SyntaxHighlighter || (typeof require !== 'undefined'? require('ui/plugins/datatables/examples/resources/syntax/shCore').SyntaxHighlighter : null);
 
     function Brush()
     {
@@ -1992,7 +1992,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 ;(function()
 {
     // CommonJS
-    SyntaxHighlighter = SyntaxHighlighter || (typeof require !== 'undefined'? require('front/plugins/datatables/examples/resources/syntax/shCore').SyntaxHighlighter : null);
+    SyntaxHighlighter = SyntaxHighlighter || (typeof require !== 'undefined'? require('ui/plugins/datatables/examples/resources/syntax/shCore').SyntaxHighlighter : null);
 
     function Brush()
     {
@@ -2045,7 +2045,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 ;(function()
 {
     // CommonJS
-    SyntaxHighlighter = SyntaxHighlighter || (typeof require !== 'undefined'? require('front/plugins/datatables/examples/resources/syntax/shCore').SyntaxHighlighter : null);
+    SyntaxHighlighter = SyntaxHighlighter || (typeof require !== 'undefined'? require('ui/plugins/datatables/examples/resources/syntax/shCore').SyntaxHighlighter : null);
 
     function Brush()
     {

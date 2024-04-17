@@ -202,7 +202,7 @@ $(window).on('load', function () {
             {
                 targets: [-1],
                 render: function (data, type, row, meta) {
-                    var jumpUrl = '/p/mks/' + row.id
+                    var jumpUrl = '/dash/mks/' + row.id
                     let _r = '<a href="' +  jumpUrl + '"><button class="btn btn-xs btn-pink-basic">编辑</button></a>';
                     _r += '<div><button class="btn btn-xs btn-default copy-btn" data-id="' + row.id + '">创建副本</button></div>'
                     _r += '<div><button class="btn btn-xs btn-default delete-btn" data-id="' + row.id + '">删除</button></div>'

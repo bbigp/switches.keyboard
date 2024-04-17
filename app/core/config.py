@@ -2,13 +2,13 @@ from pydantic import BaseSettings
 
 
 class Config(BaseSettings):
-    temp_dir: str=f"content/temp/"
-    db_dir: str=f'sqlite:///content/switches.db'
-    file_dir: str=f'content/file/'
+    temp_dir: str=f"data/temp/"
+    db_dir: str=f'sqlite:///data/db/switches.db'
+    file_dir: str=f'data/images/'
 
 
     class Config:
-        env_file = 'content/.env'
+        env_file = '.env'
         env_file_encoding = 'utf-8'
 
 

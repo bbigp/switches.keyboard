@@ -14,9 +14,9 @@ from app.model.domain import sqlm_keyboard_switch, KeyboardSwitch, sqlm_keyword,
 from app.model.vo import MksVO, Specs, KeywordVO
 from app.web.stats import count_stash
 
-templates = Jinja2Templates(directory='front/templates')
+templates = Jinja2Templates(directory='ui/templates')
 
-page_router = APIRouter(prefix='/p')
+page_router = APIRouter(prefix='')
 
 def format_with_tolerance(value):
     base_value, tolerance, unit = value
@@ -39,7 +39,7 @@ def format_studio_with_manufacturer(value):
 templates.env.filters['format_with_tolerance'] = format_with_tolerance
 templates.env.filters['format_studio_with_manufacturer'] = format_studio_with_manufacturer
 
-@page_router.get('/mkslist', response_class=HTMLResponse)
+@page_router.get('/dash/mkslist', response_class=HTMLResponse)
 async def index(request: Request):
     with SqlSession() as session:
         stashlist = list_stash(session)
@@ -58,8 +58,8 @@ def list_stash(session):
         item.count = scount[item.word] if scount.keys().__contains__(item.word) else 0
     return stashlist
 
-@page_router.get("/mks", response_class=HTMLResponse)
-@page_router.get("/mks/{id}", response_class=HTMLResponse)
+@page_router.get("/dash/mks", response_class=HTMLResponse)
+@page_router.get("/dash/mks/{id}", response_class=HTMLResponse)
 async def index(request: Request, id: Optional[int]=None):
     with SqlSession() as session:
         if id is not None:
@@ -106,11 +106,11 @@ async def index(request: Request, id: Optional[int]=None):
         'error_msg': []
     })
 
-@page_router.get("/keyword", response_class=HTMLResponse)
+@page_router.get("/dash/keyword", response_class=HTMLResponse)
 async def keyword(request: Request):
     return templates.TemplateResponse('keyword.html', context={'request': request})
 
-@page_router.get('/stash', response_class=HTMLResponse)
+@page_router.get('/dash/stash', response_class=HTMLResponse)
 async def stash(request: Request):
     with SqlSession() as session:
         stashlist = list_stash(session)
