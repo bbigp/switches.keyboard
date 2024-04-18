@@ -122,6 +122,7 @@ async def mx_switches_list(request: Request):
         stashlist = list_stash(session)
     return templates.TemplateResponse('mx/switches-list.html', context={'request': request})
 
+@page_router.get("/")
 @page_router.get("/dev")
 @page_router.get('/dev/{page}')
 async def dev(
