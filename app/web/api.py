@@ -79,55 +79,54 @@ async def delete(id: int):
         else:
             return {'status': 'error', 'msg': '删除失败'}
 
+
+def build_search_condition(search):
+    delimiter = ' or ' if ' or ' in search else ' and '
+    search_terms = search.split(delimiter)
+
+    sql_params = {}
+    str_list = []
+    for i, term in enumerate(search_terms):
+        conditions = " or ".join(f"{field} like :search_{i}" for field in ['name', 'studio', 'manufacturer', 'tag', 'logo'])
+        str_list.append(f"({conditions})")
+        sql_params[f'search_{i}'] = f'%{term.strip()}%'
+
+    sql_text = text(f" {delimiter} ".join(str_list)).bindparams(**sql_params)
+    return sql_text, sql_params
+
+@api_router.get(('/filter'))
 @api_router.get('/mkslist')
 async def mkslist(
         draw: Optional[int]=None,
         start: Optional[int]=0,
         length: Optional[int]=10,
         search: str=Query(alias='s', default=None),
-        stash: Optional[str]=None
+        stash: Optional[str]=None,
+        manufacturer: Optional[str]=None
 ):
     with SqlSession() as session:
-        sql_params = {}
-        stmt_list = select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.c.deleted==0)\
-            .offset(start)\
+        stmt_list = select('*')\
+            .select_from(text('keyboard_switch'))\
+            .where(text('deleted = 0'))\
+            .order_by(text('update_time desc'))\
             .limit(length)\
-            .order_by(desc(sqlm_keyboard_switch.columns.update_time))
-        stmt_count = select(func.count(sqlm_keyboard_switch.columns.id))\
-            .where(sqlm_keyboard_switch.c.deleted==0)
+            .offset(start)
+        stmt_count = select(func.count('*')).select_from(text('keyboard_switch')).where(text('deleted = 0'))
         if search is not None:
-            if ' or ' in search:
-                str_list = []
-                list_search = [num for num in search.split(' or ') if num != '']
-                for index, _search in enumerate(list_search):
-                    search_key = 'search_' + str(index)
-                    sql_params[search_key] = '%' + _search + '%'
-                    str_list.append(
-                        "name like :{} or studio like :{} or manufacturer like :{} or tag like :{} or logo like :{}".replace("{}", search_key)
-                    )
-                search_sql = text(' or '.join(str_list)).bindparams(**sql_params)
-                stmt_list = stmt_list.where(and_(search_sql))
-                stmt_count = stmt_count.where(and_(search_sql))
-            else:
-                # 空格为且
-                list_search = [num for num in search.split(' and ') if num != '']
-                str_list = []
-                for index, _search in enumerate(list_search):
-                    search_key = 'search_' + str(index)
-                    sql_params[search_key] = '%' + _search + '%'
-                    str_list.append(
-                        "(name like :{} or studio like :{} or manufacturer like :{} or tag like :{} or logo like :{})".replace("{}", search_key)
-                    )
-                search_sql = text(' and '.join(str_list)).bindparams(**sql_params)
-                stmt_list = stmt_list.where(search_sql)
-                stmt_count = stmt_count.where(search_sql)
+            search_text, _ = build_search_condition(search)
+            stmt_list = stmt_list.where(search_text)
+            stmt_count = stmt_count.where(search_text)
+        if manufacturer:
+            # for i, m in enumerate(manufacturer.split(' ')):
+                pass
+
         if stash is not None:
             stash = stash if stash != '-1' else ''
             stmt_list =  stmt_list.where(sqlm_keyboard_switch.c.stash==stash)
             stmt_count = stmt_count.where(sqlm_keyboard_switch.c.stash==stash)
-        list = session.fetchall(stmt_list, KeyboardSwitch, params=sql_params)
+        list = session.fetchall(stmt_list, KeyboardSwitch)
         mkslist = [convert_vo(i) for i in list]
-        total = session.count(stmt_count, params=sql_params)
+        total = session.count(stmt_count)
     return {
         'draw': draw,
         'page_list': mkslist,
