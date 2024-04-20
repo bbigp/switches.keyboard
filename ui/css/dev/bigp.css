@@ -19,3 +19,12 @@
     background-color: #0000000d;
     color: red;
 }
+.filter-list {
+    display: flex;
+    flex-wrap: wrap; /* 允许换行 */
+}
+
+.filter-list li {
+    flex: 0 0 auto; /* 布局不换行 */
+    margin-right: 10px; /* 设置间距 */
+}

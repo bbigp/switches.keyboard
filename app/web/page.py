@@ -12,6 +12,7 @@ from app.core.response import RedirectResponseWraper
 from app.model.assembler import convert_vo
 from app.model.domain import sqlm_keyboard_switch, KeyboardSwitch, sqlm_keyword, Keyword
 from app.model.vo import MksVO, Specs, KeywordVO
+from app.web import api
 from app.web.stats import count_stash
 
 templates = Jinja2Templates(directory='ui/templates')
@@ -131,17 +132,9 @@ async def dev(
         size: Optional[int]=15
 ):
     with SqlSession() as session:
-        list = session.fetchall(
-            select(sqlm_keyboard_switch).where(sqlm_keyboard_switch.c.deleted == 0)
-                .limit(size)
-                .offset((page - 1) * size)
-                .order_by(desc(sqlm_keyboard_switch.columns.update_time)),
-            KeyboardSwitch
-        )
-        total = session.count(
-            select(func.count(sqlm_keyboard_switch.columns.id))
-                .where(sqlm_keyboard_switch.c.deleted == 0)
-        )
+        stmt_list, stmt_count = api.filter((page - 1) * size, size, '', None, None, True)
+        list = session.fetchall(stmt_list, KeyboardSwitch)
+        total = session.count(stmt_count)
         manufacturers = session.fetchall(
             text('select * from keyword where deleted = 0 and type = :type').bindparams(type='manufacturer'),
             Keyword

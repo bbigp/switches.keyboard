@@ -94,6 +94,52 @@ def build_search_condition(search):
     sql_text = text(f" {delimiter} ".join(str_list)).bindparams(**sql_params)
     return sql_text, sql_params
 
+def build_or_condition(field, condition):
+    cond_list = condition.split(',')
+    list = []
+    params = {}
+    for i, _c in enumerate(cond_list):
+        list.append(f"{field} = :bsearch_{i}")
+        params[f'bsearch_{i}'] = _c.strip()
+    return text('or'.join(list)).bindparams(**params)
+
+def build_where(stmt_list_base, stmt_count_base, where_condtion):
+    return stmt_list_base.where(where_condtion), stmt_count_base.where(where_condtion)
+
+def filter(start: Optional[int]=0,
+        length: Optional[int]=10,
+        search: str=Query(alias='s', default=None),
+        stash: Optional[str]=None,
+        manufacturer: Optional[str]=None,
+        is_available: Optional[bool]=None):
+    stmt_list = select('*') \
+        .select_from(text('keyboard_switch')) \
+        .where(text('deleted = 0')) \
+        .order_by(text('update_time desc')) \
+        .limit(length) \
+        .offset(start)
+    stmt_count = select(func.count('*')).select_from(text('keyboard_switch')).where(text('deleted = 0'))
+    if search is not None:
+        sql_text, _ = build_search_condition(search)
+        stmt_list, stmt_count = build_where(stmt_list, stmt_count, sql_text)
+    if manufacturer:
+        sql_text = build_or_condition('manufacturer', manufacturer)
+        stmt_list, stmt_count = build_where(stmt_list, stmt_count, sql_text)
+    print(f'have: {is_available}')
+    if is_available is None:
+        pass
+    elif is_available is True:
+        sql_text = text("stash != '' and stash is not null")
+        stmt_list, stmt_count = build_where(stmt_list, stmt_count, sql_text)
+    else:
+        sql_text = text("(stash = '' or stash is null)")
+        stmt_list, stmt_count = build_where(stmt_list, stmt_count, sql_text)
+    if stash is not None:
+        stash = stash if stash != '-1' else ''
+        stmt_list = stmt_list.where(sqlm_keyboard_switch.c.stash == stash)
+        stmt_count = stmt_count.where(sqlm_keyboard_switch.c.stash == stash)
+    return stmt_list, stmt_count
+
 @api_router.get(('/filter'))
 @api_router.get('/mkslist')
 async def mkslist(
@@ -102,28 +148,11 @@ async def mkslist(
         length: Optional[int]=10,
         search: str=Query(alias='s', default=None),
         stash: Optional[str]=None,
-        manufacturer: Optional[str]=None
+        manufacturer: Optional[str]=None,
+        is_available: Optional[bool]=None
 ):
     with SqlSession() as session:
-        stmt_list = select('*')\
-            .select_from(text('keyboard_switch'))\
-            .where(text('deleted = 0'))\
-            .order_by(text('update_time desc'))\
-            .limit(length)\
-            .offset(start)
-        stmt_count = select(func.count('*')).select_from(text('keyboard_switch')).where(text('deleted = 0'))
-        if search is not None:
-            search_text, _ = build_search_condition(search)
-            stmt_list = stmt_list.where(search_text)
-            stmt_count = stmt_count.where(search_text)
-        if manufacturer:
-            # for i, m in enumerate(manufacturer.split(' ')):
-                pass
-
-        if stash is not None:
-            stash = stash if stash != '-1' else ''
-            stmt_list =  stmt_list.where(sqlm_keyboard_switch.c.stash==stash)
-            stmt_count = stmt_count.where(sqlm_keyboard_switch.c.stash==stash)
+        stmt_list, stmt_count = filter(start, length, search, stash, manufacturer, is_available)
         list = session.fetchall(stmt_list, KeyboardSwitch)
         mkslist = [convert_vo(i) for i in list]
         total = session.count(stmt_count)
