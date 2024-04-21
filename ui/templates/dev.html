@@ -227,7 +227,7 @@
                                         <div class="form-search">
                                             <input id="searchSwitch" class="input-text" value=""
                                                    placeholder="输入轴体名字搜索..." type="search">
-                                            <button class="search-btn" type="button" onclick="page(1)">
+                                            <button class="search-btn" type="button" onclick="initFilter()">
                                                 <i class="bi bi-search"></i>
                                             </button>
                                         </div>
@@ -517,15 +517,18 @@
         }
         let is_available;
         let manufacturers = []
+        let search;
         $('.sidebar-tag div').each(function() {
             let field = $(this).data('field'), value = $(this).data('value')
             if (field === 'is_available') {
                 is_available = value
             } else if (field === 'manufacturer') {
                 manufacturers.push(value)
+            } else if (field === 'search') {
+                search = value
             }
         });
-        let search = $('#searchSwitch').val()
+        // let search = $('#searchSwitch').val()
         var params = {
             start: (page - 1) * 15, length: 15,
             is_available: is_available,
@@ -585,6 +588,14 @@
                 filterList.push(newValue);
             }
         });
+        let search = $('#searchSwitch').val()
+        if(search !== '') {
+            filterList.push({
+                'text': '搜索:' + search,
+                'value': search,
+                'field': 'search'
+            });
+        }
         $('div.sidebar-tag').html(template('filterTagListTpl', {'filterList': filterList}))
         $('.filterSize').text('(' + filterList.length + ')')
         page(1)
@@ -608,6 +619,11 @@
             if(checked) {
                 $(this).next('span').css({'color': 'red', 'font-weight': 'bold'})
                 $(this).prop('checked', true)
+                if (field === 'is_available') {
+                    var siblingsLi = $(this).parent().siblings('li');
+                    siblingsLi.find('input').prop('checked', false)
+                    siblingsLi.find('span').css({'color': '', 'font-weight': ''})
+                }
             } else{
                 $(this).next('span').css({'color': '', 'font-weight': ''})
                 $(this).prop('checked', false)
@@ -633,9 +649,13 @@
 <script>
     $('#searchSwitch').keyup(function (event){
         if (event.keyCode === 13) {
-            page(1)
+            initFilter()
         }
-    })
+    }).on('input', function() {
+        if ($(this).val() === '') {
+            initFilter()
+        }
+    });
 </script>
 
 </body>
