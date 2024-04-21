@@ -33,8 +33,20 @@
 
 <div class="main-wrapper">
 
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebar" aria-labelledby="sidebarLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="sidebarLabel">筛选</h5>
+          <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            {% set mediaFilter = '' %}
+            {% include 'dev/filter-is_available.html' %}
+            {% include 'dev/filter-manufacturer.html' %}
+        </div>
+      </div>
 
-
+          
+     
     <!-- main-content-wrap start -->
     <div class="main-content-wrap shop-page section-ptb">
         <div class="container">
@@ -43,12 +55,15 @@
                     <!-- Shop Sidebar Wrap Start -->
                     <div class="shop-sidebar-wrap">
                         <div class="shop-sidebar mb-30">
-                            <h4 class="title">筛选</h4>
+                            <h4 class="title" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
+                                筛选 <span class="filterSize">(1)</span>
+                                <span class="toggle-btn__chevron ltr-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><title>Right</title><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+                            </h4>
                             <div class="sidebar-tag">
-                                <span class="align-items-center filterTag" data-field="is_available" data-value="true">
+                                <div class="align-items-center filterTag" data-field="is_available" data-value="true">
                                     仓库中
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                </span>
+                                </div>
                             </div>
                         </div>
 
@@ -119,33 +134,11 @@
 <!--                        </div>-->
                         <!-- Shop Sidebar End -->
 
+                        {% set mediaFilter = 'filter-container' %}
+                        {% include 'dev/filter-is_available.html' %}
+                        {% include 'dev/filter-manufacturer.html' %}
 
-                        <div class="shop-sidebar mb-30">
-                            <h4 class="title">状态</h4>
-                            <ul id="switchFactoryList" class="filterList filter-list">
-                                <li>
-                                    <input checked class="switchFactoryCheck big-large-checkbox" type="checkbox" data-field="is_available" data-value="true"/>
-                                    <span style="color: red; font-weight: bold" class="switchFactory big-factory" data-field="is_available" data-value="true">仓库中</span>
-                                </li>
-                                <li>
-                                    <input class="switchFactoryCheck big-large-checkbox" type="checkbox" data-field="is_available" data-value="false"/>
-                                    <span class="switchFactory big-factory" data-field="is_available" data-value="false">草稿</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <!-- Shop Sidebar Color Start -->
-                        <div class="shop-sidebar mb-30">
-                            <h4 class="title">代工 MANUFACTORY</h4>
-                            <ul id="switchFactoryList" class="filterList">
-                                {% for item in manufacturers %}
-                                <li>
-                                    <input class="switchFactoryCheck big-large-checkbox" type="checkbox" data-field="manufacturer" data-value="{{ item.word }}"/>
-                                    <span class="switchFactory big-factory" data-field="manufacturer" data-value="{{ item.word }}">{{ item.word }}</span>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        <!-- Shop Sidebar End -->
+
 
                         <!-- Shop Sidebar Tag Start -->
                         <!-- <div class="shop-sidebar mb-30">
@@ -380,6 +373,7 @@
 {#<script src="./洋山芋轴馆YSYSwiches_files/popper.min.js.下载"></script>#}
 <script src="/js/bootstrap.js"></script>
 <script src="/js/template-web.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
 {#<script src="./洋山芋轴馆YSYSwiches_files/slick.min.js.下载"></script>#}
 {#<script src="./洋山芋轴馆YSYSwiches_files/jqueryui.min.js.下载"></script>#}
 {#<script src="./洋山芋轴馆YSYSwiches_files/scrollup.min.js.下载"></script>#}
@@ -523,7 +517,7 @@
         }
         let is_available;
         let manufacturers = []
-        $('.sidebar-tag span').each(function() {
+        $('.sidebar-tag div').each(function() {
             let field = $(this).data('field'), value = $(this).data('value')
             if (field === 'is_available') {
                 is_available = value
@@ -567,10 +561,10 @@
 <script id="filterTagListTpl" type="text/html">
     {% raw %}
     {{ each filterList item index }}
-        <span class="align-items-center filterTag" data-field="{{item.field}}" data-value="{{item.value}}">
+        <div class="align-items-center filterTag" data-field="{{item.field}}" data-value="{{item.value}}">
             {{ item.text }}
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </span>
+        </div>
     {{ /each }}
     {% endraw %}
 </script>
@@ -579,9 +573,20 @@
         var filterList = []
         $('.filterList input:checked').each(function() {
             let $span = $(this).closest('li').find('span')
-            filterList.push({'text': $span.text(), 'value': $span.data('value'), 'field': $span.data('field')})
+            let newValue = {
+                'text': $span.text(),
+                'value': $span.data('value'),
+                'field': $span.data('field')
+            };
+            let alreadyExists = filterList.some(function(item) {
+                return item.text === newValue.text && item.value === newValue.value && item.field === newValue.field;
+            });
+            if (!alreadyExists) {
+                filterList.push(newValue);
+            }
         });
         $('div.sidebar-tag').html(template('filterTagListTpl', {'filterList': filterList}))
+        $('.filterSize').text('(' + filterList.length + ')')
         page(1)
     }
     // 删除筛选的tag
@@ -598,41 +603,31 @@
         initFilter()
     })
 
+    function checkoutFilter(field, value, checked){
+        $('input[data-field="' + field + '"][data-value="' + value + '"]').each(function() {
+            if(checked) {
+                $(this).next('span').css({'color': 'red', 'font-weight': 'bold'})
+                $(this).prop('checked', true)
+            } else{
+                $(this).next('span').css({'color': '', 'font-weight': ''})
+                $(this).prop('checked', false)
+            }
+        });
+    }
+
     $('input[type="checkbox"].switchFactoryCheck').change(function(){
+        var dataField = $(this).attr('data-field');
+        var dataValue = $(this).attr('data-value')
         if($(this).is(':checked')){
-            $(this).next('span').css({'color': 'red', 'font-weight': 'bold'})
+            checkoutFilter(dataField, dataValue, true)
         } else{
-            $(this).next('span').css({'color': '', 'font-weight': ''})
+            checkoutFilter(dataField, dataValue, false)
         }
         initFilter()
     })
     $('.switchFactory').click(function(){
         var checkbox = $(this).prev('input.switchFactoryCheck');
-        if (!checkbox.is(':checked')) {
-            $(this).css({'color': 'red', 'font-weight': 'bold'})
-        } else {
-            $(this).css({'color': '', 'font-weight': ''})
-        }
         checkbox.prop('checked', !checkbox.prop('checked')).change();
-        initFilter()
-        // if($(this).text().indexOf('✓') > 0) {
-        //     $(this).text($(this).data('value'))
-        //     $(this).css({
-        //         'color': '',
-        //         'font-weight': ''
-        //     })
-        // } else {
-        //     $(this).text($(this).data('value') + ' ✓')
-        //     $(this).css({
-        //         'color': 'red',
-        //         'font-weight': 'bold'
-        //     })
-        // }
-        // var selectedLinks = $("#switchFactoryList li:contains('✓') a");
-
-        // var dataValues = selectedLinks.map(function() {
-        //     return $(this).data('value');
-        // }).get();
     })
 </script>
 <script>

@@ -68,26 +68,26 @@ def init_app():
 
 app = init_app()
 
-@app.middleware('http')
-async def add_process_time_header(request: Request, call_next):
-    start_time = time.time()
-    response = await call_next(request)
-    process_time = time.time() - start_time
-    response.headers['X-Process-Time'] = str(process_time)
-    return response
+# @app.middleware('http')
+# async def add_process_time_header(request: Request, call_next):
+#     start_time = time.time()
+#     response = await call_next(request)
+#     process_time = time.time() - start_time
+#     response.headers['X-Process-Time'] = str(process_time)
+#     return response
 
-@app.middleware('http')
-async def del_blank_str_query_param(request: Request, call_next):
-    q_params = {}
-    query_params = request.query_params
-    for k in query_params.keys():
-        v = query_params.get(k)
-        if v != '':
-            q_params[k] = v
-    request.scope['query_string'] = urlencode(q_params).encode('utf-8')
-    # print(str(request.scope))
-    response = await call_next(request)
-    return response
+# @app.middleware('http')
+# async def del_blank_str_query_param(request: Request, call_next):
+#     q_params = {}
+#     query_params = request.query_params
+#     for k in query_params.keys():
+#         v = query_params.get(k)
+#         if v != '':
+#             q_params[k] = v
+#     request.scope['query_string'] = urlencode(q_params).encode('utf-8')
+#     # print(str(request.scope))
+#     response = await call_next(request)
+#     return response
 
 @app.exception_handler(AttributeError)
 @app.exception_handler(ValueError)

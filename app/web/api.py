@@ -96,19 +96,21 @@ def build_search_condition(search):
 
 def build_or_condition(field, condition):
     cond_list = condition.split(',')
-    list = []
+    condition_list = []
     params = {}
     for i, _c in enumerate(cond_list):
-        list.append(f"{field} = :bsearch_{i}")
-        params[f'bsearch_{i}'] = _c.strip()
-    return text('or'.join(list)).bindparams(**params)
+        param_name = f'bsearch_{i}'
+        condition_list.append(f"{field} = :{param_name}")
+        params[param_name] = _c.strip()
+    or_condition = ' OR '.join(condition_list)
+    return text(f'({or_condition})').bindparams(**params)
 
 def build_where(stmt_list_base, stmt_count_base, where_condtion):
     return stmt_list_base.where(where_condtion), stmt_count_base.where(where_condtion)
 
 def filter(start: Optional[int]=0,
         length: Optional[int]=10,
-        search: str=Query(alias='s', default=None),
+        search: Optional[str]=None,
         stash: Optional[str]=None,
         manufacturer: Optional[str]=None,
         is_available: Optional[bool]=None):
@@ -119,7 +121,7 @@ def filter(start: Optional[int]=0,
         .limit(length) \
         .offset(start)
     stmt_count = select(func.count('*')).select_from(text('keyboard_switch')).where(text('deleted = 0'))
-    if search is not None:
+    if search and search != '':
         sql_text, _ = build_search_condition(search)
         stmt_list, stmt_count = build_where(stmt_list, stmt_count, sql_text)
     if manufacturer:
@@ -139,14 +141,13 @@ def filter(start: Optional[int]=0,
         stmt_list = stmt_list.where(sqlm_keyboard_switch.c.stash == stash)
         stmt_count = stmt_count.where(sqlm_keyboard_switch.c.stash == stash)
     return stmt_list, stmt_count
-
 @api_router.get(('/filter'))
 @api_router.get('/mkslist')
 async def mkslist(
         draw: Optional[int]=None,
         start: Optional[int]=0,
         length: Optional[int]=10,
-        search: str=Query(alias='s', default=None),
+        search: str=Query(default='', alias='s'),
         stash: Optional[str]=None,
         manufacturer: Optional[str]=None,
         is_available: Optional[bool]=None

@@ -1,0 +1,14 @@
+<!-- Shop Sidebar Color Start -->
+<div class="shop-sidebar mb-30 {{ mediaFilter }}">
+    <h4 class="title">代工 MANUFACTORY</h4>
+    <ul id="switchFactoryList" class="filterList">
+        {% for item in manufacturers %}
+        <li>
+            <input class="switchFactoryCheck big-large-checkbox" type="checkbox" data-field="manufacturer"
+                   data-value="{{ item.word }}"/>
+            <span class="switchFactory big-factory" data-field="manufacturer" data-value="{{ item.word }}">{{ item.word }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+<!-- Shop Sidebar End -->
