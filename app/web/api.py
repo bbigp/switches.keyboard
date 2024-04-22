@@ -127,7 +127,7 @@ def filter(start: Optional[int]=0,
     if manufacturer:
         sql_text = build_or_condition('manufacturer', manufacturer)
         stmt_list, stmt_count = build_where(stmt_list, stmt_count, sql_text)
-    print(f'have: {is_available}')
+        print(str(stmt_list))
     if is_available is None:
         pass
     elif is_available is True:
@@ -136,10 +136,10 @@ def filter(start: Optional[int]=0,
     else:
         sql_text = text("(stash = '' or stash is null)")
         stmt_list, stmt_count = build_where(stmt_list, stmt_count, sql_text)
-    if stash is not None:
-        stash = stash if stash != '-1' else ''
-        stmt_list = stmt_list.where(sqlm_keyboard_switch.c.stash == stash)
-        stmt_count = stmt_count.where(sqlm_keyboard_switch.c.stash == stash)
+    if stash:
+        stash = '' if stash == '-1' else stash
+        sql_text = text(f"stash = '{stash}'")
+        stmt_list, stmt_count = build_where(stmt_list, stmt_count, sql_text)
     return stmt_list, stmt_count
 @api_router.get(('/filter'))
 @api_router.get('/mkslist')
@@ -148,7 +148,7 @@ async def mkslist(
         start: Optional[int]=0,
         length: Optional[int]=10,
         search: str=Query(default='', alias='s'),
-        stash: Optional[str]=None,
+        stash: Optional[str]='',
         manufacturer: Optional[str]=None,
         is_available: Optional[bool]=None
 ):
