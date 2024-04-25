@@ -173,32 +173,57 @@
          console.log(data)
      })
 
-     $('#paste-btn').click(function (){
-         getClipboardContents()
-     })
+    //  $('#paste-btn').click(function (){
+    //      getClipboardContents()
+    //  })
 
-     async function getClipboardContents() {
-         try {
-             const clipboardItems = await navigator.clipboard.read()
-             console.log(clipboardItems)
-             for (let clipboardItem of clipboardItems) {
-                 for (const type of clipboardItem.types) {
-                     if (type.indexOf('image') >= 0) {
-                         const blob = await clipboardItem.getType(type)
-                         if (blob) {
-                             var reader = new FileReader()
-                             reader.readAsDataURL(blob)
-                             reader.onload = function (evt) {
-                                 $('#cropper-main-pic-img').attr('src', evt.target.result)
+    //  async function getClipboardContents() {
+    //      try {
+    //          const clipboardItems = await navigator.clipboard.read()
+    //          console.log(clipboardItems)
+    //          for (let clipboardItem of clipboardItems) {
+    //              for (const type of clipboardItem.types) {
+    //                  if (type.indexOf('image') >= 0) {
+    //                      const blob = await clipboardItem.getType(type)
+    //                      if (blob) {
+    //                          var reader = new FileReader()
+    //                          reader.readAsDataURL(blob)
+    //                          reader.onload = function (evt) {
+    //                              $('#cropper-main-pic-img').attr('src', evt.target.result)
+    //                          }
+    //                      }
+    //                  }
+    //              }
+    //          }
+    //      } catch (err) {
+    //          console.log(err.name, err.message);
+    //      }
+    //  }
+
+     var clipboard = new ClipboardJS('#paste-btn', {
+        action: function() {
+            navigator.clipboard.read().then(function(clipboardItems) {
+                console.log(clipboardItems)
+                clipboardItems.forEach(function(clipboardItem) {
+                    clipboardItem.types.forEach(function(type) {
+                        if (type === 'image/png') {
+                            clipboardItem.getType(type).then(function(blob) {
+                                console.log(blob)
+                                if (blob) {
+                                 var reader = new FileReader()
+                                 reader.readAsDataURL(blob)
+                                 reader.onload = function (evt) {
+                                    $('#cropper-main-pic-img').attr('src', evt.target.result)
+                                 }
                              }
-                         }
-                     }
-                 }
-             }
-         } catch (err) {
-             console.log(err.name, err.message);
-         }
-     }
+                            });
+                        }
+                    });
+                });
+            });
+        }
+    });
+
     var cropper = null
      $('#direct-use-btn').click(function () {
          if (cropper !== null) {
