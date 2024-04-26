@@ -1,13 +1,22 @@
 import tkinter as tk
-from PIL import ImageGrab,Image,ImageTk
+import tkinter.filedialog
+import tkinter.messagebox
 from threading import Timer
-import tkinter.filedialog,tkinter.messagebox
+import io
+import json
+
+import requests
+from PIL import ImageGrab, ImageTk
+from pydantic.main import BaseModel
+
+print(tk.TkVersion)
+
 # https://blog.csdn.net/geng_zhaoying/article/details/119096475
 def screenGrab():
     global f1,cv,TRANSCOLOUR        #在Toplevel窗口和主窗口可以互相使用对方的变量和方法。
     root.state('icon')              #主窗体最小化。icon:最小化,normal:正常显示,zoomed:最大化。或root.iconify()
     f1 = tk.Toplevel(root)                   #用Toplevel类创建独立主窗口的新窗口，非模式窗体
-    f1.wm_attributes("-alpha", 0.6)          #设置窗体透明度(0.0~1.0)
+    f1.wm_attributes("-alpha", 0.7)          #设置窗体透明度(0.0~1.0)
     f1.overrideredirect(True)                #设置窗体无标题栏
     ws = f1.winfo_screenwidth()              #屏幕长和宽
     hs = f1.winfo_screenheight()
@@ -71,14 +80,43 @@ def doGrabAllScreen():  #Timer(0.2,doGrabAllScreen)语句参数2指定的在其�
     cvM.delete('P')                                 #删除上一个截取图像
     cvM.create_image(0,0,image=img,tags=('P'),anchor=('nw'))#将img在主窗口显示,img必须是全局变量,不能丢失
     root.state('normal')                           #使主窗体正常显示
+
+class ResponseModel(BaseModel):
+    message: str
+    filename: str
+
+def upload():
+    host = entry.get()
+    buff = io.BytesIO()
+    p.save(buff, format='PNG')
+    files = {'image': buff.getvalue()}
+    response = requests.post(f'{host}/api/upload_pic', files=files)
+    if response.status_code == 200:
+        data = json.loads(response.text)
+        if data.status == 'ok':
+            print(data.data)
+        else:
+            pass
+    else:
+        pass
+
+
+
 root = tk.Tk()
-root.geometry('500x500+50+50')
+root.wm_title('Bigp')
+root.geometry('200x200-50-50')
 frm = tk.Frame(root)
 frm.pack(fill=tk.BOTH)
+entry = tk.Entry(frm)
+entry.insert(index=0, string='http://127.0.0.1:8002')
+entry.pack()
 tk.Button(frm,text="定位截屏", command=screenGrab).pack(side='left')
 tk.Button(frm,text="截全屏", command=grabAllScreen).pack(side='left')
 tk.Button(frm,text="保存图像", command=saveImage).pack(side='left')
-tk.Button(frm,text="帮助", command=Help).pack(side='left')
+tk.Button(frm,text="上传", command=upload).pack(side='left')
 cvM = tk.Canvas(root,bg='lightgray')        #主窗体中canvac实例
 cvM.pack(fill=tk.BOTH, expand=tk.Y)
-root.mainloop()
+
+
+if __name__ == '__main__':
+    root.mainloop()
