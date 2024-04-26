@@ -29,16 +29,32 @@
 
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-sm-9 col-xs-7">
+                        <div class="col-sm-10 col-xs-8">
                             <input type="text" class="form-control" id="download-pic-input">
                         </div>
-                        <div class="col-sm-3 col-xs-5">
+                        <div class="col-sm-2 col-xs-4">
                             <div class="btn-group">
                                 <button id="download-pic-btn" class="btn btn-primary">
                                     下载
                                 </button>
-                                <button id="paste-btn" class="btn btn-primary">
+                                <!-- <button id="paste-btn" class="btn btn-primary">
                                     粘贴
+                                </button> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 5px;">
+                        <div class="col-sm-10 col-xs-8">
+                            <select class="form-control" id="cloudImageSelect" style="width: 100%;" title="请选择">
+                                {% for item in images %}
+                                    <option value="{{ '/bfs/t/' + item }}">{{ '/bfs/t/' + item }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-sm-2 col-xs-4">
+                            <div class="btn-group">
+                                <button id="choosePicBtn" class="btn btn-primary">
+                                    选择
                                 </button>
                             </div>
                         </div>

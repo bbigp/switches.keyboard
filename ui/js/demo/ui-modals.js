@@ -391,6 +391,14 @@
          simplemde.value(simplemde.value().replaceAll('![]()', ''))
      })
 
+     $(document).on('change', '#cloudImageSelect', function(){
+        $('#cropper-main-pic-img').attr('src', $(this).val())
+     });
+
+     $('#choosePicBtn').click(function(){
+        $('#cropper-main-pic-img').attr('src', $('#cloudImageSelect').val())
+     })
+
      $('#type-stash').on('changed.bs.select', function (e) {
          let nowValue = $('#logo-input').val()
          if (nowValue !== '') {

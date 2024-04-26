@@ -1,3 +1,4 @@
+import os.path
 from typing import Optional
 
 from fastapi import Request, Form, APIRouter
@@ -6,6 +7,7 @@ from starlette import status
 from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
 
+from app.core.config import app_config
 from app.core.database import SqlSession
 from app.core.internal import paginate_info
 from app.core.response import RedirectResponseWraper
@@ -59,6 +61,13 @@ def list_stash(session):
         item.count = scount[item.word] if scount.keys().__contains__(item.word) else 0
     return stashlist
 
+def list_image(path):
+    files = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+    latest_files = sorted(files)[-20:]
+    return latest_files[::-1]
+
+
+
 @page_router.get("/dash/mks", response_class=HTMLResponse)
 @page_router.get("/dash/mks/{id}", response_class=HTMLResponse)
 async def index(request: Request, id: Optional[int]=None):
@@ -96,6 +105,7 @@ async def index(request: Request, id: Optional[int]=None):
                 studios.append(item.word)
             else:
                 pass
+    images = list_image(app_config.temp_dir)
     return templates.TemplateResponse('switches.html', context={
         'request': request,
         'keyboard_switch': mks,
@@ -104,7 +114,8 @@ async def index(request: Request, id: Optional[int]=None):
         'switch_stashs': stashs,
         'logos': logos,
         'studios': studios,
-        'error_msg': []
+        'error_msg': [],
+        'images': images
     })
 
 @page_router.get("/dash/keyword", response_class=HTMLResponse)

@@ -136,7 +136,7 @@ tk.Button(frm, text="定位截屏", command=screen_grab).pack(side='left')
 tk.Button(frm, text="截全屏", command=grab_all_screen).pack(side='left')
 tk.Button(frm, text="保存图像", command=save_image).pack(side='left')
 tk.Button(frm, text="上传", command=upload).pack(side='left')
-cvM = tk.Canvas(root, bg='lightgray', height=250, width=400)        #主窗体中canvac实例
+cvM = tk.Canvas(root, bg='lightgray', height=280, width=400)        #主窗体中canvac实例
 cvM.pack()
 text = ScrolledText(root)
 text.pack()
