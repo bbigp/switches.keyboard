@@ -48,6 +48,13 @@ async def upload_pic(image: UploadFile):
         f.write(await image.read())
     return {'status': 'ok', 'data': '/bfs/fs/' + image_id + '.jpg'}
 
+@pic_router.post('/api/upload_temp_pic')
+async def upload_pic(image: UploadFile):
+    image_id = str(id_worker.next_id())
+    with open(app_config.temp_dir + image_id + '.jpg', 'wb') as f:
+        f.write(await image.read())
+    return {'status': 'ok', 'data': '/bfs/t/' + image_id + '.jpg'}
+
 
 @pic_router.get('/bfs/{source}/{path}', response_class=FileResponse)
 async def show_pic(path: str, source: str):

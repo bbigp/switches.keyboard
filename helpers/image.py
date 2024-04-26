@@ -91,7 +91,7 @@ def upload():
     buff = io.BytesIO()
     p.save(buff, format='PNG')
     files = {'image': buff.getvalue()}
-    response = requests.post(f'{host}/api/upload_pic', files=files)
+    response = requests.post(f'{host}/api/upload_temp_pic', files=files)
     if response.status_code == 200:
         data = json.loads(response.text)
         print(f'{now} {data}')
@@ -130,7 +130,7 @@ root.geometry('400x400-50-50')
 frm = tk.Frame(root)
 frm.pack(fill=tk.BOTH)
 entry = tk.Entry(frm, width=200)
-entry.insert(index=0, string='http://127.0.0.1:8002')
+entry.insert(index=0, string='http://192.168.1.100:8002')
 entry.pack()
 tk.Button(frm, text="定位截屏", command=screen_grab).pack(side='left')
 tk.Button(frm, text="截全屏", command=grab_all_screen).pack(side='left')
