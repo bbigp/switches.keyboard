@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, String, Integer, Text, BIGINT
+from sqlalchemy import create_engine, MetaData, Table, Column, String, Integer, Text, BIGINT, Numeric
 from app.core.database import metadata
 
 from pydantic.main import BaseModel
@@ -40,6 +40,77 @@ class Etd(BaseModel):
     error: str=None
     create_time: int = None
     update_time: int = None
+
+class Switches(BaseModel):
+    id: int=None
+    name: str
+    studio: str
+    manufacturer: str=''
+    pic: str = ''
+    num: int=0
+    type: str=''
+    mark: str=''
+    top_mat: str=''
+    bottom_mat: str=''
+    stem_mat: str=''
+    spring: str=''
+    actuation_force: float=None
+    actuation_force_tol: str=''
+    bottom_force: float=None
+    bottom_force_tol: str=''
+    pre_travel: float=None
+    pre_travel_tol: str=''
+    total_travel: float=None
+    total_travel_tol: str=''
+    light_style: str=''
+    pins: int=None
+    stor_loc_box: str=''
+    stor_loc_row: int=None
+    stor_loc_col: int=None
+    price: str = ''
+    desc: str = ''
+
+    create_time: int = None
+    update_time: int = None
+    deleted: int=0
+
+
+T_switches = Table('switches',
+                 metadata,
+                 Column('id', BIGINT()),
+                 Column('name', String(30), primary_key=True),
+                 Column('manufacturer', String(50)),
+                 Column('studio', String(50)),
+                 Column('pic', String(200)),
+                 Column('num', Integer()),
+                 Column('type', String(10)),
+                 Column('mark', String(50)),
+
+                 Column('top_mat', String(10)),
+                 Column('bottom_mat', String(10)),
+                 Column('stem_mat', String(10)),
+                 Column('spring', String(10)),
+
+                 Column('actuation_force', Numeric(5, 2)),
+                 Column('actuation_force_tol', String(10)),
+                 Column('bottom_force', Numeric(5, 2)),
+                 Column('bottom_force_tol', String(10)),
+                 Column('pre_travel', Numeric(5, 2)),
+                 Column('pre_travel_tol', String(10)),
+                 Column('total_travel', Numeric(5, 2)),
+                 Column('total_travel_tol', String(10)),
+
+                 Column('light_style', String(10)),
+                 Column('pins', Integer()),
+                 Column('stor_loc_box', String(10)),
+                 Column('stor_loc_row', Integer()),
+                 Column('stor_loc_col', Integer()),
+                 Column('price', String(20)),
+                 Column('desc', Text()),
+                 Column('create_time', BIGINT()),
+                 Column('update_time', BIGINT()),
+                 Column('deleted', Integer())
+                 )
 
 # class Box(BaseModel):
 #     id: int
