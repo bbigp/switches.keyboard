@@ -5,9 +5,11 @@ from fastapi import Query, APIRouter
 from sqlalchemy import select, insert, func, and_, or_, update, desc, text
 from starlette.responses import JSONResponse
 
+from app import crud
 from app.core.database import SqlSession
 from app.core.internal import generate_random_string, paginate_info
 from app.core.snowflake_id import id_worker
+from app.crud import keyword_mapper
 from app.model.assembler import convert_vo, convert_keywrod_sqlm
 from app.model.domain import sqlm_keyword, Keyword, sqlm_keyboard_switch, KeyboardSwitch
 from app.model.request import KeywordRequest
@@ -80,67 +82,7 @@ async def delete(id: int):
             return {'status': 'error', 'msg': '删除失败'}
 
 
-def build_search_condition(search):
-    delimiter = ' or ' if ' or ' in search else ' and '
-    search_terms = search.split(delimiter)
 
-    sql_params = {}
-    str_list = []
-    for i, term in enumerate(search_terms):
-        conditions = " or ".join(f"{field} like :search_{i}" for field in ['name', 'studio', 'manufacturer', 'tag', 'logo'])
-        str_list.append(f"({conditions})")
-        sql_params[f'search_{i}'] = f'%{term.strip()}%'
-
-    sql_text = text(f" {delimiter} ".join(str_list)).bindparams(**sql_params)
-    return sql_text, sql_params
-
-def build_or_condition(field, condition):
-    cond_list = condition.split(',')
-    condition_list = []
-    params = {}
-    for i, _c in enumerate(cond_list):
-        param_name = f'bsearch_{i}'
-        condition_list.append(f"{field} = :{param_name}")
-        params[param_name] = _c.strip()
-    or_condition = ' OR '.join(condition_list)
-    return text(f'({or_condition})').bindparams(**params)
-
-def build_where(stmt_list_base, stmt_count_base, where_condtion):
-    return stmt_list_base.where(where_condtion), stmt_count_base.where(where_condtion)
-
-def filter(start: Optional[int]=0,
-        length: Optional[int]=10,
-        search: Optional[str]=None,
-        stash: Optional[str]=None,
-        manufacturer: Optional[str]=None,
-        is_available: Optional[bool]=None):
-    stmt_list = select('*') \
-        .select_from(text('keyboard_switch')) \
-        .where(text('deleted = 0')) \
-        .order_by(text('update_time desc')) \
-        .limit(length) \
-        .offset(start)
-    stmt_count = select(func.count('*')).select_from(text('keyboard_switch')).where(text('deleted = 0'))
-    if search and search != '':
-        sql_text, _ = build_search_condition(search)
-        stmt_list, stmt_count = build_where(stmt_list, stmt_count, sql_text)
-    if manufacturer:
-        sql_text = build_or_condition('manufacturer', manufacturer)
-        stmt_list, stmt_count = build_where(stmt_list, stmt_count, sql_text)
-        print(str(stmt_list))
-    if is_available is None:
-        pass
-    elif is_available is True:
-        sql_text = text("stash != '' and stash is not null")
-        stmt_list, stmt_count = build_where(stmt_list, stmt_count, sql_text)
-    else:
-        sql_text = text("(stash = '' or stash is null)")
-        stmt_list, stmt_count = build_where(stmt_list, stmt_count, sql_text)
-    if stash:
-        stash = '' if stash == '-1' else stash
-        sql_text = text(f"stash = '{stash}'")
-        stmt_list, stmt_count = build_where(stmt_list, stmt_count, sql_text)
-    return stmt_list, stmt_count
 @api_router.get(('/filter'))
 @api_router.get('/mkslist')
 async def mkslist(
@@ -153,7 +95,7 @@ async def mkslist(
         is_available: Optional[bool]=None
 ):
     with SqlSession() as session:
-        stmt_list, stmt_count = filter(start, length, search, stash, manufacturer, is_available)
+        stmt_list, stmt_count = crud.filter(start, length, search, stash, manufacturer, is_available)
         list = session.fetchall(stmt_list, KeyboardSwitch)
         mkslist = [convert_vo(i) for i in list]
         total = session.count(stmt_count)
@@ -222,19 +164,10 @@ async def save_mks(req: MksVO):
 
 
 def save_or_ignore_keyword(word: str, type: str, session):
-    now = datetime.now().timestamp()
-    kw = session.fetchone(
-        select(sqlm_keyword)
-            .where(sqlm_keyword.columns.word==word,
-                   sqlm_keyword.columns.type==type),
-        Keyword
-    )
+    kw = session.fetchone(keyword_mapper.get_by_word(word, type), Keyword)
     if kw is not None:
         return
-    session.execute(
-        insert(sqlm_keyword).values(Keyword(word=word, type=type, rank=0, deleted=0,
-                                                create_time=now, update_time=now).dict())
-    )
+    session.execute(keyword_mapper.save(word, type))
 
 
 @api_router.get("/keyword", response_class=JSONResponse)

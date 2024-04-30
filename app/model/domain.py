@@ -168,3 +168,5 @@ sqlm_keyword = Table('keyword', metadata,
                 Column('deleted', Integer()),
                      Column('memo', String(50))
                 )
+
+T_keyword = sqlm_keyword

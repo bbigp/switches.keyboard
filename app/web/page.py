@@ -7,6 +7,7 @@ from starlette import status
 from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
 
+from app import crud
 from app.core.config import app_config
 from app.core.database import SqlSession
 from app.core.internal import paginate_info
@@ -143,7 +144,7 @@ async def dev(
         size: Optional[int]=15
 ):
     with SqlSession() as session:
-        stmt_list, stmt_count = api.filter((page - 1) * size, size, None, None, None, True)
+        stmt_list, stmt_count = crud.filter((page - 1) * size, size, None, None, None, True)
         list = session.fetchall(stmt_list, KeyboardSwitch)
         total = session.count(stmt_count)
         manufacturers = session.fetchall(
