@@ -65,6 +65,8 @@ def convert_swtiches(model: KeyboardSwitch) -> Switches:
     )
 
 def is_whole_fomart(d1):
+    if '-' in d1:
+        return True
     if len(d1) >= 3 and '.' not in d1:
         return True
     else:
@@ -81,6 +83,8 @@ def format_base_value(data):
         return None
     elif len(data) >= 3 and '.' not in data:
         print(f'=======> {data}')
+    elif '-' in data:
+        print(f'======> -{data}')
     else:
         return float(data)
 
