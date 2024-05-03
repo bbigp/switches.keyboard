@@ -430,6 +430,28 @@ img {
   font-size: 14px;
   border-radius: 5px;
 }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+.pagination-box li input {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #e8e8e8;
+  line-height: 40px;
+  text-align: center;
+  color: #ff5151;
+  font-size: 14px;
+  border-radius: 5px;
+  width: 45px;
+}
+::placeholder {
+      color: #797575; /* 设置为红色 */
+}
 .pagination-box li a:hover {
   color: #ffffff;
   background: #ff5151;
@@ -437,6 +459,19 @@ img {
 }
 .pagination-box li a span {
   font-size: 18px;
+}
+
+.pagination-box li span {
+  display: block;
+  width: 40px;
+  height: 40px;
+  /* border: 1px solid #e8e8e8; */
+  line-height: 40px;
+  text-align: center;
+  color: #ff5151;
+  font-size: 14px;
+  border-radius: 5px;
+  width: 45px;
 }
 
 /*==== Custom Margin & Padding  ====*/

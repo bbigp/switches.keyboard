@@ -21,7 +21,8 @@ def paginate_info(total_items, current_page, items_per_page):
     # valid_pages.sort()
     # if len(valid_pages) < 4:
     valid_pages.append(1)
-    valid_pages.append(total_pages)
+    if total_pages != 0:
+        valid_pages.append(total_pages)
     v_pages = [i for i in set(valid_pages)]
     v_pages.sort()
 

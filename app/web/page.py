@@ -12,6 +12,7 @@ from app.core.config import app_config
 from app.core.database import SqlSession
 from app.core.internal import paginate_info
 from app.core.response import RedirectResponseWraper
+from app.crud import switches_mapper
 from app.model.assembler import convert_vo
 from app.model.domain import sqlm_keyboard_switch, KeyboardSwitch, sqlm_keyword, Keyword
 from app.model.vo import MksVO, Specs, KeywordVO
@@ -144,7 +145,7 @@ async def dev(
         size: Optional[int]=15
 ):
     with SqlSession() as session:
-        stmt_list, stmt_count = crud.filter((page - 1) * size, size, None, None, None, True)
+        stmt_list, stmt_count = switches_mapper.filter((page - 1) * size, size, None, None, None, True)
         list = session.fetchall(stmt_list, KeyboardSwitch)
         total = session.count(stmt_count)
         manufacturers = session.fetchall(

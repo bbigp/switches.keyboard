@@ -348,6 +348,9 @@
                                             <a class="Next" href="#"><i class="bi bi-chevron-right"></i></a>
                                         </li>
                                         {% endif %}
+                                        <li><span style="text-align: right;">前往</span></li>
+                                        <li><input id="pageInput" type="number" placeholder="{{ page.current_page }}"></li>
+                                        <li><span style="text-align: left;">页</span></li>
                                     </ul>
                                 </div>
                             </div>
@@ -420,6 +423,9 @@
             <a class="Next" href="#" value="{{ page.current_page + 1 }}"><i class="bi bi-chevron-right"></i></a>
         </li>
         {{ /if }}
+        <li><span style="text-align: right;">前往</span></li>
+        <li><input id="pageInput" type="number" placeholder="{{ page.current_page }}"></li>
+        <li><span style="text-align: left;">页</span></li>
     {% endraw %}
 </script>
 
@@ -605,6 +611,11 @@
         $(this).remove()
         var value = $(this).data('value')
         var field = $(this).data('field')
+        if(field === 'search') {
+            $('#searchSwitch').val('')
+            initFilter()
+            return;
+        }
         $('.filterList li').each(function() {
             if ($(this).find('span').data('value') === value && $(this).find('span').data('field') === field) {
                 $(this).find('input[type="checkbox"]').prop('checked', false)
@@ -656,6 +667,12 @@
             initFilter()
         }
     });
+    $('#pageInput').on()
+    $('ul#pageController').on('keypress', '#pageInput', function(event){
+        if (event.keyCode === 13) {
+            page($('#pageInput').val())
+        }
+    })
 </script>
 
 </body>

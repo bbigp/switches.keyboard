@@ -5,11 +5,10 @@ from fastapi import Query, APIRouter
 from sqlalchemy import select, insert, func, and_, or_, update, desc, text
 from starlette.responses import JSONResponse
 
-from app import crud
 from app.core.database import SqlSession
 from app.core.internal import generate_random_string, paginate_info
 from app.core.snowflake_id import id_worker
-from app.crud import keyword_mapper
+from app.crud import keyword_mapper, switches_mapper
 from app.model.assembler import convert_vo, convert_keywrod_sqlm
 from app.model.domain import sqlm_keyword, Keyword, sqlm_keyboard_switch, KeyboardSwitch
 from app.model.request import KeywordRequest
@@ -95,7 +94,7 @@ async def mkslist(
         is_available: Optional[bool]=None
 ):
     with SqlSession() as session:
-        stmt_list, stmt_count = crud.filter(start, length, search, stash, manufacturer, is_available)
+        stmt_list, stmt_count = switches_mapper.filter(start, length, search, stash, manufacturer, is_available)
         list = session.fetchall(stmt_list, KeyboardSwitch)
         mkslist = [convert_vo(i) for i in list]
         total = session.count(stmt_count)
