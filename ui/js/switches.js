@@ -28,8 +28,23 @@
      //         return process(myData)
      //     }
      // })
-
-
+    $('#demo-default-modal').on('show.bs.modal', function(){
+        $.ajax({
+            url: '/api/page_temp_image',
+            method: 'GET',
+            success: function (data) {
+                var html = ''
+                data.forEach((item, index) => {
+                    let _m = '/bfs/t/' + item
+                    html += '<option value="' + _m + '">' + _m + '</option>'
+                });
+                $('#cloudImageSelect').html(html)
+            }
+        });
+     })
+    $('#main-pic-img').click(function(){
+        $('#demo-default-modal').modal('show');
+    })
 
      $('#cancel-btn').click(function (){
          window.location.replace('/control/main')

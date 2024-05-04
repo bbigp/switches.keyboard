@@ -68,12 +68,6 @@ def get_keyword_counts(sql_session, type, offset=None, limit=None, search=None):
     return keywords
 
 
-def list_image(path):
-    files = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
-    latest_files = sorted(files)[-20:]
-    return latest_files[::-1]
-
-
 @v2_page_router.get("/control/switches", response_class=HTMLResponse)
 @v2_page_router.get("/control/switches/{id}", response_class=HTMLResponse)
 async def index(request: Request, id: Optional[int]=None):
@@ -100,7 +94,6 @@ async def index(request: Request, id: Optional[int]=None):
                 studios.append(item.word)
             else:
                 pass
-    images = list_image(app_config.temp_dir)
     return templates.TemplateResponse('switches.html', context={
         'request': request,
         'switches': switches,
@@ -109,8 +102,7 @@ async def index(request: Request, id: Optional[int]=None):
         'stor_loc_boxs': stor_loc_boxs,
         'marks': marks,
         'studios': studios,
-        'error_msg': [],
-        'images': images
+        'error_msg': []
     })
 
 @v2_page_router.get("/control/keyword", response_class=HTMLResponse)

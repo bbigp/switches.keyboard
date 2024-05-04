@@ -55,6 +55,12 @@ async def upload_pic(image: UploadFile):
         f.write(await image.read())
     return {'status': 'ok', 'data': '/bfs/t/' + image_id + '.jpg'}
 
+@pic_router.get('/api/page_temp_image')
+async def page_temp_image():
+    path = app_config.temp_dir
+    files = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+    latest_files = sorted(files)[-20:]
+    return latest_files[::-1]
 
 @pic_router.get('/bfs/{source}/{path}', response_class=FileResponse)
 async def show_pic(path: str, source: str):

@@ -4,7 +4,6 @@
     <link href="/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
     <script src="/plugins/bootstrap-select/bootstrap-select.min.js"></script>
     <link href="/plugins/animate-css/animate.min.css" rel="stylesheet">
-    <script src="/js/switches.js"></script>
     <link href="/plugins/ionicons/css/ionicons.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
@@ -12,6 +11,7 @@
     <script src="/plugins/simplemde/simplemde.min.js"></script>
     <script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.js" type="application/javascript"></script>
     <script src="/js/clipboard.min.js"></script>
+    <script src="/js/switches.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -46,9 +46,6 @@
                     <div class="row" style="margin-top: 5px;">
                         <div class="col-sm-10 col-xs-8">
                             <select class="form-control" id="cloudImageSelect" style="width: 100%;" title="请选择">
-                                {% for item in images %}
-                                    <option value="{{ '/bfs/t/' + item }}">{{ '/bfs/t/' + item }}</option>
-                                {% endfor %}
                             </select>
                         </div>
                         <div class="col-sm-2 col-xs-4">
@@ -103,8 +100,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="main-pic-img">主图</label>
                         <div class="col-sm-3">
-                            <img src="{{ switches.pic }}" id="main-pic-img" width="80px" height="60px"
-                                 data-target="#demo-default-modal" data-toggle="modal"/>
+                            <img src="{{ switches.pic }}" id="main-pic-img" width="80px" height="60px"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -282,7 +278,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="logo-input" class="col-sm-3 control-label">标志</label>
+                        <label class="col-sm-3 control-label">标志</label>
                         <div class="col-sm-3">
                             <input list="logo-datalist" id="markInput" autocomplete="off" type="text" class="form-control" value="{{ switches.mark }}">
                             <datalist id="logo-datalist">
@@ -324,6 +320,4 @@
     <!--End page content-->
 
 {% endblock %}
-
-
 
