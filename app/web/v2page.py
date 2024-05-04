@@ -75,7 +75,7 @@ async def index(request: Request, id: Optional[int]=None):
         switches = Switches(name='', studio='')
         if id is not None:
             switches = session.fetchone(switches_mapper.get_by_id(id), Switches)
-        list = session.fetchall(keyword_mapper.list_by_types(['switch_type', 'manufacturer', 'mark', 'studio']),
+        list = session.fetchall(keyword_mapper.list_by_types(['type', 'manufacturer', 'mark', 'studio']),
             KeywordVO
         )
         switch_types = []
