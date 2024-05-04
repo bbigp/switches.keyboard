@@ -41,6 +41,10 @@ class Etd(BaseModel):
     create_time: int = None
     update_time: int = None
 
+class KeyCountBO(BaseModel):
+    key: str
+    count: int=0
+
 class Switches(BaseModel):
     id: int=None
     name: str
@@ -67,11 +71,11 @@ class Switches(BaseModel):
     stor_loc_box: str=''
     stor_loc_row: int=None
     stor_loc_col: int=None
-    price: str = ''
-    desc: str = ''
+    price: str=''
+    desc: str=''
 
-    create_time: int = None
-    update_time: int = None
+    create_time: int=None
+    update_time: int=None
     deleted: int=0
 
 

@@ -10,20 +10,23 @@ if __name__ == '__main__':
     # index.create(engine)
 
     with SqlSession() as session:
-        session.execute(
-            text('delete from switches')
-        )
-        list = session.fetchall(text('select * from keyboard_switch'), KeyboardSwitch)
-        mkslist = [convert_swtiches(i) for i in list]
-        split_lists = [mkslist[i: i + 100] for i in range(0, len(mkslist), 100)]
-
-        # 打印结果以验证
-        for i, split_list in enumerate(split_lists):
-            session.execute(
-                insert(T_switches).values([m.dict() for m in split_list])
-            )
-        for i, split_list in enumerate(split_lists):
-            print(f"Array {i + 1}: Length {len(split_list)}")
+        session.execute(text("update keyword set type = 'stor_loc_box' where type = 'stash'"))
+        session.execute(text("update keyword set type = 'mark' where type = 'logo'"))
+        session.execute(text("update keyword set type = 'type' where type = 'switch_type'"))
+        # session.execute(
+        #     text('delete from switches')
+        # )
+        # list = session.fetchall(text('select * from keyboard_switch'), KeyboardSwitch)
+        # mkslist = [convert_swtiches(i) for i in list]
+        # split_lists = [mkslist[i: i + 100] for i in range(0, len(mkslist), 100)]
+        #
+        # # 打印结果以验证
+        # for i, split_list in enumerate(split_lists):
+        #     session.execute(
+        #         insert(T_switches).values([m.dict() for m in split_list])
+        #     )
+        # for i, split_list in enumerate(split_lists):
+        #     print(f"Array {i + 1}: Length {len(split_list)}")
 
 
 

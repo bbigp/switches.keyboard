@@ -1,0 +1,329 @@
+{% extends "main.html" %}
+{% block head %}
+    <link href="/plugins/magic-check/css/magic-check.min.css" rel="stylesheet">
+    <link href="/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+    <script src="/plugins/bootstrap-select/bootstrap-select.min.js"></script>
+    <link href="/plugins/animate-css/animate.min.css" rel="stylesheet">
+    <script src="/js/switches.js"></script>
+    <link href="/plugins/ionicons/css/ionicons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <link rel="stylesheet" href="/plugins/simplemde/simplemde.min.css">
+    <script src="/plugins/simplemde/simplemde.min.js"></script>
+    <script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.js" type="application/javascript"></script>
+    <script src="/js/clipboard.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="modal fade" id="demo-default-modal" role="dialog" tabindex="-1"
+         aria-labelledby="demo-default-modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><i
+                            class="pci-cross pci-circle"></i></button>
+                    <h4 class="modal-title">图片</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-10 col-xs-8">
+                            <input type="text" class="form-control" id="download-pic-input">
+                        </div>
+                        <div class="col-sm-2 col-xs-4">
+                            <div class="btn-group">
+                                <button id="download-pic-btn" class="btn btn-primary">
+                                    下载
+                                </button>
+                                <!-- <button id="paste-btn" class="btn btn-primary">
+                                    粘贴
+                                </button> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 5px;">
+                        <div class="col-sm-10 col-xs-8">
+                            <select class="form-control" id="cloudImageSelect" style="width: 100%;" title="请选择">
+                                {% for item in images %}
+                                    <option value="{{ '/bfs/t/' + item }}">{{ '/bfs/t/' + item }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-sm-2 col-xs-4">
+                            <div class="btn-group">
+                                <button id="choosePicBtn" class="btn btn-primary">
+                                    选择
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <img id="cropper-main-pic-img" style="height: 300px; padding-left: 10px;padding-right: 10px; padding-top: 10px;" class="col-sm-12"></img>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="cropper-btn" class="btn btn-default btn-sm">剪切</button>
+                    <button id="confirm-cropper-btn" class="btn btn-primary btn-sm">确认剪切</button>
+                    <button id="direct-use-btn" class="btn btn-primary btn-sm">直接使用</button>
+                    <button data-dismiss="modal" id="cancel-cropper-btn" class="btn btn-danger btn-sm">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include '_component/page-title.html' %}
+    {% include '_component/breadcrumb.html' %}
+
+
+    <!--Page content-->
+    <!--===================================================-->
+    <div id="page-content">
+
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">Inline Form</h3>
+            </div>
+            <div class="panel-body">
+
+                <div class="panel-body form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-3 col-sm-offset-3">
+                            <div id="demo-error-container" class="bg-gray-light">
+                                {% for item in error_msg %}
+                                    <small class="help-block" style="">{{ item }}</small>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="id-input" hidden value="{{ '' if switches.id is none else switches.id }}">
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="main-pic-img">主图</label>
+                        <div class="col-sm-3">
+                            <img src="{{ switches.pic }}" id="main-pic-img" width="80px" height="60px"
+                                 data-target="#demo-default-modal" data-toggle="modal"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="name-inputsmall">名字</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control input-sm" value="{{ switches.name }}"
+                                   autocomplete="off" id="name-inputsmall" name="name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="studio-inputnormal" class="col-sm-3 control-label">工作室</label>
+                        <div class="col-sm-3">
+                            <input list="studio-datalist" type="text" class="form-control" id="studio-inputnormal"
+                                   autocomplete="off" value="{{ switches.studio }}" name="studio">
+                            <datalist id="studio-datalist">
+                                {% for item in studios %}
+                                <option value="{{ item }}"></option>
+                                {% endfor %}
+                            </datalist>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="manufacturer-select" class="col-sm-3 control-label">生厂商</label>
+                        <div class="col-sm-3">
+                            <select class="selectpicker" id="manufacturer-select" title="请选择">
+                                {% for item in manufacturers %}
+                                    <option value="{{ item.word }}" {{ 'selected' if item.word == switches.manufacturer else '' }}>{{ item.word }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="type-select">类型</label>
+                        <div class="col-sm-3">
+                            <select class="selectpicker" id="type-select" title="请选择">
+                                {% for item in switch_types %}
+                                    <option value="{{ item.word }}" {{ 'selected' if item.word == switches.type else '' }}>{{ item.word }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">规格</label>
+                        <div class="col-sm-6 form-inline">
+                            <div class="input-group mar-btm">
+                                <span class="input-group-addon">触发压力</span>
+                                <input value="{{ '' if switches.actuation_force is none else switches.actuation_force }}" id="act-force-input"
+                                       type="text"
+                                       class="form-control" placeholder="">
+                                <span class="input-group-addon">公差</span>
+                                <input value="{{ switches.actuation_force_tol }}" id="act-force-p-input"
+                                       type="text" class="form-control" placeholder="">
+                                <span class="input-group-addon">g</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label"></label>
+                        <div class="col-sm-6 form-inline">
+                            <div class="input-group mar-btm">
+                                <span class="input-group-addon">触底压力</span>
+                                <input value="{{ '' if switches.bottom_force is none else switches.bottom_force }}" id="end-force-input" type="text"
+                                       class="form-control" placeholder="">
+                               <span class="input-group-addon">公差</span>
+                                <input value="{{ switches.bottom_force_tol }}" id="end-force-p-input"
+                                       type="text"
+                                       class="form-control" placeholder="">
+                                <span class="input-group-addon">g</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label"></label>
+                        <div class="col-sm-6 form-inline">
+                            <div class="input-group mar-btm">
+                                <span class="input-group-addon">触发行程</span>
+                                <input value="{{ '' if switches.pre_travel is none else switches.pre_travel }}" id="pre-travel-input" type="text"
+                                       class="form-control" placeholder="">
+                               <span class="input-group-addon">公差</span>
+                                <input value="{{ switches.pre_travel_tol }}" id="pre-travel-p-input"
+                                       type="text"
+                                       class="form-control" placeholder="">
+                                <span class="input-group-addon">mm</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label"></label>
+                        <div class="col-sm-6 form-inline">
+                            <div class="input-group mar-btm">
+                                <span class="input-group-addon">触底行程</span>
+                                <input value="{{ '' if switches.total_travel is none else switches.total_travel }}" id="total-travel-input"
+                                       type="text"
+                                       class="form-control" placeholder="">
+                                <span class="input-group-addon">公差</span>
+                                <input value="{{ switches.total_travel_tol }}" id="total-travel-p-input"
+                                       type="text" class="form-control" placeholder="">
+                                <span class="input-group-addon">mm</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">材料</label>
+                        <div class="col-sm-6 form-inline">
+                            <div class="input-group mar-btm">
+                                <span class="input-group-addon">上盖</span>
+                                <input value="{{ switches.top_mat }}" id="top-input" type="text"
+                                       class="form-control" placeholder="">
+                                <span class="input-group-addon">底壳</span>
+                                <input value="{{ switches.bottom_mat }}" id="bottom-input" type="text"
+                                       class="form-control" placeholder="">
+                                <span class="input-group-addon">轴心</span>
+                                <input value="{{ switches.stem_mat }}" id="stem-input" type="text"
+                                       class="form-control" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="spring-inputlarge" class="col-sm-3 control-label">弹簧</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control input-sm" value="{{ switches.spring }}"
+                                   id="spring-inputlarge">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">PIN</label>
+                        <div class="col-sm-6 form-inline">
+                            <div class="radio" id="pin-radio">
+                                <input id="pin-3-inline-form-radio" {{ 'checked' if switches.pins == 3 else '' }}
+                                       class="magic-radio" type="radio" name="pin-inline-form-radio" value="3">
+                                <label for="pin-3-inline-form-radio">三脚</label>
+                                <input id="pin-5-inline-form-radio" {{ 'checked' if switches.pins == 5 else '' }}
+                                       class="magic-radio" type="radio" name="pin-inline-form-radio" value="5">
+                                <label for="pin-5-inline-form-radio">五脚</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">导光柱</label>
+                        <div class="col-sm-6 form-inline">
+                            <input list="light_style-datalist" type="text" class="form-control" id="light_styleInput"
+                                   autocomplete="off" value="{{ switches.light_style }}" name="light_style">
+                            <datalist id="light_style-datalist">
+                                <option value="无">无</option>
+                                <option value="一体式">一体式</option>
+                                <option value="平面式">平面式</option>
+                                <option value="导光块">导光块</option>
+                            </datalist>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">数量</label>
+                        <div class="col-sm-3">
+                            <input id="numInput" type="text" class="form-control"
+                                   value="{{ switches.num }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="spring-inputlarge" class="col-sm-3 control-label">位置</label>
+                        <div class="col-sm-3">
+                            <select class="selectpicker" id="storBoxSelect" title="请选择">
+                                {% for item in stor_loc_boxs %}
+                                    <option value="{{ item.word }}" {{ 'disabled' if item.count >= 100 else '' }} {{ 'selected' if item.word == switches.stor_loc_box else '' }}>[{{ item.count }}] {{ item.memo }} - {{ item.word }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="input-group mar-btm">
+                                <span class="input-group-addon">行</span>
+                                <input value="{{ '' if switches.stor_loc_row is none else switches.stor_loc_row }}" id="storRowInput" type="text"
+                                       class="form-control" placeholder="">
+                               <span class="input-group-addon">列</span>
+                                <input value="{{ '' if switches.stor_loc_col is none else switches.stor_loc_col }}" id="storColInput"
+                                       type="text"
+                                       class="form-control" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="logo-input" class="col-sm-3 control-label">标志</label>
+                        <div class="col-sm-3">
+                            <input list="logo-datalist" id="markInput" autocomplete="off" type="text" class="form-control" value="{{ switches.mark }}">
+                            <datalist id="logo-datalist">
+                                {% for item in marks %}
+                                <option value="{{ item }}"></option>
+                                {% endfor %}
+                            </datalist>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">价格</label>
+                        <div class="col-sm-3">
+                            <input id="price-input" type="text" class="form-control"
+                                   value="{{ switches.price }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">相关描述</label>
+                        <div class="col-sm-7">
+                            <textarea id="editor"></textarea>
+                            <textarea id="desc-input" type="text" hidden>{{ switches.desc }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="row">
+                        <div class="col-sm-9 col-sm-offset-3">
+                            <button class="btn btn-mint" id="save-btn">保存</button>
+                            <button class="btn btn-warning" id="cancel-btn">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <!--===================================================-->
+    <!--End page content-->
+
+{% endblock %}
+
+
+

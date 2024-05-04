@@ -1,6 +1,3 @@
-import time
-from urllib.parse import urlencode
-
 from fastapi import FastAPI, Request
 from loguru import logger
 from starlette import status
@@ -10,18 +7,18 @@ from starlette.routing import Mount
 from starlette.staticfiles import StaticFiles
 
 from app.core.response import RedirectResponseWraper
-from app.web.api import api_router
-from app.web.page import page_router, templates
+from app.web.page import templates
 from app.web.pic import pic_router
 from app.web.stats import stats_router
-
+from app.web.v2api import v2_api_router
+from app.web.v2page import v2_page_router
 
 
 def register_route(app):
     app.include_router(stats_router, tags=['stats_router'])
     app.include_router(pic_router, tags=['pic_router'])
-    app.include_router(page_router, tags=['page_router'])
-    app.include_router(api_router, tags=['api_router'])
+    app.include_router(v2_page_router, tags=['v2_page'])
+    app.include_router(v2_api_router, tags=['v2_api'])
     app.mount('/js', StaticFiles(directory='ui/js'), name='js')
     app.mount('/css', StaticFiles(directory='ui/css'), name='css')
     app.mount('/plugins', StaticFiles(directory='ui/plugins'), name='plugins')

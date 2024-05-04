@@ -6,15 +6,17 @@ from app.model.request import KeywordRequest
 from app.model.vo import MksVO, KeywordVO
 
 
-def convert_vo(model: KeyboardSwitch) -> MksVO:
+def convert_vo(model: Switches) -> Switches:
     if model.pic is None or model.pic == '':
         model.pic = '/bfs/fs/dummy_image.jpg'
-    return MksVO(
-        id=str(model.id), name=model.name, pic=model.pic, studio=model.studio, manufacturer=model.manufacturer,
-        type=model.type, tag=model.tag, quantity=model.quantity, price=model.price, desc=model.desc,
-        specs=json.loads(model.specs), create_time=model.create_time, update_time=model.update_time,
-        stash=model.stash, logo=model.logo, variation=model.variation
-    )
+    model.id = str(model.id)
+    return model
+    # return MksVO(
+    #     id=str(model.id), name=model.name, pic=model.pic, studio=model.studio, manufacturer=model.manufacturer,
+    #     type=model.type, tag=model.tag, quantity=model.quantity, price=model.price, desc=model.desc,
+    #     specs=json.loads(model.specs), create_time=model.create_time, update_time=model.update_time,
+    #     stash=model.stash, logo=model.logo, variation=model.variation
+    # )
 
 def convert_sqlm(mks: MksVO) -> KeyboardSwitch:
     pass
@@ -27,7 +29,11 @@ def convert_keywrod_sqlm(v: KeywordRequest) -> Keyword:
 
 def convert_swtiches(model: KeyboardSwitch) -> Switches:
     specs=json.loads(model.specs)
-    pins = 3 if specs['pin'] == '三脚' else 5
+    pins = None
+    if specs['pin'] == '三脚':
+        pins = 3
+    elif specs['pin'] == '五脚':
+        pins = 5
 
     act_force = format_base_value(specs['actuation_force'])
     bot_force = format_base_value(specs['end_force'])
