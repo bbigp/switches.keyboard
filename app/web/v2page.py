@@ -84,11 +84,11 @@ async def index(request: Request, id: Optional[int]=None):
         marks = []
         studios = []
         for item in list:
-            if item.type == 'switch_type':
+            if item.type == 'type':
                 switch_types.append(item)
             elif item.type == 'manufacturer':
                 manufacturers.append(item)
-            elif item.type == 'logo':
+            elif item.type == 'mark':
                 marks.append(item.word)
             elif item.type == 'studio':
                 studios.append(item.word)
