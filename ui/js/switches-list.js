@@ -108,13 +108,13 @@ $(window).on('load', function () {
                 data: "type",
                 render: function (data, type, row, meta) {
                    if (data === '青轴') {
-                       return '<span class="label" style="background-color: #67C23A;font-size: 90%">' + data + '</span>'
+                       return '<span class="label" style="background-color: #42a5f5;font-size: 90%">' + data + '</span>'
                     }else if (data === '茶轴') {
-                       return '<span class="label" style="background-color: #cd840c;font-size: 90%">' + data + '</span>'
+                       return '<span class="label" style="background-color: #8F4F04;font-size: 90%">' + data + '</span>'
                    }else if (data === '静音线性轴' || data === '静音段落轴'){
                        return '<span class="label" style="background-color: #f38234;font-size: 90%">' + data + '</span>'
                    } else if(data === '提前大段落轴') {
-                       return '<span class="label" style="background-color: #8F4F04;font-size: 90%">' + data + '</span>'
+                       return '<span class="label" style="background-color: #ef5350;font-size: 90%">' + data + '</span>'
                     } else if (data === '') {
                        return '<span class="label" style="background-color: #d9534f;font-size: 90%">-</span>'
                     }
