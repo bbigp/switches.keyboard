@@ -132,7 +132,7 @@ $(window).on('load', function () {
             },
             {
                 data:"stor_loc_box",
-                render: function (data, row) {
+                render: function (data, type, row, meta) {
                     if (data === '') {
                         return '<span class="label label-danger">-</span>'
                     }

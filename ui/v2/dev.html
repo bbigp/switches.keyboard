@@ -440,7 +440,10 @@
                         <p class="switch-attribute">{{ item.mark === '' ? '': '【标志】' }}</p>
                         <p>{{ item.mark }} </p>
                         <p class="switch-attribute">{{ item.stor_loc_box === '' ? '' : '【位置】' }}</p>
-                        <p>{{ item.stor_loc_box }}</p>
+                        <p>
+                            {{ item.stor_loc_box }}
+                            {{item.stor_loc_row === '' ? '' : ':' + item.stor_loc_row + '-' + item.stor_loc_col}}
+                        </p>
                         <br>
                     </div>
                     <div style="display: flex;">
