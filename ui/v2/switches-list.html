@@ -79,7 +79,7 @@
                     <option value="" selected>请选择</option>
                     <option value="-1">无库存</option>
                     {% for item in box_list%}
-                    <option value="{{ item.word }}">[{{ item.count }}] {{ item.memo }} - {{ item.word }}</option>
+                    <option value="{{ item.word }}">{{ item.word }} - {{ item.memo }} [{{ item.count }}]</option>
                     {% endfor %}
                 </select>
                 <button id="refresh-btn" class="btn btn-primary"><i class="ion-refresh"></i>刷新</button>
