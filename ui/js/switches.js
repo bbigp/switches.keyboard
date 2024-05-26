@@ -118,6 +118,10 @@
      simplemde.value($('#desc-input').val())
      $('#save-btn').click(function () {
          console.log(simplemde.markdown(simplemde.value()))
+         let af_tol = $('#act-force-p-input').val()
+         let ef_tol = $('#end-force-p-input').val()
+         let pt_tol = $('#pre-travel-p-input').val()
+         let tt_tol = $('#total-travel-p-input').val()
          const data = {
              id: $('#id-input').val(),
              name: $('#name-inputsmall').val(),
@@ -133,13 +137,13 @@
              stor_loc_col: $('#storColInput').val(),
              mark: $('#markInput').val(),
              actuation_force: $('#act-force-input').val(),
-             actuation_force_tol: $('#act-force-p-input').val(),
+             actuation_force_tol: af_tol === '±' ? '' : af_tol,
              bottom_force: $('#end-force-input').val(),
-             bottom_force_tol: $('#end-force-p-input').val(),
+             bottom_force_tol: ef_tol === '±' ? '' : ef_tol,
              pre_travel: $('#pre-travel-input').val(),
-             pre_travel_tol: $('#pre-travel-p-input').val(),
+             pre_travel_tol: pt_tol === '±' ? '' : pt_tol,
              total_travel: $('#total-travel-input').val(),
-             total_travel_tol: $('#total-travel-p-input').val(),
+             total_travel_tol: tt_tol === '±' ? '' : tt_tol,
              pins: $('input[name=pin-inline-form-radio]:checked').val(),
              top_mat: $('#top-input').val(),
              bottom_mat: $('#bottom-input').val(),

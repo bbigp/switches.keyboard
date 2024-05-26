@@ -151,7 +151,7 @@
                                        type="text"
                                        class="form-control" placeholder="">
                                 <span class="input-group-addon">公差</span>
-                                <input value="{{ switches.actuation_force_tol }}" id="act-force-p-input"
+                                <input value="{{ '±' if switches.actuation_force_tol == '' else switches.actuation_force_tol }}" id="act-force-p-input"
                                        type="text" class="form-control" placeholder="">
                                 <span class="input-group-addon">g</span>
                             </div>
@@ -165,7 +165,7 @@
                                 <input value="{{ '' if switches.bottom_force is none else switches.bottom_force }}" id="end-force-input" type="text"
                                        class="form-control" placeholder="">
                                <span class="input-group-addon">公差</span>
-                                <input value="{{ switches.bottom_force_tol }}" id="end-force-p-input"
+                                <input value="{{ '±' if switches.bottom_force_tol == '' else switches.bottom_force_tol }}" id="end-force-p-input"
                                        type="text"
                                        class="form-control" placeholder="">
                                 <span class="input-group-addon">g</span>
@@ -180,7 +180,7 @@
                                 <input value="{{ '' if switches.pre_travel is none else switches.pre_travel }}" id="pre-travel-input" type="text"
                                        class="form-control" placeholder="">
                                <span class="input-group-addon">公差</span>
-                                <input value="{{ switches.pre_travel_tol }}" id="pre-travel-p-input"
+                                <input value="{{ '±' if switches.pre_travel_tol == '' else switches.pre_travel_tol  }}" id="pre-travel-p-input"
                                        type="text"
                                        class="form-control" placeholder="">
                                 <span class="input-group-addon">mm</span>
@@ -196,7 +196,7 @@
                                        type="text"
                                        class="form-control" placeholder="">
                                 <span class="input-group-addon">公差</span>
-                                <input value="{{ switches.total_travel_tol }}" id="total-travel-p-input"
+                                <input value="{{ '±' if switches.total_travel_tol == '' else switches.total_travel_tol }}" id="total-travel-p-input"
                                        type="text" class="form-control" placeholder="">
                                 <span class="input-group-addon">mm</span>
                             </div>
