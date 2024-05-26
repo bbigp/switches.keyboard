@@ -399,36 +399,44 @@
          if (nowValue !== '') {
              return;
          }
-         if ($(this).val().indexOf('N-') >= 0) {
+         if ($(this).val().indexOf('J.') >= 0) {//精微科
              $('#logo-input').val('无')
-         } else if ($(this).val().indexOf('J-') >= 0) {
-             $('#logo-input').val('JERRZI')
-         } else if ($(this).val().indexOf('TC-') >= 0) {
-             $('#logo-input').val('TTC')
-         } else if ($(this).val().indexOf('G-') >= 0) {
+         } else if ($(this).val().indexOf('G.') >= 0) {
              $('#logo-input').val('GATERON')
-         } else if ($(this).val().indexOf('T-') >= 0) {
+         }else if ($(this).val().indexOf('C.') >= 0) {
+             $('#logo-input').val('TTC')
+         }else if ($(this).val().indexOf('T.') >= 0) {
              $('#logo-input').val('Tecsee')
-         } else if ($(this).val().indexOf('KH-') >= 0) {
-             $('#logo-input').val('Kailh')
-         } else if ($(this).val().indexOf('BY-') >= 0) {
-             $('#logo-input').val('BSUN YOK')
-         } else if ($(this).val().indexOf('O-') >= 0) {
-             $('#logo-input').val('OUTEMU')
-         } else if ($(this).val().indexOf('K-') >= 0 && $(this).val().indexOf('JK-') < 0) {
-             $('#logo-input').val('爪')
-         } else if ($(this).val().indexOf('H-') >= 0) {
-             $('#logo-input').val('HUANO')
-         } else if ($(this).val().indexOf('LB-') >= 0) {
-             $('#logo-input').val('LEOBOG')
-         } else if ($(this).val().indexOf('C-') >= 0 && $(this).val().indexOf('LC-') < 0) {
-             $('#logo-input').val('CHERRY')
-         } else if ($(this).val().indexOf('S-') >= 0 && $(this).val().indexOf('SS-') < 0) {
-             $('#logo-input').val('SWK')
-         } else if ($(this).val().indexOf('R-') >= 0) {
-             $('#logo-input').val('LICHICX')
-         } else if ($(this).val().indexOf('JK-') >= 0) {
+         }else if ($(this).val().indexOf('I.') >= 0) {//禾金
              $('#logo-input').val('无')
+         }else if ($(this).val().indexOf('U.') >= 0) {//雷创
+             $('#logo-input').val('无')
+         }else if ($(this).val().indexOf('O.') >= 0) {
+             $('#logo-input').val('OUTEMU')
+         }else if ($(this).val().indexOf('X.') >= 0) {//HMX
+             $('#logo-input').val('无')
+         }else if ($(this).val().indexOf('H.') >= 0) {
+             $('#logo-input').val('HUANO')
+         }else if ($(this).val().indexOf('K.') >= 0) {
+             $('#logo-input').val('Kailh')
+         }else if ($(this).val().indexOf('Q.') >= 0) {//ktt
+             $('#logo-input').val('爪')
+         }else if ($(this).val().indexOf('E.') >= 0) {
+             $('#logo-input').val('LEOBOG')
+         }else if ($(this).val().indexOf('M.') >= 0) {
+             $('#logo-input').val('')
+         }else if ($(this).val().indexOf('L.') >= 0) {
+             $('#logo-input').val('LICHICX')
+         } else if ($(this).val().indexOf('Z.') >= 0) {
+             $('#logo-input').val('JERRZI')
+         } else if ($(this).val().indexOf('B.') >= 0) {
+             $('#logo-input').val('BSUN YOK')
+         }else if ($(this).val().indexOf('Y.') >= 0) {//键极客
+             $('#logo-input').val('')
+         }else if ($(this).val().indexOf('A.') >= 0) {//金橙
+             $('#logo-input').val('')
+         }else if ($(this).val().indexOf('S.') >= 0) {
+             $('#logo-input').val('SWK')
          }
      })
 
