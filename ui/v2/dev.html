@@ -442,7 +442,7 @@
                         <p class="switch-attribute">{{ item.stor_loc_box === '' ? '' : '【位置】' }}</p>
                         <p>
                             {{ item.stor_loc_box }}
-                            {{item.stor_loc_row === '' ? '' : ':' + item.stor_loc_row + '-' + item.stor_loc_col}}
+                            {{item.stor_loc_row === '' || item.stor_loc_row === null ? '' : ':' + item.stor_loc_row + '-' + item.stor_loc_col}}
                         </p>
                         <br>
                     </div>
