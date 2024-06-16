@@ -394,8 +394,9 @@
         $('#cropper-main-pic-img').attr('src', $('#cloudImageSelect').val())
      })
 
-     $('#type-stash').on('changed.bs.select', function (e) {
+     $('#storBoxSelect').on('changed.bs.select', function (e) {
          let nowValue = $('#markInput').val()
+         console.log(nowValue)
          if (nowValue !== '') {
              return;
          }
