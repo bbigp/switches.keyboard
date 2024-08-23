@@ -46,3 +46,10 @@ class KeywordVO(Keyword):
     update_time: int
     memo: str=''
     count: int=0
+
+
+class CalendarVO(BaseModel):
+    title: str=''
+    start: str=''
+    end: str=''
+    url: str=''

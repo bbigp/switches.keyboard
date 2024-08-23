@@ -24,6 +24,25 @@ class KeyboardSwitch(BaseModel):
     deleted: int=0
     # buy_address: str=None 购买地址
 
+class Icgb(BaseModel):
+    title: str=''
+    href: str=''
+    icgb_day: str=''
+    day: str=''
+    text: str=''
+    unique_title: str=''
+    url: str=''
+    create_time: int = None
+    update_time: int = None
+    id: int = None
+    deleted: int=0
+    usefulness: int=0
+    # NOT_USEFUL: 表示文章完全没有用处。 0
+    # SLIGHTLY_USEFUL: 表示文章有一些用处，但价值不大。
+    # MODERATELY_USEFUL: 表示文章有一定的用处，具备中等价值。
+    # VERY_USEFUL: 表示文章非常有用，具备较高价值。1
+    # CRITICAL: 表示文章对某个特定需求或目标来说至关重要。
+
 
 class Keyword(BaseModel):
     word: str

@@ -34,18 +34,17 @@ class SqlSession(object):
 
     def execute(self, sql, params=None):
         logger.debug('==>  Preparing: {}', sql)
-        logger.debug('==>  Parameters: {}', sql.compile().params)
         r = self.conn.execute(sql, params=params)
         logger.info('<====>  Total: {}', r.rowcount)
         return r.rowcount
 
     def fetchall(self, sql, clz, params=None):
         logger.debug('==>  Preparing: {}', sql)
-        logger.debug('==>  Parameters: {}', sql.compile().params)
         result = self.conn.execute(sql, params=params).fetchall()
         return parse_list_dict_2_model(result, clz)
 
     def fetchone(self, sql, clz, params=None):
+        logger.debug('==>  Preparing: {}', sql)
         result = self.conn.execute(sql, params=params).fetchone()
         if result is None:
             return None

@@ -1,10 +1,33 @@
 import random
+import re
 import string
+from datetime import datetime, timedelta
 
 
 def generate_random_string(len):
     letters = string.ascii_letters + string.digits
     return ''.join(random.choice(letters) for _ in range(len))
+
+def extract_http_https_links(text):
+    # 正则表达式匹配HTTP和HTTPS链接
+    url_pattern = r'https?://[^\s"]+'
+    links = re.findall(url_pattern, text)
+    return links
+
+
+def get_month_start_end(date: datetime):
+    # 获取当月的第一天
+    start_of_month = date.replace(day=1)
+
+    # 获取下个月的第一天
+    next_month = start_of_month + timedelta(days=31)
+    start_of_next_month = next_month.replace(day=1)
+
+    # 获取当月的最后一天
+    end_of_month = start_of_next_month - timedelta(days=1)
+
+    return start_of_month, end_of_month
+
 
 
 def paginate_info(total_items, current_page, items_per_page):

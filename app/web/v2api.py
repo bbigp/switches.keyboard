@@ -8,11 +8,11 @@ from starlette.responses import JSONResponse
 from app.core.database import SqlSession
 from app.core.internal import generate_random_string, paginate_info
 from app.core.snowflake_id import id_worker
-from app.crud import keyword_mapper, switches_mapper
+from app.crud import keyword_mapper, switches_mapper, icgb_mapper
 from app.crud.switches_mapper import Filter
 from app.model.assembler import convert_vo, convert_keywrod_sqlm
-from app.model.domain import sqlm_keyword, Keyword, sqlm_keyboard_switch, KeyboardSwitch, Switches, KeyCountBO
-from app.model.request import KeywordRequest
+from app.model.domain import sqlm_keyword, Keyword, sqlm_keyboard_switch, KeyboardSwitch, Switches, KeyCountBO, Icgb
+from app.model.request import KeywordRequest, IcgbRequest
 from app.web.v2page import get_keyword_counts
 
 v2_api_router = APIRouter(prefix='/api/v2')
@@ -139,3 +139,25 @@ async def delete_keyword(req: KeywordRequest):
             return {'status': 'error', 'msg': '数据还在使用,无法删除'}
         session.execute(keyword_mapper.delete(req.word, req.type))
     return {'status': 'ok'}
+
+@v2_api_router.post('/icgb', response_class=JSONResponse)
+async def update_icgb(req: IcgbRequest):
+    with SqlSession() as session:
+        session.execute(
+            icgb_mapper.update_usefulness(title=req.title, href=req.href, icgb_day=req.icgb_day, id=req.id, usefulness=1)
+        )
+        return {'status': 'ok'}
+
+@v2_api_router.get('/icgb', response_class=JSONResponse)
+async def list_icgb(day: str=None, usefulness: int=1):
+    with SqlSession() as session:
+        list = session.fetchall(icgb_mapper.list_by_day(day=day, usefulness=usefulness), Icgb)
+    return {'page_list': list}
+
+@v2_api_router.get('/gen-icgb', response_class=JSONResponse)
+async def gen_icgb(index: int):
+    icgblist, day = icgb_mapper.gen_icgb(index)
+    with SqlSession() as session:
+        session.execute(icgb_mapper.batch_save_or_update(icgblist))
+        list = session.fetchall(icgb_mapper.list_by_day(day=day), Icgb)
+    return {'page_list': list}

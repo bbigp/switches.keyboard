@@ -1,7 +1,14 @@
+import json
+import logging
 import os.path
+from datetime import datetime, timedelta
 from typing import Optional
 
+import loguru
+import requests
+from bs4 import BeautifulSoup
 from fastapi import Request, Form, APIRouter
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select, func, desc, text
 from starlette import status
 from starlette.responses import HTMLResponse
@@ -10,12 +17,14 @@ from starlette.templating import Jinja2Templates
 from app import crud
 from app.core.config import app_config
 from app.core.database import SqlSession
-from app.core.internal import paginate_info
+from app.core.internal import paginate_info, extract_http_https_links, get_month_start_end
 from app.core.response import RedirectResponseWraper
-from app.crud import switches_mapper, keyword_mapper
+from app.core.snowflake_id import id_worker
+from app.crud import switches_mapper, keyword_mapper, icgb_mapper
 from app.model.assembler import convert_vo
-from app.model.domain import sqlm_keyboard_switch, KeyboardSwitch, sqlm_keyword, Keyword, Switches, KeyCountBO
-from app.model.vo import MksVO, Specs, KeywordVO
+from app.model.domain import sqlm_keyboard_switch, KeyboardSwitch, sqlm_keyword, Keyword, Switches, KeyCountBO, \
+    Icgb
+from app.model.vo import MksVO, Specs, KeywordVO, CalendarVO
 from app.web import api
 from app.web.stats import count_stash
 
@@ -128,4 +137,34 @@ async def dev(
         'list': [convert_vo(i) for i in list],
         'page': paginate_info(total, page, size),
         'manufacturers': manufacturers
+    })
+
+@v2_page_router.get('/icgb')
+async def ic(request: Request):
+    with SqlSession() as session:
+        start, end = get_month_start_end(datetime.now())
+        list = session.fetchall(icgb_mapper.list_by_time(start.strftime("%Y-%m-%d"), end.strftime("%Y-%m-%d")), Icgb)
+        events = [CalendarVO(title=data.title, start=data.icgb_day, end=data.icgb_day, url=data.href) for data in list]
+    return templates.TemplateResponse('ic.html', context={
+        'request': request,
+        'events': jsonable_encoder(events)
+    })
+
+@v2_page_router.get('/control/ig')
+async def ayb(request: Request,):
+    yesterday = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
+    with SqlSession() as session:
+        list = session.fetchall(icgb_mapper.list_by_day(day=yesterday), Icgb)
+        if len(list) > 0:
+            return templates.TemplateResponse('icgb.html', context={
+                'request': request,
+                'list': list
+            })
+    icgblist, day = icgb_mapper.gen_icgb(0)
+    with SqlSession() as session:
+        session.execute(icgb_mapper.batch_save_or_update(icgblist))
+        list = session.fetchall(icgb_mapper.list_by_day(day=day), Icgb)
+    return templates.TemplateResponse('icgb.html', context={
+        'request': request,
+        'list': list
     })

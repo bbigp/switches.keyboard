@@ -7,3 +7,9 @@ class KeywordRequest(BaseModel):
     rank: int=0
     memo: str=''
     id: str=''
+
+class IcgbRequest(BaseModel):
+    title: str=''
+    href: str=''
+    icgb_day: str=''
+    id: int
