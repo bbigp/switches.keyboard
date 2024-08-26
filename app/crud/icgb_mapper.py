@@ -40,6 +40,9 @@ def list_by_day(day: str, usefulness: int=1):
 def count_by_day(day: str):
     return text(f"select count(*) from icgb where deleted = 0 and day = '{day}' ")
 
+def list_day():
+    return text(f"select DISTINCT(day) from icgb order by id desc limit 3000 ")
+
 
 def list_by_time(start: str, end: str):
     return text(f"select * from icgb where deleted = 0 and usefulness = 1 and icgb_day >= '{start}' and icgb_day <= '{end}' ")
@@ -82,7 +85,7 @@ def gen_icgb(index: int=1):
                 href = extract_http_https_links(text)[0]
             content.append(text)
         now = datetime.now().timestamp()
-        icgb = Icgb(title=title, href=href, text="".join(content), day=day, icgb_day=day, id=id_worker.next_id(),
+        icgb = Icgb(title=title, href=href, text="".join(content), day=day, icgb_day=day, id=str(id_worker.next_id()),
                     create_time=now, update_time=now, url=jump_url, unique_title=title)
         icgblist.append(icgb)
     return icgblist, day

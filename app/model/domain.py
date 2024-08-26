@@ -34,7 +34,7 @@ class Icgb(BaseModel):
     url: str=''
     create_time: int = None
     update_time: int = None
-    id: int = None
+    id: str = ''
     deleted: int=0
     usefulness: int=0
     # NOT_USEFUL: 表示文章完全没有用处。 0

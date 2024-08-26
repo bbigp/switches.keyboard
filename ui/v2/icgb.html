@@ -2,230 +2,119 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>icgb</title>
-<!--    <link href="/css/bootstrap.min.css" rel="stylesheet">-->
-<!--    <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/2.2.4/jquery.min.js" type="application/javascript"></script>-->
-<!--    <script src="/js/bootstrap.min.js"></script>-->
-    <link href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.1.3/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-    <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js" type="application/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js" type="application/javascript"></script>
-    <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.1.3/js/bootstrap.min.js" type="application/javascript"></script>
-    <script src="/js/template-web.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh.js"></script>
+    <title>Bootstrap 5 Event Calendar</title>
+    <link href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js'></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 20px;
+        }
+        #calendar {
+            max-width: 1000px;
+            min-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: visible; /* 允许内容溢出，自动扩展高度 */
+        }
+        .fc-toolbar-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .fc-daygrid-day-number {
+            color: #007bff;
+        }
+        .fc-daygrid-day-top {
+            padding: 5px;
+            position: relative;
+        }
+        .fc-daygrid-day {
+            border-radius: 5px;
+        }
+        .fc-daygrid-day.fc-day-today {
+            background-color: #e9ecef;
+        }
+        .fc-event-title {
+            white-space: normal; /* Allow line breaks */
+            word-wrap: break-word; /* Break long words */
+            overflow-wrap: break-word; /* Handle overflow */
+            font-size: 0.9rem; /* Adjust font size if needed */
+        }
+        .today-label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: #007bff;
+            color: white;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+         .fc-daygrid-day-number {
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">标题</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="modal-id" class="form-label">ID:</label>
-                        <input type="text" class="form-control" id="modal-id" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label for="modal-title" class="form-label">标题:</label>
-                        <input type="text" class="form-control" id="modal-title">
-                    </div>
-                    <div class="mb-3">
-                        <label for="modal-link" class="form-label">链接:</label>
-                        <input type="text" class="form-control" id="modal-link">
-                    </div>
-                    <div class="mb-3">
-                        <label for="modal-time" class="form-label">日期:</label>
-                        <input type="date" class="form-control" id="modal-time">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="saveChangesBtn">保存</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="container mt-5">
-    <h2>Example Table1</h2>
-    <div class="row mb-3">
-        <div class="col-md-1">
-            <input type="number" list="number-datalist" class="form-control" value="1" id="crawl-number" min="1" max="20" placeholder="1">
-            <datalist id="number-datalist">
-                <option value="1"></option>
-                <option value="2"></option>
-                <option value="3"></option>
-                <option value="4"></option>
-            </datalist>
-        </div>
-        <div class="col-md-1">
-            <button type="button" class="btn btn-secondary" id="crawl-btn">爬取</button>
-        </div>
-        <div class="col-md-2">
-            <input type="text" class="form-control datepicker" id="filter-date" placeholder="选择日期">
-        </div>
-        <div class="col-md-1">
-            <button type="button" class="btn btn-primary" id="filter-btn">查询</button>
-        </div>
-        <div class="col-md-1">
-            <button type="button" class="btn btn-primary" id="done-btn">done</button>
-        </div>
-    </div>
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th style="width: 5%;" scope="col">#</th>
-                <th style="width: 40%;" scope="col">标题</th>
-                <th style="width: 25%;" scope="col">链接</th>
-                <th style="width: 10%;" scope="col">icgb时间</th>
-                <th style="width: 10%;" scope="col">时间</th>
-                <th style="width: 10%;" scope="col">操作</th>
-            </tr>
-            </thead>
-            <tbody id="icgbTbody">
-            {% for item in list%}
-            <tr class="{{ 'table-success' if '轴' in item.title else '' }}">
-                <th scope="row">{{ loop.index }}</th>
-                <td>
-                    {{item.title}}
-                    <span class="badge bg-primary rounded-pill">{{'done' if item.usefulness == 1 else ''}}</span>
-                </td>
-                <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                    data-bs-toggle="popover" data-bs-content="{{ item.href if item.href else '' }}">{{item.href}}
-                </td>
-                <td>{{item.icgb_day}}</td>
-                <td>{{item.day}}</td>
-                <td>
-                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                            data-title="{{item.title}}" data-link="{{ item.href }}" data-time="{{item.icgb_day}}" data-id="{{item.id}}">添加</button>
-                    <a href="{{ item.href }}" class="btn btn-primary btn-sm" target="_blank">跳转</a>
-                </td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-<script>
-     $(document).ready(function () {
-        flatpickr("#filter-date", {
-            dateFormat: "Y-m-d",
-            altInput: true,
-            altFormat: "F j, Y",
-            locale: "zh"
-        });
-    });
-    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-        var content = popoverTriggerEl.getAttribute('data-bs-content');
-        if (!content) {
-            content = ''; // 设置为一个空字符串
-        }
-        return new bootstrap.Popover(popoverTriggerEl, {
-            content: content
-        });
-    });
-</script>
-<script id="icgbTbodyTpl" type="text/html">
-    {% raw %}
-    {{ each list item index }}
-    <tr class="{{ if item.title.includes('轴') }}table-success{{ /if }}">
-        <th scope="row">{{ index }}</th>
-        <td>
-            {{item.title}}
-            <span class="badge bg-primary rounded-pill">{{if item.usefulness == 1 }}done{{ /if }}</span>
-        </td>
-        <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{item.href}}</td>
-        <td>{{item.icgb_day}}</td>
-        <td>{{item.day}}</td>
-        <td>
-            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                    data-title="{{item.title}}" data-link="{{ item.href }}" data-time="{{item.icgb_day}}" data-id="{{item.id}}">添加</button>
-            <a href="{{ item.href }}" class="btn btn-primary btn-sm" target="_blank">跳转</a>
-        </td>
-    </tr>
-    {{ /each }}
-    {% endraw %}
-</script>
-<script>
-    $('#exampleModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
 
-        var title = button.data('title');
-        var link = button.data('link');
-        var time = button.data('time');
-        var id = button.data('id');
+<div id="calendar"></div>
 
-        var modal = $(this);
-        modal.find('#modal-title').val(title);
-        modal.find('#modal-link').val(link);
-        modal.find('#modal-time').val(time);
-        modal.find('#modal-id').val(id);
+<script>
+    $(document).ready(function () {
+        var calendarEl = $('#calendar')[0];
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            themeSystem: 'bootstrap5',
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev',
+                center: 'title',
+                right: 'next'
+            },
+            height: "auto",
+            locale: 'zh-cn',
+            events: {{ events | tojson | safe }},
+            datesSet: function(info) {
+                var start = Math.floor(info.view.currentStart.getTime()/1000);
+                var end = Math.floor(info.view.currentEnd.getTime()/1000);
+
+                // 打印当前视图的开始和结束时间
+                console.log('Current view start:', start);
+                console.log('Current view end:', end);
+                // 获取新事件数据
+// <!--                var newEvents = getNewEvents(info.startStr, info.endStr);-->
+                // calendar.removeAllEvents(); // 移除所有现有事件
+                // calendar.addEventSource(newEvents); // 添加新事件数据
+            },
+            editable: false,
+            droppable: false,
+            fixedWeekCount: false,
+             dayCellDidMount: function(info) {
+                // Check if the date is today
+                var today = new Date();
+                if (info.date.getDate() === today.getDate() &&
+                    info.date.getMonth() === today.getMonth() &&
+                    info.date.getFullYear() === today.getFullYear()) {
+                    var label = document.createElement('span');
+                    label.className = 'today-label';
+                    label.textContent = '今';
+                    info.el.querySelector('.fc-daygrid-day-top').appendChild(label);
+                }
+            },
+            eventClick: function(info) {
+                if (info.event.url) {
+                    window.open(info.event.url, '_blank'); // 在新窗口中打开 URL
+                    info.jsEvent.preventDefault(); // 阻止默认点击事件
+                }
+            }
+        });
+
+        calendar.render();
     });
-    $('#saveChangesBtn').click(function(){
-        var data = {
-            'title' : $('#modal-title').val(),
-            'href': $('#modal-link').val(),
-            'icgb_day': $('#modal-time').val(),
-            'id': $('#modal-id').val()
-        }
-        $.ajax({type: 'POST', url: '/api/v2/icgb',
-             contentType: 'application/json',
-             data: JSON.stringify(data),
-             dataType: 'json',
-             success: function (data) {
-                 if (data.status === 'ok') {
-                     $('#exampleModal').modal('hide')
-                 }
-             },
-             error: function (err) {
-                 console.log(err)
-             }
-        })
-    })
-    $('#filter-btn').click(function(){
-        $('#icgbTbody').empty()
-        $.ajax({type: 'GET', url: '/api/v2/icgb?day=' + $('#filter-date').val(),
-             success: function (data) {
-                var html = template('icgbTbodyTpl', {'list': data.page_list})
-                $('#icgbTbody').html(html)
-             },
-             error: function (err) {
-                 console.log(err)
-             }
-        })
-    })
-    $('#done-btn').click(function(){
-        $('#icgbTbody').empty()
-        $.ajax({type: 'GET', url: '/api/v2/icgb?usefulness=1',
-             success: function (data) {
-                var html = template('icgbTbodyTpl', {'list': data.page_list})
-                $('#icgbTbody').html(html)
-             },
-             error: function (err) {
-                 console.log(err)
-             }
-        })
-    })
-    $('#crawl-btn').click(function(){
-        let index = $('#crawl-number').val() -1
-        console.log(index)
-        $('#icgbTbody').empty()
-        $.ajax({type: 'GET', url: 'api/v2/gen-icgb?index='+index,
-             success: function (data) {
-                var html = template('icgbTbodyTpl', {'list': data.page_list})
-                $('#icgbTbody').html(html)
-             },
-             error: function (err) {
-                 console.log(err)
-             }
-        })
-    })
 </script>
+
 </body>
 </html>

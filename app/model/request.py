@@ -13,3 +13,6 @@ class IcgbRequest(BaseModel):
     href: str=''
     icgb_day: str=''
     id: int
+
+class SqliteRequest(BaseModel):
+    sql: str

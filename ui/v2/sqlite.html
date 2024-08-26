@@ -1,0 +1,63 @@
+{% extends "main.html" %}
+{% block head %}
+<link href="/plugins/magic-check/css/magic-check.min.css" rel="stylesheet">
+<link href="/plugins/animate-css/animate.min.css" rel="stylesheet">
+<link href="/plugins/ionicons/css/ionicons.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+
+
+<!--Page content-->
+<!--===================================================-->
+<div id="page-content">
+
+    <div class="panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">Inline Form</h3>
+        </div>
+        <div class="panel-body">
+
+            <div class="panel-body form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-9 col-sm-offset-3">
+                        <textarea id="sql-input" style="min-width:500px;min-height: 400px;"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="row">
+                    <div class="col-sm-9 col-sm-offset-3">
+                        <button class="btn btn-mint" id="save-sql-btn">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<!--===================================================-->
+<!--End page content-->
+<script>
+     $(document).ready(function() {
+        $('#save-sql-btn').click(function(){
+            $.ajax({type: 'POST', url: '/api/v2/sqlite',
+             contentType: 'application/json',
+             data: JSON.stringify({'sql': $('#sql-input').val()}),
+             dataType: 'json',
+             success: function (data) {
+                 if (data.status === 'ok') {
+                    $('#sql-input').val('')
+                 }
+             },
+             error: function (err) {
+                 console.log(err)
+             }
+        })
+        })
+     })
+</script>
+{% endblock %}
+

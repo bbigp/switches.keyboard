@@ -12,7 +12,7 @@ from app.crud import keyword_mapper, switches_mapper, icgb_mapper
 from app.crud.switches_mapper import Filter
 from app.model.assembler import convert_vo, convert_keywrod_sqlm
 from app.model.domain import sqlm_keyword, Keyword, sqlm_keyboard_switch, KeyboardSwitch, Switches, KeyCountBO, Icgb
-from app.model.request import KeywordRequest, IcgbRequest
+from app.model.request import KeywordRequest, IcgbRequest, SqliteRequest
 from app.web.v2page import get_keyword_counts
 
 v2_api_router = APIRouter(prefix='/api/v2')
@@ -161,3 +161,10 @@ async def gen_icgb(index: int):
         session.execute(icgb_mapper.batch_save_or_update(icgblist))
         list = session.fetchall(icgb_mapper.list_by_day(day=day), Icgb)
     return {'page_list': list}
+
+@v2_api_router.post('/sqlite', response_class=JSONResponse)
+async def sqlite(req: SqliteRequest):
+    with SqlSession() as session:
+        session.execute(text(f"{req.sql}"))
+        # session.execute(text(f"CREATE TABLE IF NOT EXISTS icgb (id INTEGER PRIMARY KEY, title TEXT NOT NULL, href TEXT, icgb_day TEXT, day TEXT, text TEXT, unique_title TEXT, url TEXT NOT NULL, create_time INTEGER, update_time INTEGER, deleted INTEGER DEFAULT 0, usefulness INTEGER DEFAULT 0, UNIQUE(unique_title, url));"))
+    return {'status': 'ok'}

@@ -145,7 +145,7 @@ async def ic(request: Request):
         start, end = get_month_start_end(datetime.now())
         list = session.fetchall(icgb_mapper.list_by_time(start.strftime("%Y-%m-%d"), end.strftime("%Y-%m-%d")), Icgb)
         events = [CalendarVO(title=data.title, start=data.icgb_day, end=data.icgb_day, url=data.href) for data in list]
-    return templates.TemplateResponse('ic.html', context={
+    return templates.TemplateResponse('icgb.html', context={
         'request': request,
         'events': jsonable_encoder(events)
     })
@@ -155,16 +155,20 @@ async def ayb(request: Request,):
     yesterday = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
     with SqlSession() as session:
         list = session.fetchall(icgb_mapper.list_by_day(day=yesterday), Icgb)
-        if len(list) > 0:
-            return templates.TemplateResponse('icgb.html', context={
-                'request': request,
-                'list': list
-            })
-    icgblist, day = icgb_mapper.gen_icgb(0)
-    with SqlSession() as session:
-        session.execute(icgb_mapper.batch_save_or_update(icgblist))
-        list = session.fetchall(icgb_mapper.list_by_day(day=day), Icgb)
-    return templates.TemplateResponse('icgb.html', context={
+        days = session.fetchall(icgb_mapper.list_day(), Icgb)
+        if len(list) <= 0:
+            icgblist, day = icgb_mapper.gen_icgb(0)
+            session.execute(icgb_mapper.batch_save_or_update(icgblist))
+            list = session.fetchall(icgb_mapper.list_by_day(day=day), Icgb)
+
+    return templates.TemplateResponse('c-ig.html', context={
         'request': request,
-        'list': list
+        'list': list,
+        'days': jsonable_encoder([d.day for d in days])
+    })
+
+@v2_page_router.get('/control/sqlite')
+async def sqlite(request: Request):
+    return templates.TemplateResponse('sqlite.html', context={
+        'request': request,
     })
