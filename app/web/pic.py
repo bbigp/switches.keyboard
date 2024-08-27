@@ -1,13 +1,15 @@
+import mimetypes
 import os
 import shutil
 from datetime import datetime
 
 from aiohttp import ClientSession
-from fastapi import APIRouter, UploadFile
+from fastapi import APIRouter, UploadFile, Query
 from pydantic.main import BaseModel
 from starlette.responses import FileResponse, JSONResponse
 
 from app.core.config import app_config
+from app.core.internal import ImageProcessor
 from app.core.snowflake_id import id_worker
 
 pic_router = APIRouter(prefix='')
@@ -62,8 +64,9 @@ async def page_temp_image():
     latest_files = sorted(files)[-20:]
     return latest_files[::-1]
 
+# x-oss-process=image/resize,m_fixed,h_100,w_100
 @pic_router.get('/bfs/{source}/{path}', response_class=FileResponse)
-async def show_pic(path: str, source: str):
+async def show_pic(path: str, source: str, process: str=Query(None, alias='x-process')):
     if source == 't':
         full_path = app_config.temp_dir + path
     elif source == 'fs':
@@ -72,4 +75,10 @@ async def show_pic(path: str, source: str):
         full_path = ''
     if not os.path.isfile(full_path):
         return FileResponse('front/img/_d.png', media_type='image/png', headers={'Etag': str(datetime.now().timestamp())})
-    return FileResponse(full_path, media_type='image/jpg')
+    if not process:
+        return FileResponse(full_path, media_type='image/jpg')
+    thumbnail_path = ImageProcessor(process).process(full_path, app_config.image_cache_path)
+    return FileResponse(thumbnail_path, media_type='image/webp')
+
+# 应用评分规则里边新增了云安全巡检项项，在我的抖店云控制台，安全风控中心里，有一项中危任务：检测公网IP有没有绑定ECS，给出的整改步骤https://op.jinritemai.com/docs/guide-docs/1469/6337?from=list&docLabel=
+# 点击页面上的CLB用户指南 之后，将我定位
