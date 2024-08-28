@@ -89,7 +89,7 @@ $(window).on('load', function () {
             {
                 data: "pic",
                 render: function (data, type, row, meta) {
-                    return '<img style="width: 96px;height: 74px;display: block;margin: auto auto;" class="main-pic" src="' + row.pic +'"/>'
+                    return '<img style="width: 96px;height: 74px;display: block;margin: auto auto;" class="main-pic" src="' + row.pic +'?x-process=image/convert,m_webp"/>'
                 }
             },
             {data: "name"},
