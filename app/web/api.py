@@ -14,7 +14,6 @@ from app.model.domain import sqlm_keyword, Keyword, sqlm_keyboard_switch, Keyboa
 from app.model.request import KeywordRequest
 from app.model.vo import MksVO, KeywordVO
 from app.web.stats import count_stash
-import numpy
 
 api_router = APIRouter(prefix='/api')
 
@@ -46,7 +45,7 @@ async def mkstable(
         if len(list) % 10 > 0:
             for i in range(10 - len(list) % 10):
                 _u.append({'name': '', 'pic': ''})
-        result = numpy.array(_u).reshape(-1, 10).tolist()
+        result = []
         return {'status': 'ok', 'data': result, 'recordsTotal': 100, 'recordsFiltered': 100}
 
 @api_router.get('/copymks')
