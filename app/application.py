@@ -7,11 +7,10 @@ from starlette.routing import Mount
 from starlette.staticfiles import StaticFiles
 
 from app.core.response import RedirectResponseWraper
-from app.web.page import templates
 from app.web.pic import pic_router
 from app.web.stats import stats_router
 from app.web.v2api import v2_api_router
-from app.web.v2page import v2_page_router
+from app.web.v2page import v2_page_router, templates
 
 
 def register_route(app):
