@@ -1,32 +1,18 @@
-import json
-import logging
-import os.path
 from datetime import datetime, timedelta
 from typing import Optional
 
-import loguru
-import requests
-from bs4 import BeautifulSoup
-from fastapi import Request, Form, APIRouter
+from fastapi import Request, APIRouter
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import select, func, desc, text
-from starlette import status
 from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
 
-from app import crud
-from app.core.config import app_config
 from app.core.database import SqlSession
-from app.core.internal import paginate_info, extract_http_https_links, get_month_start_end
-from app.core.response import RedirectResponseWraper
-from app.core.snowflake_id import id_worker
+from app.core.internal import paginate_info, get_month_start_end
 from app.crud import switches_mapper, keyword_mapper, icgb_mapper
 from app.model.assembler import convert_vo
-from app.model.domain import sqlm_keyboard_switch, KeyboardSwitch, sqlm_keyword, Keyword, Switches, KeyCountBO, \
+from app.model.domain import Keyword, Switches, KeyCountBO, \
     Icgb
-from app.model.vo import MksVO, Specs, KeywordVO, CalendarVO
-from app.web import api
-from app.web.stats import count_stash
+from app.model.vo import KeywordVO, CalendarVO
 
 templates = Jinja2Templates(directory='ui/v2')
 

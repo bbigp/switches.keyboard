@@ -1,10 +1,9 @@
 from loguru import logger
-from app.core.config import app_config
-
-from sqlalchemy import create_engine, MetaData, Table, Column, String, Integer, Text, BIGINT
-from sqlalchemy.orm import  sessionmaker
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
+from app.core.config import app_config
 
 engine = create_engine(app_config.db_dir, echo=False)
 base = declarative_base(engine)
