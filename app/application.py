@@ -19,6 +19,7 @@ def register_route(app):
     app.include_router(v2_page_router, tags=['v2_page'])
     app.include_router(v2_api_router, tags=['v2_api'])
     app.mount('/js', StaticFiles(directory='ui/js'), name='js')
+    app.mount('/', StaticFiles(directory='ui/img'), name='rootImg')
     logger.debug('route_provider registering')
     if app.debug:
         for route in app.routes:
