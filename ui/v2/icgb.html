@@ -98,18 +98,22 @@
             },
             height: "auto",
             locale: 'zh-cn',
-            events: {{ events | tojson | safe }},
+            events: function(fetchInfo, successCallback, failureCallback) {
+                console.log(fetchInfo)
+                $.ajax({type: 'GET', url: '/api/v2/icgb/calendar_events?start=' + fetchInfo.startStr.split('T')[0] 
+                + '&end=' + fetchInfo.endStr.split('T')[0],
+                    success: function (data) {
+                        successCallback(data.page_list)
+                    },
+                    error: function (err) {
+                        console.log(err)
+                        failureCallback()
+                    }
+                })
+            },
+            // events: {{ events | tojson | safe }},
             datesSet: function(info) {
-                var start = Math.floor(info.view.currentStart.getTime()/1000);
-                var end = Math.floor(info.view.currentEnd.getTime()/1000);
-
-                // 打印当前视图的开始和结束时间
-                console.log('Current view start:', start);
-                console.log('Current view end:', end);
-                // 获取新事件数据
-// <!--                var newEvents = getNewEvents(info.startStr, info.endStr);-->
-                // calendar.removeAllEvents(); // 移除所有现有事件
-                // calendar.addEventSource(newEvents); // 添加新事件数据
+                calendar.refetchEvents()
             },
             editable: false,
             droppable: false,

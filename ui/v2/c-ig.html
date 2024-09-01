@@ -27,16 +27,21 @@
                         <input type="text" class="form-control" id="modal-id" readonly>
                     </div>
                     <div class="mb-3">
-                        <label for="modal-title" class="form-label">标题:</label>
-                        <input type="text" class="form-control" id="modal-title">
-                    </div>
-                    <div class="mb-3">
                         <label for="modal-link" class="form-label">链接:</label>
                         <input type="text" class="form-control" id="modal-link">
                     </div>
                     <div class="mb-3">
                         <label for="modal-time" class="form-label">日期:</label>
                         <input type="date" class="form-control" id="modal-time">
+                    </div>
+                    <div class="mb-3">
+                        <label for="modal-title" class="form-label">标题:</label>
+                        <input type="text" class="form-control" id="modal-title">
+                    </div>
+                    <div class="mb-3">
+                        <label for="modal-time" class="form-label">内容:</label>
+                        <div id="modal-done-list">
+                        </div>
                     </div>
                 </form>
             </div>
@@ -115,11 +120,12 @@
 </div>
 <script>
     $(document).ready(function () {
-       flatpickr("#filter-date", {
+        var datepicker = flatpickr("#filter-date", {
            dateFormat: "Y-m-d",
            altInput: true,
            altFormat: "F j, Y",
            locale: "zh",
+           defaultDate: "{{ day }}", 
            onDayCreate: function(dObj, dStr, fp, dayElem) {
             var date = dayElem.dateObj;
             var formattedDate = fp.formatDate(date, "Y-m-d");
@@ -128,43 +134,13 @@
                 dayElem.style.backgroundColor = "rgb(12 150 250)";
                 dayElem.style.color = "white";
             }
+        },
+        onChange: function(selectedDates, dateStr, instance) {
+            page()
         }
        });
-   });
-   var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-   var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-       var content = popoverTriggerEl.getAttribute('data-bs-content');
-       if (!content) {
-           content = ''; // 设置为一个空字符串
-       }
-       return new bootstrap.Popover(popoverTriggerEl, {
-           content: content
-       });
-   });
-</script>
-<script id="icgbTbodyTpl" type="text/html">
-    {% raw %}
-    {{ each list item index }}
-    <tr class="{{ if item.title.includes('轴') }}table-success{{ /if }}">
-        <th scope="row">{{ index }}</th>
-        <td>
-            {{item.title}}
-            <span class="badge bg-primary rounded-pill">{{if item.usefulness == 1 }}done{{ /if }}</span>
-        </td>
-        <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{item.href}}</td>
-        <td>{{item.icgb_day}}</td>
-        <td>{{item.day}}</td>
-        <td>
-            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                    data-title="{{item.title}}" data-link="{{ item.href }}" data-time="{{item.icgb_day}}" data-id="{{item.id}}">添加</button>
-            <a href="{{ item.href }}" class="btn btn-primary btn-sm" target="_blank">跳转</a>
-        </td>
-    </tr>
-    {{ /each }}
-    {% endraw %}
-</script>
-<script>
-    $('#exampleModal').on('show.bs.modal', function (event) {
+
+       $('#exampleModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
 
         var title = button.data('title');
@@ -177,7 +153,24 @@
         modal.find('#modal-link').val(link);
         modal.find('#modal-time').val(time);
         modal.find('#modal-id').val(id);
+
+        done_icgblist(time)
     });
+    $('#modal-time').on('change', function() {
+        var selectedDate = $(this).val();
+        done_icgblist(selectedDate)
+    });
+    function done_icgblist(time){
+        $.ajax({type: 'GET', url: '/api/v2/done_icgblist?day=' + time,
+             success: function (data) {
+                var html = template('modalDoneListTpl', {'list': data.page_list})
+                $('#modal-done-list').html(html)
+             },
+             error: function (err) {
+                 console.log(err)
+             }
+        })
+    }
     $('#saveChangesBtn').click(function(){
         var data = {
             'title' : $('#modal-title').val(),
@@ -201,8 +194,13 @@
         })
     })
     $('#filter-btn').click(function(){
+        var dateValue = $('#filter-date').val();
+        if (!dateValue) {
+            datepicker.open();
+        }
         page()
     })
+
     function page(){
         var date = $('#filter-date').val()
         var url = '/api/v2/icgb?day=' + $('#filter-date').val()
@@ -221,7 +219,7 @@
         })
     }
     $('#done-btn').click(function(){
-        $('#filter-date').val(null)
+        datepicker.setDate('')
         page()
     })
     $('#crawl-btn').click(function(){
@@ -232,12 +230,63 @@
              success: function (data) {
                 var html = template('icgbTbodyTpl', {'list': data.page_list})
                 $('#icgbTbody').html(html)
+                datepicker.setDate(data.page_list[0]['day'])
              },
              error: function (err) {
                  console.log(err)
              }
         })
     })
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+   var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+       var content = popoverTriggerEl.getAttribute('data-bs-content');
+       if (!content) {
+           content = ''; // 设置为一个空字符串
+       }
+       return new bootstrap.Popover(popoverTriggerEl, {
+           content: content
+       });
+   });
+   $('#modal-done-list').on('click', '.unusefulBadge', function() {
+    var id = $(this).data('id'); 
+    $.ajax({type: 'GET', url: '/api/v2/icgb/unuseful?id='+id,
+             success: function (data) {
+                done_icgblist($('#modal-time').val())
+             },
+             error: function (err) {
+                 console.log(err)
+             }
+        })
+   })
+   });
+</script>
+<script id="icgbTbodyTpl" type="text/html">
+    {% raw %}
+    {{ each list item index }}
+    <tr class="{{ if item.title.includes('轴') }}table-success{{ /if }}">
+        <th scope="row">{{ index }}</th>
+        <td>
+            {{item.title}}
+            <span class="badge bg-primary rounded-pill">{{if item.usefulness == 1 }}done{{ /if }}</span>
+        </td>
+        <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{item.href}}</td>
+        <td>{{item.icgb_day}}</td>
+        <td>{{item.day}}</td>
+        <td>
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                    data-title="{{item.title}}" data-link="{{ item.href }}" data-time="{{item.icgb_day}}" data-id="{{item.id}}">添加</button>
+            <a href="{{ item.href }}" class="btn btn-primary btn-sm" target="_blank">跳转</a>
+        </td>
+    </tr>
+    {{ /each }}
+    {% endraw %}
+</script>
+<script id="modalDoneListTpl" type="text/html">
+    {% raw %}
+    {{ each list item index }}
+    <div>{{item.day}}-->{{ item.title }} <span class="badge bg-primary unusefulBadge" data-id="{{item.id}}">Unseful</span></div>
+    {{ /each }}
+    {% endraw %}
 </script>
 </body>
 </html>

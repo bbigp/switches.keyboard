@@ -12,11 +12,17 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36'
 }
 
-def update_usefulness(title, href, icgb_day, id, usefulness):
+def update_very_useful(title, href, icgb_day, id, usefulness):
     now = int(datetime.now().timestamp())
     stmt = text(f"update icgb set title = '{title}', href = '{href}', icgb_day= '{icgb_day}', usefulness = {usefulness}, "
                 f"update_time = {now} where id = {id}")
     return stmt
+
+def update_unuseful(id):
+    now = int(datetime.now().timestamp())
+    stmt = text(f"update icgb set usefulness = 0, update_time = {now} where id = '{id}' ")
+    return stmt
+
 
 def batch_save_or_update(icgblist: list):
     values_list = []
@@ -43,6 +49,8 @@ def count_by_day(day: str):
 def list_day():
     return text(f"select DISTINCT(day) from icgb order by id desc limit 3000 ")
 
+def list_by_icgb_day(icgb_day: str):
+    return text(f"select * from icgb where deleted = 0 and usefulness = 1 and icgb_day = '{icgb_day}'  order by day desc")
 
 def list_by_time(start: str, end: str):
     return text(f"select * from icgb where deleted = 0 and usefulness = 1 and icgb_day >= '{start}' and icgb_day <= '{end}' ")
@@ -85,7 +93,8 @@ def gen_icgb(index: int=1):
                 href = extract_http_https_links(text)[0]
             content.append(text)
         now = datetime.now().timestamp()
-        icgb = Icgb(title=title, href=href, text="".join(content), day=day, icgb_day=day, id=str(id_worker.next_id()),
-                    create_time=now, update_time=now, url=jump_url, unique_title=title)
+        icgb = Icgb(title=title.replace("'", ""), href=href, text="".join(content).replace("'", ""),
+                    day=day, icgb_day=day, id=str(id_worker.next_id()),
+                    create_time=now, update_time=now, url=jump_url, unique_title=title.replace("'", ""))
         icgblist.append(icgb)
     return icgblist, day

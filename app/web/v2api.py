@@ -6,13 +6,14 @@ from sqlalchemy import select, insert, func, and_, or_, update, desc, text
 from starlette.responses import JSONResponse
 
 from app.core.database import SqlSession
-from app.core.internal import generate_random_string, paginate_info
+from app.core.internal import generate_random_string, paginate_info, get_month_start_end
 from app.core.snowflake_id import id_worker
 from app.crud import keyword_mapper, switches_mapper, icgb_mapper
 from app.crud.switches_mapper import Filter
 from app.model.assembler import convert_vo, convert_keywrod_sqlm
 from app.model.domain import sqlm_keyword, Keyword, sqlm_keyboard_switch, KeyboardSwitch, Switches, KeyCountBO, Icgb
 from app.model.request import KeywordRequest, IcgbRequest, SqliteRequest
+from app.model.vo import CalendarVO
 from app.web.v2page import get_keyword_counts
 
 v2_api_router = APIRouter(prefix='/api/v2')
@@ -144,9 +145,15 @@ async def delete_keyword(req: KeywordRequest):
 async def update_icgb(req: IcgbRequest):
     with SqlSession() as session:
         session.execute(
-            icgb_mapper.update_usefulness(title=req.title, href=req.href, icgb_day=req.icgb_day, id=req.id, usefulness=1)
+            icgb_mapper.update_very_useful(title=req.title, href=req.href, icgb_day=req.icgb_day, id=req.id, usefulness=1)
         )
         return {'status': 'ok'}
+
+@v2_api_router.get('/icgb/unuseful')
+async def update_unuseful(id: str):
+    with SqlSession() as session:
+        session.execute(icgb_mapper.update_unuseful(id))
+    return {'status': 'ok'}
 
 @v2_api_router.get('/icgb', response_class=JSONResponse)
 async def list_icgb(day: str=None, usefulness: int=1):
@@ -162,9 +169,23 @@ async def gen_icgb(index: int):
         list = session.fetchall(icgb_mapper.list_by_day(day=day), Icgb)
     return {'page_list': list}
 
+@v2_api_router.get('/done_icgblist', response_class=JSONResponse)
+async def done_icgblist(day: str):
+    with SqlSession() as session:
+        done_icgblist = session.fetchall(icgb_mapper.list_by_icgb_day(day), Icgb)
+    return {'page_list': done_icgblist}
+
+
 @v2_api_router.post('/sqlite', response_class=JSONResponse)
 async def sqlite(req: SqliteRequest):
     with SqlSession() as session:
         session.execute(text(f"{req.sql}"))
         # session.execute(text(f"CREATE TABLE IF NOT EXISTS icgb (id INTEGER PRIMARY KEY, title TEXT NOT NULL, href TEXT, icgb_day TEXT, day TEXT, text TEXT, unique_title TEXT, url TEXT NOT NULL, create_time INTEGER, update_time INTEGER, deleted INTEGER DEFAULT 0, usefulness INTEGER DEFAULT 0, UNIQUE(unique_title, url));"))
     return {'status': 'ok'}
+
+@v2_api_router.get('/icgb/calendar_events', response_class=JSONResponse)
+async def calendar_events(start: str, end: str):
+    with SqlSession() as session:
+        list = session.fetchall(icgb_mapper.list_by_time(start, end), Icgb)
+        events = [CalendarVO(title=data.title, start=data.icgb_day, end=data.icgb_day, url=data.href) for data in list]
+    return {'page_list': events}
