@@ -5,7 +5,8 @@ import string
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from PIL import Image
+from wand.image import Image
+# from PIL import Image
 
 
 def generate_random_string(len):
@@ -130,8 +131,38 @@ class ImageProcessor:
             raise ValueError("Unsupported convert operation or missing parameters")
         e = f"{to_image}webp/{Path(from_image).stem}.webp"
         os.makedirs(f"{to_image}webp/", exist_ok=True)
-        with Image.open(from_image) as img:
-            if img.mode == 'RGBA':
-                img = img.convert('RGB')
-            img.save(e, format="WEBP")
+        if os.path.isfile(e):
+            return e
+        # with Image.open(from_image) as img:
+        #     if img.mode == 'RGBA':
+        #         img = img.convert('RGB')
+        #     img.save(e, format="WEBP")
+        # return e
+        compress_to_target_size(from_image, e)
         return e
+
+
+def compress_to_target_size(input_path, output_path, max_size_kb=20, initial_quality=95, step_quality=5, min_quality=10):
+    with Image(filename=input_path) as img:
+        # 初次转换为 WebP 格式
+        img.format = 'webp'
+        img.compression_quality = initial_quality
+        img.save(filename=output_path)
+
+        # 检查文件大小
+        file_size_kb = os.path.getsize(output_path) / 1024
+        print(f"Initial file size: {file_size_kb:.2f}KB")
+
+        # 如果文件大小大于目标大小，开始逐步压缩
+        while file_size_kb > max_size_kb and img.compression_quality > min_quality:
+            img.compression_quality -= step_quality  # 降低质量
+            img.resize(int(img.width * 0.9), int(img.height * 0.9))  # 缩小尺寸
+            img.save(filename=output_path)
+            file_size_kb = os.path.getsize(output_path) / 1024
+            print(f"Adjusted file size: {file_size_kb:.2f}KB, Quality: {img.compression_quality}")
+
+        # 最终检查
+        if file_size_kb > max_size_kb:
+            print(f"Warning: Unable to compress {input_path} to {max_size_kb}KB. Final size: {file_size_kb:.2f}KB")
+        else:
+            print(f"Success: Compressed {input_path} to {file_size_kb:.2f}KB")
