@@ -1,17 +1,6 @@
-// Tables-DataTables.js
-// ====================================================================
-// This file should not be included in your project.
-// This is just a sample how to initialize plugins or components.
-//
-// - ThemeOn.net -
-
-
 $(window).on('load', function () {
 
 
-    // DATA TABLES
-    // =================================================================
-    // Require Data Tables
     // -----------------------------------------------------------------
     // http://www.datatables.net/
     // =================================================================
@@ -39,10 +28,10 @@ $(window).on('load', function () {
             data.stash = $('#storBoxSelect').val()
         },
         stateLoadParams: function(settings, data) {
-            console.log(data)
-            console.log(new Date().getTime())
-            console.log(data.time)
-            console.log(new Date().getTime() - data.time)
+//            console.log(data)
+//            console.log(new Date().getTime())
+//            console.log(data.time)
+//            console.log(new Date().getTime() - data.time)
             if (new Date().getTime() - data.time < 60 * 30 * 1000) {
                 $('#storBoxSelect').val(data.stash)
             }
