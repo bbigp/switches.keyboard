@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <title>icgb</title>
     <link href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.1.3/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.staticfile.net/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"/>
     <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js" type="application/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js" type="application/javascript"></script>
     <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.1.3/js/bootstrap.min.js" type="application/javascript"></script>
-    <script src="https://n.onlybox.cn/art-template/4.13.2/template-web.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh.js"></script>
+    <script src="https://cdn.staticfile.net/art-template/4.13.2/lib/template-web.min.js"></script>
+    <link href="https://cdn.staticfile.net/flatpickr/4.6.13/flatpickr.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.net/flatpickr/4.6.13/flatpickr.min.js"></script>
 </head>
 <body>
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -47,7 +47,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" id="saveChangesBtn">保存</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-secondary" id="closeModalBtn">关闭</button>
             </div>
         </div>
     </div>
@@ -119,13 +119,32 @@
     </div>
 </div>
 <script>
+    const customLocale = {
+    weekdays: {
+        shorthand: ['日', '一', '二', '三', '四', '五', '六'],
+        longhand: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
+    },
+    months: {
+        shorthand: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+        longhand: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+    },
+    rangeSeparator: " 至 ",
+    weekAbbreviation: "周",
+    scrollTitle: "滚动切换",
+    toggleTitle: "点击切换 12/24 小时时制",
+    firstDayOfWeek: 1,
+    ordinal: function() {
+        return '日';
+    },
+    time_24hr: true
+};
     $(document).ready(function () {
         var datepicker = flatpickr("#filter-date", {
            dateFormat: "Y-m-d",
            altInput: true,
            altFormat: "F j, Y",
-           locale: "zh",
-           defaultDate: "{{ day }}", 
+           locale: customLocale,
+           defaultDate: "{{ day }}",
            onDayCreate: function(dObj, dStr, fp, dayElem) {
             var date = dayElem.dateObj;
             var formattedDate = fp.formatDate(date, "Y-m-d");
@@ -139,7 +158,6 @@
             page()
         }
        });
-
        $('#exampleModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
 
@@ -161,6 +179,7 @@
         done_icgblist(selectedDate)
     });
     function done_icgblist(time){
+        $('#modal-done-list').empty()
         $.ajax({type: 'GET', url: '/api/v2/done_icgblist?day=' + time,
              success: function (data) {
                 var html = template('modalDoneListTpl', {'list': data.page_list})
@@ -184,14 +203,17 @@
              dataType: 'json',
              success: function (data) {
                  if (data.status === 'ok') {
-                     $('#exampleModal').modal('hide')
-                     page()
+                    done_icgblist($('#modal-time').val())
                  }
              },
              error: function (err) {
                  console.log(err)
              }
         })
+    })
+    $('#closeModalBtn').click(function(){
+        $('#exampleModal').modal('hide')
+        page()
     })
     $('#filter-btn').click(function(){
         var dateValue = $('#filter-date').val();
@@ -284,7 +306,13 @@
 <script id="modalDoneListTpl" type="text/html">
     {% raw %}
     {{ each list item index }}
-    <div>{{item.day}}-->{{ item.title }} <span class="badge bg-primary unusefulBadge" data-id="{{item.id}}">Unseful</span></div>
+    <div>
+        {{item.day}}-->{{ item.title }} 
+        <span class="badge bg-primary unusefulBadge" data-id="{{item.id}}">Unseful</span>
+        {{ if item.href }}
+        <a href="{{ item.href}}" target="_blank"><span class="badge bg-primary unusefulBadge">href</span></i></a>
+        {{ /if }}
+    </div>
     {{ /each }}
     {% endraw %}
 </script>
