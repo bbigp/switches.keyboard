@@ -1,6 +1,6 @@
 from pydantic.main import BaseModel
 
-from app.model.domain import Keyword
+from app.model.domain import Keyword, Switches
 
 
 class Specs(BaseModel):
@@ -53,3 +53,7 @@ class CalendarVO(BaseModel):
     start: str=''
     end: str=''
     url: str=''
+
+class SwitchVO(Switches):
+    html_desc: str=''
+    images: list=None

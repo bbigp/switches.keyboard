@@ -17,3 +17,4 @@ requests==2.31.0
 aiohttp==3.8.6
 beautifulsoup4==4.12.3
 Wand==0.6.13
+markdown==3.7

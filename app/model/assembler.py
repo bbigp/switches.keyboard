@@ -1,22 +1,58 @@
 import json
+import re
 from datetime import datetime
+
+import markdown
 
 from app.model.domain import KeyboardSwitch, Keyword, Switches
 from app.model.request import KeywordRequest
-from app.model.vo import MksVO, KeywordVO
+from app.model.vo import MksVO, KeywordVO, SwitchVO
 
 
-def convert_vo(model: Switches) -> Switches:
+def convert_vo(model: Switches) -> SwitchVO:
     if model.pic is None or model.pic == '':
         model.pic = '/bfs/fs/dummy_image.jpg'
-    model.id = str(model.id)
-    return model
-    # return MksVO(
-    #     id=str(model.id), name=model.name, pic=model.pic, studio=model.studio, manufacturer=model.manufacturer,
-    #     type=model.type, tag=model.tag, quantity=model.quantity, price=model.price, desc=model.desc,
-    #     specs=json.loads(model.specs), create_time=model.create_time, update_time=model.update_time,
-    #     stash=model.stash, logo=model.logo, variation=model.variation
-    # )
+    images, html_content = _markdown_html(model.desc)
+    return SwitchVO(id=str(model.id),
+                    name=model.name,
+                    studio=model.studio,
+                    manufacturer=model.manufacturer,
+                    pic=model.pic,
+                    num=model.num,
+                    type=model.type,
+                    mark=model.mark,
+                    top_mat=model.top_mat,
+                    bottom_mat=model.bottom_mat,
+                    stem_mat=model.stem_mat,
+                    spring=model.spring,
+                    actuation_force=model.actuation_force,
+                    actuation_force_tol=model.actuation_force_tol,
+                    bottom_force=model.bottom_force,
+                    bottom_force_tol=model.bottom_force_tol,
+                    pre_travel=model.pre_travel,
+                    pre_travel_tol=model.pre_travel_tol,
+                    total_travel=model.total_travel,
+                    total_travel_tol=model.total_travel_tol,
+                    light_style=model.light_style,
+                    pins=model.pins,
+                    stor_loc_box=model.stor_loc_box,
+                    stor_loc_row=model.stor_loc_row,
+                    stor_loc_col=model.stor_loc_col,
+                    price=model.price,
+                    desc=model.desc,
+                    create_time=model.create_time,
+                    update_time=model.update_time,
+                    deleted=model.deleted,
+                    html_desc=html_content,
+                    images=images
+                    )
+
+def _markdown_html(md_text):
+    image_pattern = r'!\[.*?\]\((.*?)\)'
+    images = re.findall(image_pattern, md_text)
+    md_without_images = re.sub(image_pattern, '', md_text)
+    html_content = markdown.markdown(md_without_images)
+    return images, html_content
 
 def convert_sqlm(mks: MksVO) -> KeyboardSwitch:
     pass

@@ -158,3 +158,12 @@ async def sqlite(request: Request):
     return templates.TemplateResponse('sqlite.html', context={
         'request': request,
     })
+
+@v2_page_router.get('/switch/{id}')
+async def detail(request: Request, id: int):
+    with SqlSession() as session:
+        model = session.fetchone(switches_mapper.get_by_id(id), Switches)
+    return templates.TemplateResponse('dev-switch.html', context={
+        'request': request,
+        'switch': convert_vo(model)
+    })

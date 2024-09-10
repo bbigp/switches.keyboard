@@ -284,35 +284,37 @@
                                             {% for item in list %}
                                             <div class="col-lg-4 col-md-4 col-sm-6">
                                                 <div class="single-product-wrap">
-                                                    <div class="product-image">
-                                                        {% if item.type == '青轴' %}
-                                                        <div class="product-label" style="background: #42a5f5;">青</div>
-                                                        {% elif item.type == '茶轴' %}
-                                                        <div class="product-label" style="background: #8F4F04;">茶</div>
-                                                        {% elif item.type == '静音线性轴' %}
-                                                        <div class="product-label" style="background: #f38234;">静L</div>
-                                                        {% elif item.type == '静音段落轴' %}
-                                                        <div class="product-label" style="background: #f38234;">静T</div>
-                                                        {% elif '段落轴' in item.type %}
-                                                        <div class="product-label" style="background: #3c763d;">T</div>
-                                                        {% elif '线性轴' in item.type %}
-                                                        <div class="product-label" style="background: #364291;">L</div>
-                                                        {% else %}
-                                                        <div class="product-label" style="background: #ca0000;">{{ item.type }}</div>
-                                                        {% endif %}
-                                                        <a><img src="{{ item.pic }}?x-process=image/convert,m_webp" alt="Product Images"></a>
-                                                        <div class="product-action">
-                                                            <a onclick="" class="add-to-cart" tabindex="0">
-                                                                <i class="bi bi-basket"></i>
-                                                            </a>
+                                                    <a href="/switch/{{ item.id }}" target="_blank">
+                                                        <div class="product-image">
+                                                            {% if item.type == '青轴' %}
+                                                            <div class="product-label" style="background: #42a5f5;">青</div>
+                                                            {% elif item.type == '茶轴' %}
+                                                            <div class="product-label" style="background: #8F4F04;">茶</div>
+                                                            {% elif item.type == '静音线性轴' %}
+                                                            <div class="product-label" style="background: #f38234;">静L</div>
+                                                            {% elif item.type == '静音段落轴' %}
+                                                            <div class="product-label" style="background: #f38234;">静T</div>
+                                                            {% elif '段落轴' in item.type %}
+                                                            <div class="product-label" style="background: #3c763d;">T</div>
+                                                            {% elif '线性轴' in item.type %}
+                                                            <div class="product-label" style="background: #364291;">L</div>
+                                                            {% else %}
+                                                            <div class="product-label" style="background: #ca0000;">{{ item.type }}</div>
+                                                            {% endif %}
+                                                            <img src="{{ item.pic }}?x-process=image/convert,m_webp" alt="Product Images">
+                                                            <div class="product-action">
+<!--                                                                <a onclick="" class="add-to-cart" tabindex="0">-->
+<!--                                                                    <i class="bi bi-basket"></i>-->
+<!--                                                                </a>-->
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="{{ 'product-content' if item.stor_loc_box != '' else 'product-content youtube' }}">
-                                                        <h3><a>{{ item.name }}</a></h3>
-                                                        <div class="price-box">
-                                                            <span class="price">{{ (item.studio, item.manufacturer) | format_studio_with_manufacturer }}</span>
+                                                        <div class="{{ 'product-content' if item.stor_loc_box != '' else 'product-content youtube' }}">
+                                                            <h3>{{ item.name }}</h3>
+                                                            <div class="price-box">
+                                                                <span class="price">{{ (item.studio, item.manufacturer) | format_studio_with_manufacturer }}</span>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    </a>
                                                 </div>
                                             </div>
                                             {% endfor %}
