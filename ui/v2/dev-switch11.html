@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html class="js sizes customelements history pointerevents postmessage webgl websockets cssanimations csscolumns csscolumns-width csscolumns-span csscolumns-fill csscolumns-gap csscolumns-rule csscolumns-rulecolor csscolumns-rulestyle csscolumns-rulewidth csscolumns-breakbefore csscolumns-breakafter csscolumns-breakinside flexbox picture srcset webworkers"
+      lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Switches Detail</title>
+    <meta name="robots" content="noindex, follow">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://cdn.staticfile.net/bootstrap/5.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.net/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://n.onlybox.cn/switches-quest/bigp.css">
+    <link rel="stylesheet" href="https://n.onlybox.cn/switches-quest/style.css">
+
+    <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.net/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <style>
+        @media (max-width: 768px) {
+            .product_small_images-left {
+                flex-direction: column;
+                overflow-x: visible;
+                overflow-y: auto;
+            }
+
+            .product_small_images-left .pot-small-img {
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="/favicon.ico" alt="Logo" width="35" height="35" class="d-inline-block align-text-top">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/">主页</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/icgb">ICGB</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="main-content-wrap section-ptb product-details-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-6 col-lg-7 col-md-6">
+                <div class="product-details-images slick-initialized slick-slider">
+                    <div class="slick-list draggable">
+                        <div class="slick-track"
+                             style="opacity: 1; width: 576px; transform: translate3d(0px, 0px, 0px);">
+                            <div class="product_details_container slick-slide slick-current slick-active"
+                                 data-slick-index="0" aria-hidden="false" style="width: 576px;" tabindex="0">
+                                <div class="portfolio-full-image product_big_images-right product-details-images-2 order-1 order-lg-2 slick-initialized slick-slider">
+                                    <div class="slick-list draggable">
+                                        <div class="slick-track"
+                                             style="opacity: 1; width: 446px; transform: translate3d(0px, 0px, 0px);">
+                                            <div role="tabpanel"
+                                                 class="tab-pane active product-image-position slick-slide slick-current slick-active"
+                                                 id="img-tab-5" data-slick-index="0" aria-hidden="false"
+                                                 style="width: 446px;" tabindex="0">
+                                                <div id="box">
+                                                    <div id="smallBox">
+                                                        <img id="switchImage"
+                                                             src="{{ switch.pic }}?x-process=image/convert,m_webp"
+                                                             alt="#">
+                                                        <div id="mask"
+                                                             style="width: 100px; height: 100px; cursor: move; position: absolute; top: 0px; left: 0px; background-color: rgba(255, 255, 0, 0.4); display: none;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <ul class="product_small_images-left vartical-product-active order-2 order-lg-1 slick-initialized slick-slider slick-vertical">
+                                    <div class="slick-list draggable" style="height: 347px;">
+                                        <div class="slick-track"
+                                             style="opacity: 1; height: 87px; transform: translate3d(0px, 0px, 0px);">
+                                            <li class="pot-small-img slick-slide slick-current slick-active"
+                                                data-slick-index="0" aria-hidden="false" style="width: 115px;"
+                                                tabindex="0">
+                                                <img src="{{ switch.pic }}?x-process=image/convert,m_webp" alt="#">
+                                            </li>
+                                            {% for image in switch.images %}
+                                            <li class="pot-small-img" style="width: 115px;">
+                                                <img src="{{ image }}?x-process=image/convert,m_webp" alt="#">
+                                            </li>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </ul>
+                                <!-- End  images -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-6 col-lg-5 col-md-6">
+                <div class="product_details_info">
+                    <h2>{{ switch.name }}</h2>
+                    <div class="pro_dtl_color d-flex">
+                        <ul class="pro_choose_color d-flex">
+                            {%if switch.stor_loc_box %}
+                            <li class="red"><a href="#"><i class="bi bi-record-fill"></i></a></li>
+                            {% else %}
+                            <li class="blue"><a href="#"><i class="bi bi-record-fill"></i></a></li>
+                            {%endif%}
+                        </ul>
+                        <span>&nbsp; {{switch.stor_loc_box}} {{switch.stor_loc_row}} {{switch.stor_loc_col}}</span>
+                    </div>
+
+                    <!--                    <div class="pro_rating d-flex">-->
+                    <!--                        <ul class="product-rating d-flex">-->
+                    <!--                            <li><span class="bi bi-star"></span></li>-->
+                    <!--                        </ul>-->
+                    <!--                        <span class="rat_qun"> (7 日内 6 人查看该轴体) </span>-->
+                    <!--                    </div>-->
+
+                    <div class="pro_details pt-2 pb-2">
+                        <p>【类型】{{switch.type}} </p>
+                        <p>【代工】{{switch.manufacturer}} <strong>|</strong> {{switch.studio}}</p>
+                        <p>【LOGO】{{switch.mark}} </p>
+                        <p>【针脚】{{switch.pins}} 【导光】 {{switch.light_style }}</p>
+                        <p>
+                            -弹簧 {{switch.spring}}
+                        </p>
+                        <p>
+                            -上盖 {{switch.top_mat}}
+                            -轴心 {{switch.bottom_mat}}
+                            -底壳 {{switch.stem_mat}}
+                        </p>
+                        <p>
+                            {{switch.actuation_force}}{{switch.actuation_force_tol}}g触发
+                            {{switch.bottom_force}}{{switch.bottom_force_tol}}g触底
+                        </p>
+                        <p>
+                            {{switch.pre_travel}}{{switch.pre_travel_tol}}mm触发
+                            {{switch.total_travel}}{{switch.total_travel_tol}}mm触底
+                        </p>
+                    </div>
+                    {%if switch.price%}
+                    <ul class="pro_dtl_prize">
+                        <!--                        <li class="old_prize">$75.21</li>-->
+                        <li> {{switch.price}}</li>
+                        <!--                        <li style="color: black;">¥ 3.00</li>-->
+                    </ul>
+                    {%endif%}
+                    <!--                    <div class="pro_dtl_color">-->
+                    <!--&lt;!&ndash;                        <h3 class="title_2">Choose Colour</h3>&ndash;&gt;-->
+                    <!--                        <ul class="pro_choose_color">-->
+                    <!--                            {%if switch.stor_loc_box %}-->
+                    <!--                            <li class="red"><a href="#"><i class="bi bi-record-fill"></i></a></li>-->
+                    <!--                            {% else %}-->
+                    <!--                            <li class="blue"><a href="#"><i class="bi bi-record-fill"></i></a></li>-->
+                    <!--                            {%endif%}-->
+                    <!--&lt;!&ndash;                            <li class="perpal"><a href="#"><i class="bi bi-record-fill"></i></a></li>&ndash;&gt;-->
+                    <!--&lt;!&ndash;                            <li class="yellow"><a href="#"><i class="bi bi-record-fill"></i></a></li>&ndash;&gt;-->
+                    <!--                        </ul>-->
+                    <!--                    </div>-->
+                    <!--                    <div class="product-quantity-action">-->
+                    <!--                        <div class="prodict-statas"><span>Quantity :</span></div>-->
+                    <!--                        <div class="product-quantity">-->
+                    <!--                            <form action="https://ysyswitch.top/switch_detail?name=TEC%E7%93%B7%E9%9D%92%E8%BD%B4#">-->
+                    <!--                                <div class="product-quantity">-->
+                    <!--                                    <div class="cart-plus-minus">-->
+                    <!--                                        <input id="switchNumInput" value="1" type="number">-->
+                    <!--                                    </div>-->
+                    <!--                                </div>-->
+                    <!--                            </form>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
+                    <!--                    <ul class="pro_dtl_btn">-->
+
+                    <!--                        <li><a class="buy_now_btn" ${switch.storage_num="" <="0?}" onclick="detailAddToCart(&#39;TEC瓷青轴&#39;,-->
+                    <!--                            &#39;http://switches.oss-cn-guangzhou.aliyuncs.com/TEC瓷青轴.jpeg&#39;, 3.00)">加入清单</a>-->
+                    <!--                        </li>-->
+
+                    <!--                        &lt;!&ndash; <li><a href="#"><i class="bi bi-heart-fill"></i></a></li> &ndash;&gt;-->
+                    <!--                    </ul>-->
+                    <!--                    <div class="pro_social_share d-flex">-->
+                    <!--                        <h3 class="title_2">Share :</h3>-->
+                    <!--                        <ul class="pro_social_link">-->
+                    <!--                            <li><a href="#"><i class="bi bi-facebook"></i></a></li>-->
+                    <!--                            <li><a href="#"><i class="bi bi-linkedin"></i></a></li>-->
+                    <!--                            <li><a href="#"><i class="bi bi-twitter"></i></a></li>-->
+                    <!--                            <li><a href="#"><i class="bi bi-instagram"></i></a></li>-->
+                    <!--                        </ul>-->
+                    <!--                    </div>-->
+                    <div>
+                        {{switch.html_desc|safe}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        $('.pot-small-img').on('click', function() {
+            var imgSrc = $(this).find('img').attr('src');
+            if (imgSrc) {
+                $('#switchImage').attr('src', imgSrc)
+            }
+        });
+    })
+</script>
+</body>
+</html>
