@@ -1889,7 +1889,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 
 @media only screen and (max-width: 575px) {
   .footer_widget_list {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     text-align: center;
   }
 }
@@ -2019,7 +2019,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 }
 
 .footer_social {
-  padding: 37px 0 90px;
+  padding: 37px 0 20px;
 }
 @media only screen and (min-width: 768px) and (max-width: 991px) {
   .footer_social {
