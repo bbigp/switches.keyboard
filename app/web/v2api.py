@@ -45,7 +45,7 @@ async def delete(id: int):
 
 
 
-@v2_api_router.get(('/switches/filter'))
+@v2_api_router.get('/switches/filter')
 async def mkslist(
         draw: Optional[int]=None,
         start: Optional[int]=0,

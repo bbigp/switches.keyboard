@@ -38,6 +38,5 @@ def list_by_type(type: str, offset=None, limit=None, search=None):
     return base
 
 def list_by_types(types):
-    return select(T_keyword).where(text('deleted = 0'))\
-                .where(T_keyword.c.type.in_(types))\
-                .order_by(desc(T_keyword.c.word))
+    type = ",".join(["'" + t + "'" for t in types])
+    return text(f"select * from keyword where deleted = 0 and type in ({type}) order by word desc")

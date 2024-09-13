@@ -13,7 +13,7 @@ def convert_vo(model: Switches) -> SwitchVO:
     if model.pic is None or model.pic == '':
         model.pic = '/bfs/fs/dummy_image.jpg'
     images, html_content = _markdown_html(model.desc)
-    return SwitchVO(id=str(model.id),
+    return SwitchVO(id=model.id,
                     name=model.name,
                     studio=model.studio,
                     manufacturer=model.manufacturer,

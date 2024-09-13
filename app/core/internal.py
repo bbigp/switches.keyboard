@@ -5,6 +5,7 @@ import string
 from datetime import datetime, timedelta
 from pathlib import Path
 
+from pydantic.main import BaseModel
 from wand.image import Image
 # from PIL import Image
 
@@ -166,3 +167,14 @@ def compress_to_target_size(input_path, output_path, max_size_kb=20, initial_qua
             print(f"Warning: Unable to compress {input_path} to {max_size_kb}KB. Final size: {file_size_kb:.2f}KB")
         else:
             print(f"Success: Compressed {input_path} to {file_size_kb:.2f}KB")
+
+
+def convert_long_to_str(obj):
+    if isinstance(obj, dict):
+        return {k: convert_long_to_str(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_long_to_str(item) for item in obj]
+    elif isinstance(obj, int) and abs(obj) >= 2**53:  # 只转换 long 类型数字
+        return str(obj)
+    else:
+        return obj

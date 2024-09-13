@@ -1,11 +1,14 @@
+import json
+
 from fastapi import FastAPI, Request
 from loguru import logger
 from starlette import status
 from starlette.middleware.cors import CORSMiddleware
-from starlette.responses import HTMLResponse, JSONResponse
+from starlette.responses import HTMLResponse, JSONResponse, StreamingResponse
 from starlette.routing import Mount
 from starlette.staticfiles import StaticFiles
 
+from app.core.internal import convert_long_to_str
 from app.core.response import RedirectResponseWraper
 from app.web.pic import pic_router
 from app.web.stats import stats_router
@@ -80,6 +83,19 @@ app = init_app()
 #     # print(str(request.scope))
 #     response = await call_next(request)
 #     return response
+
+@app.middleware("http")
+async def convert_long_middleware(request: Request, call_next):
+    response = await call_next(request)
+    if request.url.path.__contains__("api"):
+        body = b"".join([chunk async for chunk in response.body_iterator])
+        content = json.loads(body.decode("utf-8"))
+        # 转换 long 类型数据为字符串
+        content = convert_long_to_str(content)
+
+        # 返回新的 JSONResponse
+        return JSONResponse(content=content)
+    return response
 
 @app.exception_handler(AttributeError)
 @app.exception_handler(ValueError)
