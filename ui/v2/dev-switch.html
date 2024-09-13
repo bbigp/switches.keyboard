@@ -273,35 +273,42 @@
                             </ul>
                         </div>
                         <div class="product_desc">
-                            <p>A t-shirt that comes in three colors (red, white and blue) and three sizes (small,
-                                medium, large) is a configurable product. </p>
+                            <p>{{ switch.html_desc | safe }}</p>
                         </div>
                         <div class="product_variant">
                             {% include 'component/product-variant.html' %}
                         </div>
                         <div class="product_tags d-flex">
+                            {%if switch.spring %}
                             <span>弹簧: </span>
                             <ul class="d-flex">
                                 <li><a href="#">{{switch.spring}}</a></li>
                             </ul>
+                            {% endif %}
                         </div>
                         <div class="product_sku">
+                            {%if switch.top_mat and switch.bottom_mat and switch.stem_mat %}
                             <p><span>上盖: </span> {{switch.top_mat}}<span> | 底壳: </span> {{switch.bottom_mat}}<span> | 轴心: </span> {{switch.stem_mat}}</p>
+                            {% endif %}
                         </div>
                         <div class="product_tags d-flex">
+                            {% if switch.actuation_force and switch.bottom_force %}
                             <span>压力: </span>
                             <ul class="d-flex">
-                                <li><a href="#">{{switch.actuation_force}}{{switch.actuation_force_tol}}g触发,</a></li>
-                                <li><a href="#">{{switch.bottom_force}}{{switch.bottom_force_tol}}g触底</a></li>
+                                <li><a href="#">{{ (switch.actuation_force, switch.actuation_force_tol,'g触发') | format_with_tolerance }},</a></li>
+                                <li><a href="#">{{ (switch.bottom_force, switch.bottom_force_tol,'g触底') | format_with_tolerance }}</a></li>
 <!--                                <li><a href="#">accessorires</a></li>-->
                             </ul>
+                            {% endif %}
                         </div>
                         <div class="product_tags d-flex">
+                            {% if switch.pre_travel and switch.total_travel %}
                             <span>行程: </span>
                             <ul class="d-flex">
-                                <li><a href="#">{{switch.pre_travel}}{{switch.pre_travel_tol}}mm触发,</a></li>
-                                <li><a href="#">{{switch.total_travel}}{{switch.total_travel_tol}}mm触底</a></li>
+                                <li><a href="#">{{ (switch.pre_travel, switch.pre_travel_tol,'mm触发') | format_with_tolerance }},</a></li>
+                                <li><a href="#">{{ (switch.total_travel, switch.total_travel_tol,'mm触底') | format_with_tolerance }}</a></li>
                             </ul>
+                            {% endif %}
                         </div>
 
 
