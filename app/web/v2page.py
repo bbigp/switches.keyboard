@@ -165,5 +165,5 @@ async def detail(request: Request, id: int):
         model = session.fetchone(switches_mapper.get_by_id(id), Switches)
     return templates.TemplateResponse('dev-switch.html', context={
         'request': request,
-        'switch': convert_vo(model)
+        'switch': convert_vo(model).dict()
     })

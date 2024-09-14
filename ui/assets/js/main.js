@@ -12,71 +12,12 @@
         });
     };
 
-    // Slick Slider Activation
-    $('.zoom_tab_img').slick({
-        centerMode: true,
-        centerPadding: '0',
-        slidesToShow: 4,
-        arrows:false,
-        vertical: true,
-        focusOnSelect: true,
-        asNavFor: '.product_zoom_main_img',
-        responsive:[
-            {
-              breakpoint: 576,
-              settings: {
-                slidesToShow: 3,
-                 vertical: false,  
-                  arrows: false,
-              }
-            },
-            {
-              breakpoint: 768,
-              settings: {
-                  slidesToShow: 4,
-              }
-            },
-            {
-              breakpoint: 992,
-              settings: {
-                slidesToShow: 3,
-              }
-            },
-        ]
-
-    });
 
       $(window).on('load', function () {
           $(".preloader").addClass("loaded");
       });
 
 
-// Slick Slider Activation
-                $('.product_zoom_main_img').slick({
-                    centerMode: true,
-                    centerPadding: '0',
-                    slidesToShow: 1,
-                    arrows:false,
-                    vertical: true,
-                    draggable: false,      // 禁用鼠标拖动
-                    swipe: false,          // 禁用触摸滑动
-                    touchMove: false,       // 禁用触摸移动
-                    asNavFor: '.zoom_tab_img',
-                    responsive:[
-                        {
-                          breakpoint: 576,
-                          settings: {
-                             vertical: false,
-                             draggable: true,      // 禁用鼠标拖动
-                             swipe: true,          // 禁用触摸滑动
-                             touchMove: true,       // 禁用触摸移动
-                          }
-                        },
-                    ]
-                });
-
-    
-    
     /*---canvas menu activation---*/
     $('.canvas_open').on('click', function(){
         $('.offcanvas_menu_wrapper,.body_overlay').addClass('active')
@@ -105,11 +46,7 @@
     });
     
     
-    $(document).ready(function() {
-      $('select,.select_option').niceSelect();
-    });
-    
-    
+
       /*---  ScrollUp Active ---*/
     $.scrollUp({
         scrollText: '<i class="ion-android-arrow-up"></i>',
