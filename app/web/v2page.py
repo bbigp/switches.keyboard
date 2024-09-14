@@ -111,7 +111,7 @@ async def keyword(request: Request):
 async def dev(
         request: Request,
         page: Optional[int]=1,
-        size: Optional[int]=15
+        size: Optional[int]=6
 ):
     with SqlSession() as session:
         stmt_list, stmt_count = switches_mapper.filter((page - 1) * size, size, None, None, None, True)
@@ -120,7 +120,25 @@ async def dev(
         manufacturers = session.fetchall(keyword_mapper.list_by_type('manufacturer'), Keyword)
     return templates.TemplateResponse('dev.html', context={
         'request': request,
-        'list': [convert_vo(i) for i in list],
+        'list': [convert_vo(i).dict() for i in list],
+        'page': paginate_info(total, page, size),
+        'manufacturers': manufacturers
+    })
+
+@v2_page_router.get('/shop')
+async def main(
+        request: Request,
+        page: Optional[int]=1,
+        size: Optional[int]=6
+):
+    with SqlSession() as session:
+        stmt_list, stmt_count = switches_mapper.filter((page - 1) * size, size, None, None, None, True)
+        list = session.fetchall(stmt_list, Switches)
+        total = session.count(stmt_count)
+        manufacturers = session.fetchall(keyword_mapper.list_by_type('manufacturer'), Keyword)
+    return templates.TemplateResponse('shop.html', context={
+        'request': request,
+        'list': [convert_vo(i).dict() for i in list],
         'page': paginate_info(total, page, size),
         'manufacturers': manufacturers
     })

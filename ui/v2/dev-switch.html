@@ -235,7 +235,7 @@
             <div class="col-lg-6 col-md-6">
                 <div class="product_d_right">
                     <form action="#">
-                        <h1>{{switch.name}} {{ '' if switch.studio == switch.manufacturer else switch.studio }}</h1>
+                        <h1>{{switch.name}} {{ '' if switch.studio == switch.manufacturer else ' x ' + switch.studio }}</h1>
                         <div class="product_ratting_review d-flex align-items-center">
                             <div class=" product_ratting">
                                 {% if '静音' in switch.type %}
@@ -247,6 +247,7 @@
                                 {% else %}
                                 <span class="product-label" style="background: #ca0000;">None</span>
                                 {% endif %}
+                                {{ switch.manufacturer if switch.manufacturer else '' }}
 <!--                                <ul class="d-flex">-->
 <!--                                    <li><a href="#"><i class="ion-ios-star"></i></a></li>-->
 <!--                                    <li><a href="#"><i class="ion-ios-star"></i></a></li>-->
