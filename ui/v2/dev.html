@@ -425,6 +425,7 @@
     {{ each list item index }}
         <div class="col-lg-4 col-md-4 col-sm-6">
             <div class="single-product-wrap">
+                <a href="/switch/{{ item.id }}" target="_blank">
                 <div class="product-image">
                     {{ if item.type == '青轴' }}
                     <div class="product-label" style="background: #42a5f5;">青</div>
@@ -441,19 +442,20 @@
                     {{ else }}
                     <div class="product-label" style="background: #ca0000;">{{ item.type }}</div>
                     {{ /if }}
-                    <a><img src="{{ item.pic }}?x-process=image/convert,m_webp" alt="Product Images"></a>
+                    <img src="{{ item.pic }}?x-process=image/convert,m_webp" alt="Product Images">
                     <div class="product-action">
-                        <a onclick="" class="add-to-cart" tabindex="0">
-                            <i class="bi bi-basket"></i>
-                        </a>
+<!--                        <a onclick="" class="add-to-cart" tabindex="0">-->
+<!--                            <i class="bi bi-basket"></i>-->
+<!--                        </a>-->
                     </div>
                 </div>
                 <div class="{{if item.stor_loc_box !== ''}}product-content{{else}}product-content youtube{{/if}}">
-                    <h3><a>{{ item.name }}</a></h3>
+                    <h3>{{ item.name }}</h3>
                     <div class="price-box">
                         <span class="price">{{ item.studio | format_studio_with_manufacturer:item.manufacturer }}</span>
                     </div>
                 </div>
+                </a>
             </div>
         </div>
     {{ /each }}
@@ -465,6 +467,7 @@
         <div class="row product-layout-list">
             <div class="col-lg-4 col-md-5">
                 <div class="single-product-wrap">
+                    <a href="/switch/{{ item.id }}" target="_blank">
                     <div class="product-image">
                         {{ if item.type == '青轴' }}
                         <div class="product-label" style="background: #42a5f5;">青</div>
@@ -481,15 +484,15 @@
                         {{ else }}
                         <div class="product-label" style="background: #ca0000;">{{ item.type }}</div>
                         {{ /if }}
-                        <a><img src="{{ item.pic }}?x-process=image/convert,m_webp" alt="Produce Images"></a>
+                        <img src="{{ item.pic }}?x-process=image/convert,m_webp" alt="Produce Images">
                     </div>
+                    </a>
                 </div>
             </div>
             <div class="col-lg-8 col-md-7">
+                <a href="/switch/{{ item.id }}" target="_blank">
                 <div class="{{if item.stor_loc_box !== ''}}product-content text-start{{else}}product-content text-start youtube{{/if}}">
-                    <h3 style="text-align: left">
-                        <a href="">{{ item.name }}</a>
-                    </h3>
+                    <h3 style="text-align: left">{{ item.name }}</h3>
                     <div class="price-box" style="text-align: left">
                         <span class="price">{{ item.studio | format_studio_with_manufacturer:item.manufacturer }}</span>
                     </div>
@@ -532,6 +535,7 @@
                         </p>
                     </div>
                 </div>
+                </a>
             </div>
         </div>
     {{ /each }}
