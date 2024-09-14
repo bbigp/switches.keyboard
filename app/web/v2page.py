@@ -111,7 +111,7 @@ async def keyword(request: Request):
 async def dev(
         request: Request,
         page: Optional[int]=1,
-        size: Optional[int]=6
+        size: Optional[int]=15
 ):
     with SqlSession() as session:
         stmt_list, stmt_count = switches_mapper.filter((page - 1) * size, size, None, None, None, True)
