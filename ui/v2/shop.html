@@ -332,7 +332,21 @@
 <!--                                    </ul>-->
 <!--                                </div>-->
                                 <div class="product_label">
-                                    <span>T</span>
+                                    {% if item.type == '青轴' %}
+                                    <span style="background: #42a5f5;">青</span>
+                                    {% elif item.type == '茶轴' %}
+                                    <span style="background: #8F4F04;">茶</span>
+                                    {% elif item.type == '静音线性轴' %}
+                                    <span style="background: #f38234;">静L</span>
+                                    {% elif item.type == '静音段落轴' %}
+                                    <span style="background: #f38234;">静T</span>
+                                    {% elif '段落轴' in item.type %}
+                                    <span style="background: #3c763d;">T</span>
+                                    {% elif '线性轴' in item.type %}
+                                    <span style="background: #364291;">L</span>
+                                    {% else %}
+                                    <span style="background: #ca0000;">{{ item.type }}</span>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="product_content grid_content text-center">
