@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html class="js sizes customelements history pointerevents postmessage webgl websockets cssanimations csscolumns csscolumns-width csscolumns-span csscolumns-fill csscolumns-gap csscolumns-rule csscolumns-rulecolor csscolumns-rulestyle csscolumns-rulewidth csscolumns-breakbefore csscolumns-breakafter csscolumns-breakinside flexbox picture srcset webworkers"
+      lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Keyboard Switches</title>
+    <meta name="robots" content="noindex, follow">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet"
+          href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.0.0-alpha2/css/bootstrap.min.css">
+    <!--    5.0.0-alpha1 -> 5.0.0-alpha2-->
+    <link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/slick-carousel/1.9.0/slick.min.css">
+    <link rel="stylesheet"
+          href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/simple-line-icons/2.5.5/css/simple-line-icons.min.css">
+    <!--    无版本 -> 2.5.5-->
+    <link rel="stylesheet" href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/ionicons/2.0.0/css/ionicons.min.css">
+    <link rel="stylesheet"
+          href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/animate.css/4.1.1/animate.min.css">
+    <!--    无版本 -> 4.1.1-->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/magnific-popup.js/1.1.0/magnific-popup.min.css">
+    <script src="https://unpkg.com/turbolinks"></script>
+    <style>
+        .preloader {
+            position: fixed;
+            top: 0;
+            z-index: 9999;
+            background: #fff;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: height 0.8s cubic-bezier(0.075, 0.82, 0.165, 1);
+        }
+
+        .preloader.loaded {
+            height: 0;
+        }
+
+        .preloader h1 {
+            color: black;
+        }
+
+        .disabled-link {
+            pointer-events: none;
+            color: rgb(128, 128, 128);
+            text-decoration: none;
+        }
+
+        .factoryItem {
+            display: inline-block;
+            max-width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 5px;
+        }
+
+        .manufacturer-text {
+            color: #6a7964;
+            font-weight: bold
+        }
+
+        .filterTag {
+            border: 1px solid #6a7964;
+            color: #6a7964;
+            font-size: 14px;
+            font-weight: 500;
+            margin: 10px 10px 0 0;
+            padding: 4px 5px 4px 8px;
+            display: inline-block;
+        }
+
+        @media only screen and (min-width: 768px) and (max-width: 991px) {
+            .d-flex-row {
+                flex-direction: row;
+            }
+        }
+
+        @media only screen and (max-width: 767px) {
+            .d-flex-row {
+                flex-direction: row;
+            }
+        }
+    </style>
+</head>
+
+<body>
+{% set global_qs_search = '' if request.query_params.get('s') is none else request.query_params.get('s') %}
+{% set global_qs_manufacturer = [] if request.query_params.get('manufacturer') is none else request.query_params.get('manufacturer').split(',') %}
+{% set global_qs_is_available = 1 if request.query_params.get('is_available') is none else request.query_params.get('is_available')|int %}
+{% set global_filter_count = 1 + (1 if global_qs_search else 0) + (global_qs_manufacturer|length) %}
+{{ global_qs_is_available }}
+<div class="preloader text-white fs-6 text-uppercase overflow-hidden"><h1>loading...</h1></div>
+<div class="body_overlay"></div>
+
+<header class="header_section border-bottom">
+    {% include 'component/header-top.html' %}
+
+    {% set active_menu = 'switches' %}
+    {% set show_search = true %}
+    {% include 'new/main_header.html' %}
+
+</header>
+
+
+<div class="shop_section shop_reverse">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-12">
+                <!--sidebar widget start-->
+                <aside class="sidebar_widget">
+                    <div class="widget_inner">
+                        <div class="widget_list widget_filter">
+                            <h2>Filter By</h2>
+                            <div class="filter__list filterTagList">
+                                {% if global_qs_is_available == 1 or global_qs_is_available == 2  %}
+                                <div class="filterTag" data-value="状态:{{ global_qs_is_available }}" data-available="{{ global_qs_is_available }}">
+                                    {{ '仓库中' if global_qs_is_available == 1 else '草稿' }}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </div>
+                                {% endif %}
+                                {% for q in global_qs_manufacturer %}
+                                <div class="filterTag" data-value="{{ q }}">
+                                    {{ q }}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </div>
+                                {% endfor %}
+                                {% if global_qs_search %}
+                                <div class="filterTag" data-value="搜索:{{ global_qs_search }}">
+                                    搜索:{{ global_qs_search }}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="filter__list widget_brands">
+                                <h3 data-toggle="collapse" data-target="#brands">状态</h3>
+                                <ul class="widget_dropdown_categories collapse show row" style="flex-direction: row;" id="brands">
+                                    <li class="col-6 factory-item factoryItem availableItem" data-field="is_available" data-value="1">
+                                        <input class="switchFactoryCheck big-large-checkbox" {{ 'checked' if global_qs_is_available == 1 }} type="checkbox"/>
+                                        <span class="switchFactory big-factory {{ 'manufacturer-text' if global_qs_is_available == 1 }}">仓库中</span>
+                                    </li>
+                                    <li class="col-6 factory-item factoryItem availableItem" data-field="is_available" data-value="2">
+                                        <input class="switchFactoryCheck big-large-checkbox" {{ 'checked' if global_qs_is_available == 2 }} type="checkbox"/>
+                                        <span class="switchFactory big-factory {{ 'manufacturer-text' if global_qs_is_available == 2 }}">草稿</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="widget_list widget_categories">
+{#                            <h2>Categories</h2>#}
+                            <ul>
+                                <li class="widget_sub_categories"><a href="javascript:void(0)" data-toggle="collapse" data-target="#men">代工 MANUFACTORY</a>
+                                    <ul class="widget_dropdown_categories collapse show row" style="flex-direction: row;" id="men">
+{#                                        <li><a href="#"> New products <span>104</span></a></li>#}
+                                        {% for item in manufacturers %}
+                                            <li class="col-6 factory-item factoryItem" data-field="manufacturer" data-value="{{ item.word }}">
+                                                <input class="switchFactoryCheck big-large-checkbox" type="checkbox" {{ 'checked' if item.word in global_qs_manufacturer }}/>
+                                                <span class="switchFactory big-factory {{ 'manufacturer-text' if item.word in global_qs_manufacturer }}">{{ item.word }}</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                                <li class="widget_sub_categories"><a href="javascript:void(0)" data-toggle="collapse" data-target="#women">women</a>
+                                    <ul class="widget_dropdown_categories collapse show" id="women">
+                                        <li><a href="#"> New products <span>✓</span></a></li>
+                                        <li><a href="#">Gymwear <span>68</span></a></li>
+                                        <li><a href="#">Jakets <span>75</span></a></li>
+                                        <li><a href="#">Jeans <span>30</span></a></li>
+                                        <li><a href="#">Shirts <span>150</span></a></li>
+                                        <li><a href="#">T-Shirts <span>113</span></a></li>
+                                        <li><a href="#">Accessories <span>95</span></a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="widget_list">
+                            <h2>Recent Product</h2>
+                            <div class="recent_product">
+                                <div class="recent_product_list d-flex mb-25">
+                                    <div class="recent_thumb">
+                                        <a href="product-details.html"><img src="/assets/img/product/product4.jpg" alt=""></a>
+                                    </div>
+                                    <div class="recent_content">
+                                        <h4><a href="product-details.html">Barbour T-shirt <br> International</a></h4>
+                                        <span>$32.00</span>
+                                    </div>
+                                </div>
+                                <div class="recent_product_list d-flex">
+                                    <div class="recent_thumb">
+                                        <a href="product-details.html"><img src="/assets/img/product/product6.jpg" alt=""></a>
+                                    </div>
+                                    <div class="recent_content">
+                                        <h4><a href="product-details.html">Barbour T-shirt <br> International</a></h4>
+                                        <span>$32.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+                <!--sidebar widget end-->
+            </div>
+            <div class="col-lg-9 col-md-12">
+                <!--shop wrapper start-->
+
+                <div class="breadcrumb_content">
+                    <ul>
+                        <li><a href="/">主页</a></li>
+                        <li><a href="/collections/switches">switches</a></li>
+                    </ul>
+                </div>
+                <!--breadcrumbs area end-->
+
+                <!--shop toolbar start-->
+                <div class="shop_toolbar_wrapper d-flex justify-content-between align-items-center">
+                    <div class="page_amount">
+                        <p><span>{{page.total_items}}</span> </p>
+                    </div>
+<!--                    <div class=" sorting_by d-flex align-items-center">-->
+<!--                        <span>SORT BY :</span>-->
+<!--                        <form class="select_option" action="#">-->
+<!--                            <select name="orderby" id="short">-->
+<!--                                <option selected value="1">NAME       3</option>-->
+<!--                                <option  value="2">NAME  4</option>-->
+<!--                            </select>-->
+<!--                        </form>-->
+<!--                    </div>-->
+                    <div class="toolbar_btn_wrapper d-flex align-items-center">
+                        <div class="view_btn">
+                            <a class="view" href="#">VIEW</a>
+                        </div>
+                        <div class="shop_toolbar_btn">
+                            <ul class="d-flex align-items-center">
+                                <li><a href="#" class="active btn-grid-3" data-role="grid_3"><i class="ion-grid"></i></a></li>
+                                <li><a href="#" class="btn-list" data-role="grid_list"><i class="ion-navicon"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!--shop toolbar end-->
+                <div class="row shop_wrapper">
+                    {% for item in list %}
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-6 ">
+                        <div class="single_product">
+                            <div class="product_thumb">
+                                <a href="/collections/products/{{ item.id }}" target="_blank">
+                                    <img style="width: 100%; height: auto; aspect-ratio: 13/10; object-fit: cover;" class="primary_img" src="{{ item.pic }}?x-process=image/convert,m_webp" alt="consectetur">
+                                </a>
+<!--                                <div class="product_action">-->
+<!--                                    <ul>-->
+<!--                                        <li class="wishlist"><a href="#" data-tippy="Wishlist" data-tippy-inertia="true" data-tippy-delay="50"-->
+<!--                                                                data-tippy-arrow="true" data-tippy-placement="left"><i class="icon-heart icons"></i></a></li>-->
+
+<!--                                        <li class="quick_view"><a data-toggle="modal" data-target="#modal_box" data-tippy="Quick View" href="#" data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="left"><i class="icon-size-fullscreen icons"></i></a></li>-->
+<!--                                        <li class="compare"><a data-tippy="Compare" href="#" data-tippy-inertia="true" data-tippy-delay="50"-->
+<!--                                                               data-tippy-arrow="true" data-tippy-placement="left"><i class="icon-refresh icons"></i></a></li>-->
+<!--                                    </ul>-->
+<!--                                </div>-->
+                                <div class="product_label">
+                                    {% if item.type == '青轴' %}
+                                    <span style="background: #42a5f5;">青</span>
+                                    {% elif item.type == '茶轴' %}
+                                    <span style="background: #8F4F04;">茶</span>
+                                    {% elif item.type == '静音线性轴' %}
+                                    <span style="background: #f38234;">静L</span>
+                                    {% elif item.type == '静音段落轴' %}
+                                    <span style="background: #f38234;">静T</span>
+                                    {% elif '段落轴' in item.type %}
+                                    <span style="background: #3c763d;">T</span>
+                                    {% elif '线性轴' in item.type %}
+                                    <span style="background: #364291;">L</span>
+                                    {% else %}
+                                    <span style="background: #ca0000;">{{ item.type }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="product_content grid_content text-center">
+                                <a href="/collections/products/{{ item.id }}" target="_blank">
+                                    <!--                                <div class="product_ratting">-->
+                                    <!--                                    <ul class="d-flex justify-content-center">-->
+                                    <!--                                        <li><a href="#"><i class="ion-android-star"></i></a></li>-->
+                                    <!--                                        <li><a href="#"><i class="ion-android-star"></i></a></li>-->
+                                    <!--                                        <li><a href="#"><i class="ion-android-star"></i></a></li>-->
+                                    <!--                                        <li><a href="#"><i class="ion-android-star"></i></a></li>-->
+                                    <!--                                        <li><a href="#"><i class="ion-android-star"></i></a></li>-->
+                                    <!--                                        <li><span>(2)</span></li>-->
+                                    <!--                                    </ul>-->
+                                    <!--                                </div>-->
+                                    <h4 class="product_name">{{ item.name }}</h4>
+                                    <div class="price_box">
+                                        <span>{{ (item.studio, item.manufacturer) | format_studio_with_manufacturer }}</span>
+                                        <!--                                    <span class="current_price">$43.00</span>-->
+                                        <!--                                    <span class="old_price">$46.00</span>-->
+                                    </div>
+                                    <!--                                <div class="add_to_cart">-->
+                                    <!--                                    <a class="btn btn-primary" href="#" data-tippy="Add To Cart"  data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top">Add To Cart</a>-->
+                                    <!--                                </div>-->
+                                </a>
+                            </div>
+                            <div class="product_list_content">
+                                <a href="/collections/products/{{ item.id }}" target="_blank">
+                                <h4 class="product_name">{{ item.name }}{{ '' if item.studio == item.manufacturer else ' x ' + item.studio }}</h4>
+{#                                <p><a href="#">show</a></p>#}
+                                <div class="price_box">
+                                    {{ item.manufacturer if item.manufacturer else '' }}
+<!--                                    <span class="current_price">$43.00</span>-->
+<!--                                    <span class="old_price">$46.00</span>-->
+                                </div>
+                                <div class="product_desc">
+                                    <p>
+                                        {% if item.light_style %}<span>{{item.light_style }},</span>{% endif %}
+                                        {% if item.pins %}<span>{{item.pins }}Pins,</span>{% endif %}
+                                        {% if item.type %}<span>{{item.type }},</span>{% endif %}
+                                        {% if item.mark %}<span>{{item.mark }},</span>{% endif %}
+                                        {% if item.stor_loc_box %}
+                                        <span>{{ item.stor_loc_box }}{{ '' if item.stor_loc_row is none else '【' + item.stor_loc_row|string + '-' + item.stor_loc_col|string + '】'}}</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+<!--                                <div class="add_to_cart">-->
+<!--                                    <a class="btn btn-primary" href="#" data-tippy="Add To Cart"  data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top">Add To Cart</a>-->
+<!--                                </div>-->
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="pagination_style pagination justify-content-center">
+                    <ul class="d-flex">
+                        {% if page.has_previous_page %}
+                        <li><a href="/collections/switches/{{ page.current_page - 1 }}"> << </a></li>
+                        {% endif %}
+                        {% for item in page.adjacent_pages %}
+                        <li>
+                            <a class="{{ 'current' if item == page.current_page }} {{ 'disabled-link' if item == -1 }}"
+                               href="{{  '/collections/switches/' + item|string if item != -1 }}">
+                            {{ '...' if item == -1 else item }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                        {% if page.has_next_page %}
+                            <li><a href="/collections/switches/{{ page.current_page + 1 }}">>></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <!--shop toolbar end-->
+                <!--shop wrapper end-->
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'new/footer_widgets.html' %}
+
+<script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.0.0-alpha2/js/bootstrap.min.js"></script>
+<script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/slick-carousel/1.9.0/slick.min.js"></script>
+<script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/wow/1.1.2/wow.min.js"></script> <!--    v1.3.0 -> 1.1.2-->
+<script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/scrollup/2.4.1/jquery.scrollUp.min.js"></script>
+<script src="/assets/js/main.js"></script>
+<script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+<script>
+    $(document).on('turbolinks:load', function () {
+        $(".preloader").addClass("loaded");
+    });
+    {#console.log({{page | tojson}})#}
+</script>
+
+<script>
+    $('#searchBtn').click(function (){
+        initFilter()
+    })
+    function initFilter(){
+        let qs = []
+
+        var manufacturerList = []
+        $('li.factoryItem input:checked').each(function() {
+            var parentLi = $(this).closest('li.factoryItem'); // 获取父级 li.factoryItem
+            var dataField = parentLi.attr('data-field');
+            var dataValue = parentLi.attr('data-value')
+
+            if (dataField === 'manufacturer') {
+                manufacturerList.push(dataValue)
+            }
+            if(dataField === 'is_available' && dataValue !== '1') {
+                qs.push('is_available=' + dataValue)
+            }
+        });
+
+
+        if (manufacturerList.length > 0) {
+            qs.push('manufacturer=' + manufacturerList.join(','))
+        }
+        if ($('li.availableItem input.switchFactoryCheck:checked').length <= 0){
+            qs.push('is_available=0')
+        }
+
+        let searchVal = $('#searchInput').val();
+        if (searchVal !== '') {
+            qs.push('s='+searchVal)
+        }
+        if (window.innerWidth <= 800) {
+            qs.push('size=8')
+        }
+        let url = qs.length === 0 ? '/collections/switches/1' : '/collections/switches/1?'+ qs.join('&')
+        console.log('init filter ', url)
+        if (new URL(url, window.location.origin).href !== new URL(window.location.href).href) {
+            Turbolinks.visit(url);
+        }
+    }
+
+    $('.filterTag').on('click', function() {
+        var tagValue = $(this).data('value');  // 获取 filterTag 的值
+        $(this).remove();  // 移除当前 filterTag
+        if (tagValue.startsWith('搜索:')) {
+            $('#searchInput').val('')
+        }else if(tagValue.startsWith("状态:")){
+            var available = $(this).data('available')
+            $('li.availableItem').each(function() {
+                var liValue = $(this).data('value');
+                if (liValue === available) {
+                    var checkbox = $(this).find('input.switchFactoryCheck');
+                    checkbox.prop('checked', false);  // 取消勾选
+                }
+            });
+        }else {
+            // 找到与 filterTag 对应的 li，取消勾选并恢复样式
+            $('li.factoryItem').each(function() {
+                var liValue = $(this).data('value');
+                if (liValue === tagValue) {
+                    var checkbox = $(this).find('input.switchFactoryCheck');
+                    checkbox.prop('checked', false);  // 取消勾选
+                }
+            });
+        }
+        initFilter();  // 调用 initFilter 函数
+    });
+
+    $('.factoryItem').on('click', function() {
+        var dataField = $(this).data('field')
+        if (dataField === 'manufacturer') {
+            if (!$(event.target).is('input')) {
+                var checkbox = $(this).find('input.switchFactoryCheck');
+                checkbox.prop('checked', !checkbox.prop('checked'));
+            }
+        } else if(dataField === 'is_available'){
+            var currentLi = $(this);
+            // 取消同级 li 的选中状态
+            currentLi.siblings().each(function() {
+                $(this).find('input.switchFactoryCheck').prop('checked', false); // 取消 input 的勾选
+            });
+
+            // 设置当前 li 为选中状态
+            var checkbox = currentLi.find('input.switchFactoryCheck');
+            checkbox.prop('checked', true); // 设置 input 为选中状态
+        }
+
+        initFilter()
+    });
+
+    $('.switchFactoryCheck').on('click', function(event) {
+        event.stopPropagation(); // 阻止事件冒泡到 li 上
+        var dataField = $(this).parent().data('field')
+        if(dataField === 'is_available') {
+            $('li.availableItem').each(function() {
+                var checkbox = $(this).find('input.switchFactoryCheck');
+                checkbox.prop('checked', false);  // 取消勾选
+            });
+            $(this).prop('checked', true)
+        }
+        initFilter()
+    });
+</script>
+
+</body>
+</html>

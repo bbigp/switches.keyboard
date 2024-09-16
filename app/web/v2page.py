@@ -1,7 +1,8 @@
+import re
 from datetime import datetime, timedelta
 from typing import Optional
 
-from fastapi import Request, APIRouter
+from fastapi import Request, APIRouter, Query, Depends
 from fastapi.encoders import jsonable_encoder
 from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
@@ -21,7 +22,7 @@ v2_page_router = APIRouter(prefix='')
 def format_with_tolerance(value):
     base_value, tolerance, unit = value
     if base_value is None or base_value == '':
-        return '-'
+        return f'-{unit}'
     elif tolerance is None or tolerance == '':
         return f'{base_value}{unit}'
     else:
@@ -105,7 +106,6 @@ async def keyword(request: Request):
     return templates.TemplateResponse('keyword.html', context={'request': request})
 
 
-@v2_page_router.get("/")
 @v2_page_router.get("/main")
 @v2_page_router.get('/main/{page}')
 async def dev(
@@ -125,18 +125,40 @@ async def dev(
         'manufacturers': manufacturers
     })
 
-@v2_page_router.get('/shop')
+def determine_page_size(request: Request, size: int=Query(None)) -> int:
+    user_agent = request.headers.get("User-Agent", "")
+    if size is not None:
+        return size
+    mobile_pattern = re.compile(r"Mobi|Android|iPhone|iPad|iPod|Windows Phone", re.I)
+    return 8 if bool(mobile_pattern.search(user_agent)) else 15
+
+@v2_page_router.get("/")
+@v2_page_router.get('/collections')
+@v2_page_router.get("/collections/")
+@v2_page_router.get("/collections/switches")
+@v2_page_router.get("/collections/switches/")
+@v2_page_router.get("/collections/switches/{page}")
 async def main(
         request: Request,
         page: Optional[int]=1,
-        size: Optional[int]=6
+        size: int=Depends(determine_page_size),
+        search: str=Query(default=None, alias='s'),
+        stor_box: Optional[str]=None,
+        manufacturer: Optional[str]=None,
+        is_available: Optional[int]=1
 ):
     with SqlSession() as session:
-        stmt_list, stmt_count = switches_mapper.filter((page - 1) * size, size, None, None, None, True)
+        if is_available == 1:
+            available = True
+        elif is_available == 2:
+            available = False
+        else:
+            available = None
+        stmt_list, stmt_count = switches_mapper.filter((page - 1) * size, size, search, stor_box, manufacturer, available)
         list = session.fetchall(stmt_list, Switches)
         total = session.count(stmt_count)
         manufacturers = session.fetchall(keyword_mapper.list_by_type('manufacturer'), Keyword)
-    return templates.TemplateResponse('shop.html', context={
+    return templates.TemplateResponse('collections-switches.html', context={
         'request': request,
         'list': [convert_vo(i).dict() for i in list],
         'page': paginate_info(total, page, size),
@@ -177,11 +199,11 @@ async def sqlite(request: Request):
         'request': request,
     })
 
-@v2_page_router.get('/switch/{id}')
+@v2_page_router.get('/collections/products/{id}')
 async def detail(request: Request, id: int):
     with SqlSession() as session:
         model = session.fetchone(switches_mapper.get_by_id(id), Switches)
-    return templates.TemplateResponse('dev-switch.html', context={
+    return templates.TemplateResponse('collections-products.html', context={
         'request': request,
         'switch': convert_vo(model).dict()
     })

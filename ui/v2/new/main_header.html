@@ -1,0 +1,57 @@
+<div class="main_header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="header_container d-flex justify-content-between align-items-center">
+                        <div class="canvas_open">
+                            <a href="javascript:void(0)"><i class="ion-navicon"></i></a>
+                        </div>
+                        <div class="header_logo">
+                            <a class="sticky_none" href="/"><img src="/assets/img/logo/logo.png" alt=""></a>
+                        </div>
+                        <!--main menu start-->
+                        <div class="main_menu d-none d-lg-block">
+                            <nav>
+                                <ul class="d-flex">
+                                    <li><a class="{{ 'active' if active_menu == 'home' }}" href="/">主页</a></li>
+                                    <li><a class="{{ 'active' if active_menu == 'switches' }}" href="/collections/switches">Switches</a></li>
+                                    <li><a class="{{ 'active' if active_menu == 'icgb' }}" href="/icgb">icgb</a></li>
+                                    <li><a class="{{ 'active' if active_menu == 'products' }}" href="#">products</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                        <div class="header_account">
+                            <ul class="d-flex">
+                                {% if show_search | default(false) %}
+                                <li class="header_search"><a href="#"><i class="icon-magnifier icons"></i></a></li>
+                                {% endif %}
+                                <!--                                <li class="account_link"><a href="#"><i class="icon-user icons"></i></a>-->
+                                <!--                                    <ul class="dropdown_account_link">-->
+                                <!--                                        <li><a href="#">My Account</a></li>-->
+                                <!--                                        <li><a href="#">Login</a></li>-->
+                                <!--                                        <li><a href="#">Contact</a></li>-->
+                                <!--                                    </ul>-->
+                                <!--                                </li>-->
+                                <!--                                <li><a href="#"><i class="icon-heart icons"></i></a> <span class="item_count">2</span>-->
+                                <!--                                </li>-->
+                                <!--                                <li class="shopping_cart"><a href="#"><i class="icon-basket-loaded icons"></i></a> <span-->
+                                <!--                                        class="item_count">2</span></li>-->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% if show_search | default(false) %}
+
+<div class="page_search_box">
+        <div class="search_close">
+            <i class="ion-close-round"></i>
+        </div>
+        <form class="border-bottom" onsubmit="return false;">
+            <input class="border-0" placeholder="搜索..." type="text" id="searchInput" value="{{ global_qs_search }}">
+            <button id="searchBtn"><span class="icon-magnifier icons"></span></button>
+        </form>
+    </div>
+{% endif %}

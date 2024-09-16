@@ -35,10 +35,11 @@
     $('.mini_cart_close a,.body_overlay').on('click', function(){
         $('.mini_cart,.body_overlay').removeClass('active')
     });
-    
-    
+
+
     //Search Box addClass removeClass
-    $('.header_search > a').on('click', function(){
+    $('.header_search > a').on('click', function(event){
+        event.preventDefault();
         $('.page_search_box').addClass('active')
     });
     $('.search_close > i').on('click', function(){

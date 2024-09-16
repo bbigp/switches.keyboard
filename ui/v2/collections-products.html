@@ -136,64 +136,8 @@
 <header class="header_section border-bottom">
     {% include 'component/header-top.html' %}
 
-    <div class="main_header">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
-                    <div class="header_container d-flex justify-content-between align-items-center">
-                        <div class="canvas_open">
-                            <a href="javascript:void(0)"><i class="ion-navicon"></i></a>
-                        </div>
-                        <div class="header_logo">
-                            <a class="sticky_none" href="/"><img src="/assets/img/logo/logo.png" alt=""></a>
-                        </div>
-                        <!--main menu start-->
-                        <div class="main_menu d-none d-lg-block">
-                            <nav>
-                                <ul class="d-flex">
-                                    <li><a href="/">主页</a></li>
-                                    <li><a href="/icgb">icgb</a></li>
-                                    <li><a class="active" href="#">product</a></li>
-<!--                                    <li><a href="#">pages</a>-->
-<!--                                        <ul class="sub_menu">-->
-<!--                                            <li><a href="cart.html">Cart Pages</a></li>-->
-<!--                                            <li><a href="checkout.html">Checkout Pages</a></li>-->
-<!--                                        </ul>-->
-<!--                                    </li>-->
-                                </ul>
-                            </nav>
-                        </div>
-                        <div class="header_account">
-                            <ul class="d-flex">
-<!--                                <li class="header_search"><a href="#"><i class="icon-magnifier icons"></i></a></li>-->
-<!--                                <li class="account_link"><a href="#"><i class="icon-user icons"></i></a>-->
-<!--                                    <ul class="dropdown_account_link">-->
-<!--                                        <li><a href="#">My Account</a></li>-->
-<!--                                        <li><a href="#">Login</a></li>-->
-<!--                                        <li><a href="#">Contact</a></li>-->
-<!--                                    </ul>-->
-<!--                                </li>-->
-<!--                                <li><a href="#"><i class="icon-heart icons"></i></a> <span class="item_count">2</span>-->
-<!--                                </li>-->
-<!--                                <li class="shopping_cart"><a href="#"><i class="icon-basket-loaded icons"></i></a> <span-->
-<!--                                        class="item_count">2</span></li>-->
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- page search box -->
-    <div class="page_search_box">
-        <div class="search_close">
-            <i class="ion-close-round"></i>
-        </div>
-        <form class="border-bottom" action="#">
-            <input class="border-0" placeholder="Search products..." type="text">
-            <button type="submit"><span class="icon-magnifier icons"></span></button>
-        </form>
-    </div>
+    {% set active_menu = 'products' %}
+    {% include 'new/main_header.html' %}
 
 </header>
 <!--header area end-->
@@ -279,20 +223,21 @@
                             {% include 'component/product-variant.html' %}
                         </div>
                         <div class="product_tags d-flex">
-                            {%if switch.spring %}
-                            <span>弹簧: </span>
-                            <ul class="d-flex">
-                                <li><a href="#">{{switch.spring}}</a></li>
-                            </ul>
-                            {% endif %}
+                            <p>
+                                <span>上盖: </span>{{'-' if not switch.top_mat else switch.top_mat}}
+                                <span>底壳: </span>{{'-' if not switch.bottom_mat else switch.bottom_mat}}
+                                <span>轴心: </span>{{'-' if not switch.stem_mat else switch.stem_mat}}
+                            </p>
                         </div>
                         <div class="product_sku">
-                            {%if switch.top_mat and switch.bottom_mat and switch.stem_mat %}
-                            <p><span>上盖: </span> {{switch.top_mat}}<span> | 底壳: </span> {{switch.bottom_mat}}<span> | 轴心: </span> {{switch.stem_mat}}</p>
+                            <p>
+                            {%if switch.spring %}
+                            <span>弹簧: </span>{{switch.spring}}
                             {% endif %}
+                            </p>
                         </div>
                         <div class="product_tags d-flex">
-                            {% if switch.actuation_force and switch.bottom_force %}
+                            {% if switch.actuation_force or switch.bottom_force %}
                             <span>压力: </span>
                             <ul class="d-flex">
                                 <li><a href="#">{{ (switch.actuation_force, switch.actuation_force_tol,'g触发') | format_with_tolerance }},</a></li>
@@ -302,7 +247,7 @@
                             {% endif %}
                         </div>
                         <div class="product_tags d-flex">
-                            {% if switch.pre_travel and switch.total_travel %}
+                            {% if switch.pre_travel or switch.total_travel %}
                             <span>行程: </span>
                             <ul class="d-flex">
                                 <li><a href="#">{{ (switch.pre_travel, switch.pre_travel_tol,'mm触发') | format_with_tolerance }},</a></li>
@@ -336,55 +281,7 @@
 
 {% include 'component/newsletter.html' %}
 
-
-<!--footer area start-->
-<footer class="footer_widgets">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-5 col-md-5 col-sm-5">
-                <div class="footer_widget_list">
-                    <div class="footer_logo">
-                        <a href="#"><img src="/assets/img/logo/logo.png" alt=""></a>
-                    </div>
-                    <div class="footer_contact">
-                        <div class="footer_contact_list">
-                            <span>Register</span>
-                            <p>register-ui.onlybox.cn</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-7 col-md-7 col-sm-7">
-                <div class="footer_widget_list text-right">
-<!--                    <div class="footer_menu">-->
-<!--                        <ul class="d-flex justify-content-end">-->
-<!--                            <li><a href="index.html">home</a></li>-->
-<!--                            <li><a href="shop.html">Shop</a></li>-->
-<!--                            <li><a href="product-details.html">Product</a></li>-->
-<!--                            <li><a href="#">pages</a></li>-->
-<!--                            <li><a href="blog.html">Blog</a></li>-->
-<!--                        </ul>-->
-<!--                    </div>-->
-                    <div class="footer_social">
-                        <ul class="d-flex justify-content-end">
-                            <li><a href="#" data-tippy="Github" data-tippy-inertia="true" data-tippy-delay="50"
-                                   data-tippy-arrow="true" data-tippy-placement="top"><i class="ion-social-github"></i></a>
-                            </li>
-<!--                            <li><a href="#" data-tippy="Facebook" data-tippy-inertia="true" data-tippy-delay="50"-->
-<!--                                   data-tippy-arrow="true" data-tippy-placement="top"><i-->
-<!--                                    class="ion-social-facebook"></i></a></li>-->
-<!--                            </li>-->
-                        </ul>
-                    </div>
-                    <div class="copyright_right">
-                        <p>© <span>Bigp</span>. All rights reserved</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>
-<!--footer area end-->
+{% include 'new/footer_widgets.html' %}
 
 <!-- JS
 ============================================ -->

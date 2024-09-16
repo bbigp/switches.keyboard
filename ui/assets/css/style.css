@@ -3976,7 +3976,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
   position: relative;
 }
 .widget_categories > ul > li ul {
-  padding: 3px 0 14px 15px;
+  padding: 8px 0 14px 0;
 }
 .widget_categories > ul > li ul li a {
   font-size: 13px;
