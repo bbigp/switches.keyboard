@@ -4,8 +4,9 @@
             <div class="col-12">
                 <div class="breadcrumb_content">
                     <ul>
-                        <li><a href="/">主页</a></li>
-                        <li>Products</li>
+                        {% for item in breadcrumb_list %}
+                        <li><a href="{% if item == '主页' %}/{% elif item == 'switches' %}/collections/switches{% else %}#{% endif %}">{{ item }}</a></li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>

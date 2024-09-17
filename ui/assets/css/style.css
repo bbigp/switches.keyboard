@@ -4686,7 +4686,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 }
 
 .zoom_tab_img {
-  width: 72px;
+  width: 100px;
   margin-right: 15px;
 }
 .zoom_tab_img .slick-current a.zoom_tabimg_list {

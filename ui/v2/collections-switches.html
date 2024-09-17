@@ -97,7 +97,6 @@
 {% set global_qs_manufacturer = [] if request.query_params.get('manufacturer') is none else request.query_params.get('manufacturer').split(',') %}
 {% set global_qs_is_available = 1 if request.query_params.get('is_available') is none else request.query_params.get('is_available')|int %}
 {% set global_filter_count = 1 + (1 if global_qs_search else 0) + (global_qs_manufacturer|length) %}
-{{ global_qs_is_available }}
 <div class="preloader text-white fs-6 text-uppercase overflow-hidden"><h1>loading...</h1></div>
 <div class="body_overlay"></div>
 
@@ -212,13 +211,8 @@
             <div class="col-lg-9 col-md-12">
                 <!--shop wrapper start-->
 
-                <div class="breadcrumb_content">
-                    <ul>
-                        <li><a href="/">主页</a></li>
-                        <li><a href="/collections/switches">switches</a></li>
-                    </ul>
-                </div>
-                <!--breadcrumbs area end-->
+                {% set breadcrumb_list=['主页', 'switches'] %}
+                {% include 'new/breadcrumbs.html' %}
 
                 <!--shop toolbar start-->
                 <div class="shop_toolbar_wrapper d-flex justify-content-between align-items-center">
@@ -343,7 +337,7 @@
                         {% for item in page.adjacent_pages %}
                         <li>
                             <a class="{{ 'current' if item == page.current_page }} {{ 'disabled-link' if item == -1 }}"
-                               href="{{  '/collections/switches/' + item|string if item != -1 }}">
+                               href="{{  '/collections/switches/' + item|string if item != -1 else '#'}}">
                             {{ '...' if item == -1 else item }}
                             </a>
                         </li>
@@ -378,10 +372,18 @@
 </script>
 
 <script>
+    $('.pagination a').on('click', function (event){
+        event.preventDefault();
+        var targetUrl = $(this).attr('href');
+        if (targetUrl === '#') {
+            return;
+        }
+        initFilter(targetUrl)
+    })
     $('#searchBtn').click(function (){
         initFilter()
     })
-    function initFilter(){
+    function initFilter(baseUrl='/collections/switches/1'){
         let qs = []
 
         var manufacturerList = []
@@ -413,7 +415,7 @@
         if (window.innerWidth <= 800) {
             qs.push('size=8')
         }
-        let url = qs.length === 0 ? '/collections/switches/1' : '/collections/switches/1?'+ qs.join('&')
+        let url = qs.length === 0 ? baseUrl : baseUrl+ '?'+ qs.join('&')
         console.log('init filter ', url)
         if (new URL(url, window.location.origin).href !== new URL(window.location.href).href) {
             Turbolinks.visit(url);

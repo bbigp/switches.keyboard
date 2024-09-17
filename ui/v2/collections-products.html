@@ -140,9 +140,8 @@
     {% include 'new/main_header.html' %}
 
 </header>
-<!--header area end-->
-
-{% include 'component/breadcrumbs.html' %}
+{% set breadcrumb_list=['主页', 'switches', switch.name] %}
+{% include 'new/breadcrumbs.html' %}
 
 <!--product details start-->
 <section class="product_details">
@@ -213,7 +212,8 @@
 
                                 <li><i class="fa fa-puzzle-piece" ></i>{{switch.light_style }}</li>
                                 <li>针脚: <span class="stock">{{switch.pins}}</span></li>
-<!--                                <li><i class="icon-layers icons"></i> Only <span>15</span> left</li>-->
+                                <li><i class="ion-android-playstore" ></i>{{ switch.stor_loc_box }}<span>{{ '' if switch.stor_loc_row is none else '【' + switch.stor_loc_row|string + '-' + switch.stor_loc_col|string + '】'}}</span></li>
+{#                                <li><i class="icon-layers icons"></i> Only <span>15</span> left</li>#}
                             </ul>
                         </div>
                         <div class="product_desc">
@@ -301,7 +301,7 @@
         $('.zoom_tab_img').slick({
             centerMode: true,
             centerPadding: '0',
-            slidesToShow: 4,
+            slidesToShow: data.images.length + 1,
             arrows:false,
             vertical: true,
             focusOnSelect: true,
