@@ -190,10 +190,10 @@
                                 {% for item in hot_switches %}
                                 <div class="recent_product_list d-flex mb-25">
                                     <div class="recent_thumb">
-                                        <a href="/collections/switches/{{ item.id }}"><img src="{{ item.pic }}?x-process=image/convert,m_webp" alt=""></a>
+                                        <a href="/collections/products/{{ item.id }}" target="_blank"><img src="{{ item.pic }}?x-process=image/convert,m_webp" alt=""></a>
                                     </div>
                                     <div class="recent_content">
-                                        <h4><a href="/collections/switches/{{ item.id }}">{{ item.name }}</a></h4>
+                                        <h4><a href="/collections/products/{{ item.id }}" target="_blank">{{ item.name }}</a></h4>
                                         <span>{{ item.studio }}</span>
                                     </div>
                                 </div>
@@ -382,6 +382,7 @@
         initFilter()
     })
     $('#searchBtn').click(function (){
+        $('.page_search_box').removeClass('active')
         initFilter()
     })
     function initFilter(baseUrl='/collections/switches/1'){
