@@ -44,7 +44,7 @@
             </div>
         </div>
     </div>
-{% if show_search | default(false) %}
+{% if request.path.startswith('/collections/switches') or request.path == '/' %}
 
 <div class="page_search_box">
         <div class="search_close">
