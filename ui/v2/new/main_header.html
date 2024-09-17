@@ -13,16 +13,17 @@
                         <div class="main_menu d-none d-lg-block">
                             <nav>
                                 <ul class="d-flex">
-                                    <li><a class="{{ 'active' if active_menu == 'home' }}" href="/">主页</a></li>
-                                    <li><a class="{{ 'active' if active_menu == 'switches' }}" href="/collections/switches">Switches</a></li>
-                                    <li><a class="{{ 'active' if active_menu == 'icgb' }}" href="/icgb" target="_blank">icgb</a></li>
-                                    <li><a class="{{ 'active' if active_menu == 'products' }}" href="#">products</a></li>
+                                    <li><a class="{{ 'active' if request.path == '/' }}" href="/">主页</a></li>
+                                    <li><a class="{{ 'active' if request.path.startswith('/collections/switches') }}" href="/collections/switches">Switches</a></li>
+                                    <li><a class="{{ 'active' if request.path.startswith('/collections/keyboard') }}" href="/collections/keyboard">轴板</a> </li>
+                                    <li><a class="{{ 'active' if request.path.startswith('/icgb') }}" href="/icgb" target="_blank">icgb</a></li>
+                                    <li><a class="{{ 'active' if request.path.startswith('/collections/products') }}" href="#">详情</a></li>
                                 </ul>
                             </nav>
                         </div>
                         <div class="header_account">
                             <ul class="d-flex">
-                                {% if show_search | default(false) %}
+                                {% if request.path.startswith('/collections/switches') or request.path == '/' %}
                                 <li class="header_search"><a href="#"><i class="icon-magnifier icons"></i></a></li>
                                 {% endif %}
                                 <!--                                <li class="account_link"><a href="#"><i class="icon-user icons"></i></a>-->

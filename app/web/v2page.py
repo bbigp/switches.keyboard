@@ -1,6 +1,6 @@
 import re
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, List, Dict
 
 from fastapi import Request, APIRouter, Query, Depends
 from fastapi.encoders import jsonable_encoder
@@ -195,3 +195,37 @@ async def detail(request: Request, id: int):
         'request': request,
         'switch': convert_vo(model).dict()
     })
+
+@v2_page_router.get('/collections/keyboard')
+async def keyboard(request: Request):
+    with SqlSession() as session:
+        stmt_list, _ = switches_mapper.filter(start=0, length=1000, stor_box='D.1')
+        list = session.fetchall(stmt_list, Switches)
+        array_2d = generate_2d_array(list)
+        stor_boxs = keyword_mapper.fetch_keyboard(session)
+    return templates.TemplateResponse('collections-keyboard.html', context={
+        'request': request,
+        'data': array_2d,
+        'stor_boxs': stor_boxs,
+    })
+
+
+def generate_2d_array(data: List[Switches]) -> List[List[Switches]]:
+    # 查找数据中的最大行和列索引
+    max_row = max((item.stor_loc_row for item in data if item.stor_loc_row is not None), default=0)
+    max_column = max((item.stor_loc_col for item in data if item.stor_loc_col is not None), default=0)
+
+    # 初始化一个空的二维数组
+    array_2d = [[None for _ in range(max_column)] for _ in range(max_row)]
+
+    # 填充二维数组
+    for item in data:
+        if item.stor_loc_row is not None and item.stor_loc_col is not None:
+            row = item.stor_loc_row
+            column = item.stor_loc_col
+            array_2d[row-1][column-1] = item.dict()
+
+    return array_2d
+
+
+

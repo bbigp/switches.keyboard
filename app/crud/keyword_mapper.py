@@ -60,3 +60,6 @@ def fetch_text(session):
         else:
             pass
     return switch_types, manufacturers, marks, studios
+
+def fetch_keyboard(session):
+    return session.fetchall(text(f"select * from keyword where deleted = 0 and type = 'stor_loc_box' and word like 'D.%' "), KeywordVO)

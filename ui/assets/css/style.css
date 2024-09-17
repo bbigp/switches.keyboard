@@ -1869,7 +1869,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 
 /* 06. footer css here */
 .footer_widgets {
-  padding: 133px 0 78px;
+  padding: 80px 0 78px;
 }
 @media only screen and (min-width: 768px) and (max-width: 991px) {
   .footer_widgets {
@@ -3830,7 +3830,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 
 /* 10. shop page css here */
 .shop_section {
-  padding: 105px 0 151px;
+  padding: 105px 0 110px;
 }
 @media only screen and (min-width: 768px) and (max-width: 991px) {
   .shop_section {

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Keyboard Switches</title>
+    <meta name="robots" content="noindex, follow">
+    <meta name="description" content="">
+    {#    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">#}
+
+    <link rel="stylesheet"
+          href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.0.0-alpha2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/ionicons/2.0.0/css/ionicons.min.css">
+    <link rel="stylesheet" href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/animate.css/4.1.1/animate.min.css">
+    <link href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery-nice-select/1.0/css/nice-select.min.css"
+          type="text/css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <script src="https://unpkg.com/turbolinks"></script>
+
+    <style>
+        .preloader {
+            position: fixed;
+            top: 0;
+            z-index: 9999;
+            background: #fff;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: height 0.8s cubic-bezier(0.075, 0.82, 0.165, 1);
+        }
+
+        .preloader.loaded {
+            height: 0;
+        }
+
+        .preloader h1 {
+            color: black;
+        }
+
+        /* Fix table layout to disable responsiveness */
+        .square-table {
+            border-collapse: collapse;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            table-layout: fixed; /* Ensures fixed column width */
+        }
+
+        .square-table th, .square-table td {
+            width: 100px; /* Set fixed width */
+            height: 100px; /* Set fixed height */
+            min-width: 100px; /* Prevent shrinking on small screens */
+            min-height: 100px; /* Prevent shrinking on small screens */
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+            vertical-align: middle; /* Ensures content is vertically centered */
+        }
+
+        .square-table th {
+            background-color: #f4f4f4;
+        }
+
+        /* Position select in the top-left of the table */
+        .table-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .table-wrapper select {
+            position: absolute;
+            top: -50px; /* Adjust this value to change vertical position */
+            left: 0;
+        }
+    </style>
+</head>
+
+<body>
+<div class="preloader text-white fs-6 text-uppercase overflow-hidden"><h1>loading...</h1></div>
+
+<div class="main_header" style="border-bottom: 1px solid #dee2e6!important;">
+    <div style="padding: 0 12px 0 12px;max-width: 100%;">
+        <div class="header_container d-flex justify-content-between align-items-center">
+            <div class="header_logo">
+                <a class="sticky_none" href="/"><img src="/assets/img/logo/logo.png" alt=""></a>
+            </div>
+            <!--main menu start-->
+            <div class="main_menu d-lg-block">
+                <nav>
+                    <ul class="d-flex">
+                        <li><a class="{{ 'active' if request.path == '/' }}" href="/">主页</a></li>
+                        <li><a class="{{ 'active' if request.path.startswith('/collections/switches') }}"
+                               href="/collections/switches">Switches</a></li>
+                        <li><a class="{{ 'active' if request.path.startswith('/collections/keyboard') }}"
+                               href="/collections/keyboard">轴板</a></li>
+                        <li><a class="{{ 'active' if request.path.startswith('/icgb') }}" href="/icgb" target="_blank">icgb</a>
+                        </li>
+                        <li><a class="{{ 'active' if request.path.startswith('/collections/products') }}"
+                               href="#">详情</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header_account">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="padding: 105px 0 110px;">
+    <div style="display: flex; justify-content: center">
+        <div class="sorting_by d-flex align-items-center">
+            <span>SHOW BY :</span>
+            <select name="orderby" id="short">
+                {% for item in stor_boxs %}
+                <option value="{{ item.word }}">{{ item.word }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+    </div>
+    <div>
+        <table class="square-table">
+            <tbody>
+            {% for row in data %}
+                <tr>
+                    {% for cell in row %}
+                        <td>{{ cell.name }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<footer class="footer_widgets">
+    <div class="footer_widget_list text-center">
+        <div class="footer_social">
+            <ul class="">
+                <li><a href="#" data-tippy="Github" data-tippy-inertia="true" data-tippy-delay="50"
+                       data-tippy-arrow="true" data-tippy-placement="top"><i class="ion-social-github"></i></a>
+                </li>
+            </ul>
+        </div>
+        <div class="copyright_right">
+            <p>© <span>Bigp</span>. All rights reserved</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+{#<script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.0.0-alpha2/js/bootstrap.min.js"></script>#}
+<script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery-nice-select/1.0/js/jquery.nice-select.min.js"
+        type="application/javascript"></script>
+<script>
+    $(document).on('turbolinks:load', function () {
+        $(".preloader").addClass("loaded");
+    });
+    $(document).ready(function () {
+        $('select,.select_option').niceSelect();
+    });
+</script>
+</body>
+</html>
