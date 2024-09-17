@@ -47,13 +47,16 @@ def update_by_id(s: Switches, id: int):
                                      stor_loc_col=s.stor_loc_col)\
     .where(T_switches.c.id == id)
 
+def fetch_hot(session, size:int=2):
+    return session.fetchall(text(f"select * from switches where deleted = 0 ORDER BY RANDOM() limit {size}"), Switches)
 
 def filter(start: Optional[int]=0,
            length: Optional[int]=10,
            search: Optional[str]=None,
            stor_box: Optional[str]=None,
            manufacturer: Optional[str]=None,
-           is_available: Optional[bool]=None):
+           is_available: Optional[bool]=None,
+           type: Optional[str]=None):
     base = select('*') \
         .select_from(text('switches')) \
         .where(text('deleted = 0')) \
@@ -74,6 +77,8 @@ def filter(start: Optional[int]=0,
         filter.append_where(text("(stor_loc_box = '' or stor_loc_box is null)"))
     if stor_box is not None and stor_box != '':
         filter.append_where(text(f"stor_loc_box = '{stor_box}'"))
+    if type is not None and type != '':
+        filter.append_where(text(f"type = '{type}' "))
     return filter.build()
 
 

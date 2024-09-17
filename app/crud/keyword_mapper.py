@@ -4,6 +4,7 @@ from sqlalchemy import text, insert, select, desc, func, update
 
 from app.crud.switches_mapper import Filter
 from app.model.domain import T_keyword, Keyword
+from app.model.vo import KeywordVO
 
 
 def get_by_word(word: str, type: str):
@@ -40,3 +41,22 @@ def list_by_type(type: str, offset=None, limit=None, search=None):
 def list_by_types(types):
     type = ",".join(["'" + t + "'" for t in types])
     return text(f"select * from keyword where deleted = 0 and type in ({type}) order by word desc")
+
+def fetch_text(session):
+    list = session.fetchall(list_by_types(['type', 'manufacturer', 'mark', 'studio']), KeywordVO)
+    switch_types = []
+    manufacturers = []
+    marks = []
+    studios = []
+    for item in list:
+        if item.type == 'type':
+            switch_types.append(item)
+        elif item.type == 'manufacturer':
+            manufacturers.append(item)
+        elif item.type == 'mark':
+            marks.append(item.word)
+        elif item.type == 'studio':
+            studios.append(item.word)
+        else:
+            pass
+    return switch_types, manufacturers, marks, studios

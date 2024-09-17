@@ -71,29 +71,12 @@ async def index(request: Request, id: Optional[int]=None):
         switches = Switches(name='', studio='')
         if id is not None:
             switches = session.fetchone(switches_mapper.get_by_id(id), Switches)
-        list = session.fetchall(keyword_mapper.list_by_types(['type', 'manufacturer', 'mark', 'studio']),
-            KeywordVO
-        )
-        switch_types = []
-        manufacturers = []
+        types, manufacturers, marks, studios = keyword_mapper.fetch_text(session)
         stor_loc_boxs = get_keyword_counts(session, 'stor_loc_box')
-        marks = []
-        studios = []
-        for item in list:
-            if item.type == 'type':
-                switch_types.append(item)
-            elif item.type == 'manufacturer':
-                manufacturers.append(item)
-            elif item.type == 'mark':
-                marks.append(item.word)
-            elif item.type == 'studio':
-                studios.append(item.word)
-            else:
-                pass
     return templates.TemplateResponse('switches.html', context={
         'request': request,
         'switches': switches,
-        'switch_types': switch_types,
+        'switch_types': types,
         'manufacturers': manufacturers,
         'stor_loc_boxs': stor_loc_boxs,
         'marks': marks,
@@ -143,6 +126,7 @@ async def main(
         page: Optional[int]=1,
         size: int=Depends(determine_page_size),
         search: str=Query(default=None, alias='s'),
+        type: str=Query(default=None, alias='t'),
         stor_box: Optional[str]=None,
         manufacturer: Optional[str]=None,
         is_available: Optional[int]=1
@@ -154,15 +138,19 @@ async def main(
             available = False
         else:
             available = None
-        stmt_list, stmt_count = switches_mapper.filter((page - 1) * size, size, search, stor_box, manufacturer, available)
+        stmt_list, stmt_count = switches_mapper.filter((page - 1) * size, size, search, stor_box, manufacturer,
+                                                       available, type=type)
         list = session.fetchall(stmt_list, Switches)
         total = session.count(stmt_count)
-        manufacturers = session.fetchall(keyword_mapper.list_by_type('manufacturer'), Keyword)
+        types, manufacturers, _, studios = keyword_mapper.fetch_text(session)
+        hot_switches = switches_mapper.fetch_hot(session, size=3)
     return templates.TemplateResponse('collections-switches.html', context={
         'request': request,
         'list': [convert_vo(i).dict() for i in list],
         'page': paginate_info(total, page, size),
-        'manufacturers': manufacturers
+        'manufacturers': manufacturers,
+        'switches_types': types,
+        'hot_switches': hot_switches,
     })
 
 @v2_page_router.get('/icgb')
