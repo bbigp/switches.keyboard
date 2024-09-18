@@ -75,32 +75,6 @@
 
 <body>
 <div class="preloader text-white fs-6 text-uppercase overflow-hidden"><h1>loading...</h1></div>
-
-<!--<div class="main_header" style="border-bottom: 1px solid #dee2e6!important;">-->
-<!--    <div style="padding: 0 12px 0 12px;max-width: 100%;">-->
-<!--        <div class="header_container d-flex justify-content-between align-items-center">-->
-<!--            <div class="header_logo">-->
-<!--                <a class="sticky_none" href="/"><img src="/assets/img/logo/logo.png" alt=""></a>-->
-<!--            </div>-->
-<!--            &lt;!&ndash;main menu start&ndash;&gt;-->
-<!--            <div class="main_menu d-lg-block">-->
-<!--                <nav>-->
-<!--                    <ul class="d-flex">-->
-<!--                        <li><a class="{{ 'active' if request.path == '/' }}" href="/">主页</a></li>-->
-<!--                        <li><a class="{{ 'active' if request.path.startswith('/collections/switches') }}"-->
-<!--                               href="/collections/switches">客制化轴体</a></li>-->
-<!--                        <li><a class="{{ 'active' if request.path.startswith('/collections/keyboard') }}"-->
-<!--                               href="/collections/keyboard">轴板</a></li>-->
-<!--                        <li><a class="{{ 'active' if request.path.startswith('/icgb') }}" href="/icgb" target="_blank">icgb</a>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </nav>-->
-<!--            </div>-->
-<!--            <div class="header_account">-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
 {% include 'new/canvas_menu.html' %}
 <header class="header_section border-bottom">
     {% set active_menu = 'icgb' %}
@@ -134,21 +108,7 @@
     </div>
 </div>
 
-<footer class="footer_widgets">
-    <div class="footer_widget_list text-center">
-        <div class="footer_social">
-            <ul class="">
-                <li><a href="#" data-tippy="Github" data-tippy-inertia="true" data-tippy-delay="50"
-                       data-tippy-arrow="true" data-tippy-placement="top"><i class="ion-social-github"></i></a>
-                </li>
-            </ul>
-        </div>
-        <div class="copyright_right">
-            <p>© <span>Bigp</span>. All rights reserved</p>
-        </div>
-    </div>
-</footer>
-
+{% include 'new/footer_widgets.html' %}
 <script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
 {#<script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.0.0-alpha2/js/bootstrap.min.js"></script>#}
 <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery-nice-select/1.0/js/jquery.nice-select.min.js"
