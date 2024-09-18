@@ -309,7 +309,21 @@
         {{item.day}}-->{{ item.title }} 
         <span class="badge bg-primary unusefulBadge" data-id="{{item.id}}">Unseful</span>
         {{ if item.href }}
-        <a href="{{ item.href}}" target="_blank"><span class="badge bg-primary unusefulBadge">href</span></i></a>
+
+
+        <a href="{{ item.href}}" target="_blank">
+            <span class="badge bg-primary unusefulBadge">
+                {{ if item.href.includes('zfrontier') }}
+                    zfrontier
+                {{ else if item.href.includes('taobao') || item.href.includes('tb') || item.href.includes('tmall') }}
+                    taobao
+                {{ else if item.href.includes('3.cn') || item.href.includes('jd') }}
+                    jd
+                {{ else }}
+                    href
+                {{ /if }}
+            </span>
+        </a>
         {{ /if }}
     </div>
     {{ /each }}
