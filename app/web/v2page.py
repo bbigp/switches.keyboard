@@ -197,9 +197,11 @@ async def detail(request: Request, id: int):
     })
 
 @v2_page_router.get('/collections/keyboard')
-async def keyboard(request: Request):
+@v2_page_router.get('/collections/keyboard/')
+@v2_page_router.get('/collections/keyboard/{keyboard}')
+async def keyboard(request: Request, keyboard:Optional[str] = 'D.1', mode:Optional[str] = 't'):
     with SqlSession() as session:
-        stmt_list, _ = switches_mapper.filter(start=0, length=1000, stor_box='D.1')
+        stmt_list, _ = switches_mapper.filter(start=0, length=1000, stor_box=keyboard)
         list = session.fetchall(stmt_list, Switches)
         array_2d = generate_2d_array(list)
         stor_boxs = keyword_mapper.fetch_keyboard(session)
