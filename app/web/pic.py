@@ -6,10 +6,10 @@ from datetime import datetime
 from aiohttp import ClientSession
 from fastapi import APIRouter, UploadFile, Query
 from pydantic.main import BaseModel
-from starlette.responses import FileResponse, JSONResponse
+from starlette.responses import FileResponse, JSONResponse, StreamingResponse
 
 from app.core.config import app_config
-from app.core.internal import ImageProcessor
+from app.core.internal import ImageProcessor, gen_white_image
 from app.core.snowflake_id import id_worker
 
 pic_router = APIRouter(prefix='')
@@ -74,7 +74,7 @@ async def show_pic(path: str, source: str, process: str=Query(None, alias='x-pro
     else:
         full_path = ''
     if not os.path.isfile(full_path):
-        return FileResponse('front/img/_d.png', media_type='image/png', headers={'Etag': str(datetime.now().timestamp())})
+        return StreamingResponse(gen_white_image(), media_type='image/png', headers={'Etag': str(datetime.now().timestamp())})
     if not process:
         return FileResponse(full_path, media_type='image/jpg')
     thumbnail_path = ImageProcessor(process).process(full_path, app_config.image_cache_path)

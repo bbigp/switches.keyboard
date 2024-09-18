@@ -64,6 +64,7 @@
     </style>
 </head>
 <body>
+{% include 'new/canvas_menu.html' %}
 <header class="header_section border-bottom">
     {% set active_menu = 'icgb' %}
     {% include 'new/main_header.html' %}
@@ -73,6 +74,7 @@
     <div id="calendar"></div>
 </div>
 {% include 'new/footer_widgets.html' %}
+<script src="/assets/js/main.js"></script>
 <script>
     $(document).ready(function () {
         var calendarEl = $('#calendar')[0];

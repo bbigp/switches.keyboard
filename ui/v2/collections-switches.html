@@ -99,7 +99,7 @@
 {% set global_filter_count = 1 + (1 if global_qs_search else 0) + (global_qs_manufacturer|length) %}
 {% set global_qs_type = '' if request.query_params.get('t') is none else request.query_params.get('t') %}
 <div class="preloader text-white fs-6 text-uppercase overflow-hidden"><h1>loading...</h1></div>
-<div class="body_overlay"></div>
+{% include 'new/canvas_menu.html' %}
 
 <header class="header_section border-bottom">
     {% include 'component/header-top.html' %}
@@ -205,7 +205,7 @@
             <div class="col-lg-9 col-md-12">
                 <!--shop wrapper start-->
 
-                {% set breadcrumb_list=['主页', 'switches'] %}
+                {% set breadcrumb_list=['主页', '客制化轴体'] %}
                 {% include 'new/breadcrumbs.html' %}
 
                 <!--shop toolbar start-->

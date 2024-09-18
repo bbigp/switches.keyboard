@@ -1,7 +1,10 @@
 (function ($) {
     "use strict";
     
-    new WOW().init();
+    if (typeof WOW !== 'undefined') {
+        new WOW().init();
+    }
+
 
     // Slick Slider Activation
     var $sliderActvation = $('.slick_slider_activation');
@@ -49,12 +52,14 @@
     
 
       /*---  ScrollUp Active ---*/
-    $.scrollUp({
+    if (typeof jQuery !== 'undefined' && typeof jQuery.scrollUp === 'function') {
+    jQuery.scrollUp({
         scrollText: '<i class="ion-android-arrow-up"></i>',
         easingType: 'linear',
         scrollSpeed: 900,
         animation: 'fade'
     });
+}
     
     /*---Off Canvas Menu---*/
     var $offcanvasNav = $('.offcanvas_main_menu'),

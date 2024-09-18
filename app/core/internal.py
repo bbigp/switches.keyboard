@@ -1,3 +1,4 @@
+import io
 import os
 import random
 import re
@@ -6,6 +7,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 from pydantic.main import BaseModel
+from wand.color import Color
 from wand.image import Image
 # from PIL import Image
 
@@ -178,3 +180,13 @@ def convert_long_to_str(obj):
         return str(obj)
     else:
         return obj
+
+def gen_white_image():
+    # 创建一个白色的图片（宽度 100 像素，高度 100 像素）
+    img_io = io.BytesIO()
+    with Image(width=100, height=100, background=Color('white')) as img:
+        # 将图片保存到内存中
+        img.format = 'png'  # 设置图片格式为 PNG
+        img.save(file=img_io)
+        img_io.seek(0)
+    return img_io
