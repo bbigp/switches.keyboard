@@ -212,7 +212,7 @@ async def keyboard(request: Request, keyboard:Optional[str] = 'D.1', mode:Option
     })
 
 
-def generate_2d_array(data: List[Switches]) -> List[List[Switches]]:
+def generate_2d_array(data: List[Switches]):
     # 查找数据中的最大行和列索引
     max_row = max((item.stor_loc_row for item in data if item.stor_loc_row is not None), default=0)
     max_column = max((item.stor_loc_col for item in data if item.stor_loc_col is not None), default=0)
