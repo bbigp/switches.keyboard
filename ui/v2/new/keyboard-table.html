@@ -1,0 +1,26 @@
+<tbody id="imgTable" class="hide">
+{% for row in data %}
+<tr>
+    {% for cell in row %}
+    <td>
+        {% if cell is not none %}
+        <a href="/collections/products/{{cell.id}}" target="_blank">
+            <div><img style="width: 96px;height: 74px;display: block;margin: 3px auto 0 auto;"
+                      src="{{cell.pic}}?x-process=image/convert,m_webp" alt="{{ cell.name }}"></div>
+            <div style="height: 20px; overflow: hidden">{{ cell.name }}</div>
+        </a>
+        {% endif %}
+    </td>
+    {% endfor %}
+</tr>
+{% endfor %}
+</tbody>
+<tbody id="textTable">
+{% for row in data %}
+<tr>
+    {% for cell in row %}
+    <td><a href="/collections/products/{{cell.id}}" target="_blank">{{ cell.name }}</a></td>
+    {% endfor %}
+</tr>
+{% endfor %}
+</tbody>

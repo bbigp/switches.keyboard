@@ -10,6 +10,7 @@ from starlette.staticfiles import StaticFiles
 
 from app.core.internal import convert_long_to_str
 from app.core.response import RedirectResponseWraper
+from app.web.html_api import html_api_router
 from app.web.pic import pic_router
 from app.web.stats import stats_router
 from app.web.v2api import v2_api_router
@@ -21,6 +22,7 @@ def register_route(app):
     app.include_router(pic_router, tags=['pic_router'])
     app.include_router(v2_page_router, tags=['v2_page'])
     app.include_router(v2_api_router, tags=['v2_api'])
+    app.include_router(html_api_router, tags=['html_api'])
     app.mount('/js', StaticFiles(directory='ui/js'), name='js')
     app.mount('/assets', StaticFiles(directory='ui/assets'), name='assets')
     app.mount('/', StaticFiles(directory='ui/img'), name='rootImg')
@@ -87,7 +89,7 @@ app = init_app()
 @app.middleware("http")
 async def convert_long_middleware(request: Request, call_next):
     response = await call_next(request)
-    if request.url.path.__contains__("api"):
+    if request.url.path.__contains__("api") and not request.url.path.__contains__('apih'):
         body = b"".join([chunk async for chunk in response.body_iterator])
         content = json.loads(body.decode("utf-8"))
         # 转换 long 类型数据为字符串

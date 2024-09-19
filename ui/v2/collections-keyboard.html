@@ -12,8 +12,8 @@
     <link href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery-nice-select/1.0/css/nice-select.min.css"
           type="text/css" rel="stylesheet"/>
     <link rel="stylesheet" href="/assets/css/style.css">
-    <script src="https://unpkg.com/turbolinks"></script>
-
+    <link href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/switchery/0.8.2/switchery.min.css" type="text/css"
+          rel="stylesheet"/>
     <style>
         .preloader {
             position: fixed;
@@ -58,6 +58,7 @@
         .square-table th {
             background-color: #f4f4f4;
         }
+
         .hide {
             display: none;
         }
@@ -78,43 +79,18 @@
             <span>SHOW BY :</span>
             <select name="orderby" id="short">
                 {% for item in stor_boxs %}
-                <option value="{{ item.word }}" {{'selected' if request.path_params.get("keyboard") == item.word }}>{{ item.word }}</option>
+                <option value="{{ item.word }}" {{
+                'selected' if request.path_params.get("keyboard") == item.word }}>{{ item.word }}</option>
                 {% endfor %}
             </select>
-            <select name="orderby" id="mode">
-                <option value="t" {{'selected' if request.query_params.get("mode") == 't' }}>文字</option>
-                <option value="i" {{'selected' if request.query_params.get("mode") == 'i' }}>图片</option>
-            </select>
+            <span style="margin: 0 13px 0 13px;">图片:</span>
+            <input type="checkbox" class="js-switch"/>
         </div>
 
     </div>
     <div>
         <table class="square-table">
-            <tbody id="imgTable"  class="{{'' if request.query_params.get("mode") == 'i' else 'hide' }}">
-                {% for row in data %}
-                    <tr>
-                        {% for cell in row %}
-                            <td>
-                                {% if cell is not none %}
-                                <a href="/collections/products/{{cell.id}}" target="_blank">
-                                <div><img style="width: 96px;height: 74px;display: block;margin: 3px auto 0 auto;" src="{{cell.pic}}?x-process=image/convert,m_webp" alt="{{ cell.name }}"></div>
-                                <div style="height: 20px; overflow: hidden">{{ cell.name }}</div>
-                                </a>
-                                {% endif %}
-                            </td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-            <tbody id="textTable" class="{{'hide' if request.query_params.get("mode") == 'i' }}">
-                {% for row in data %}
-                    <tr>
-                        {% for cell in row %}
-                            <td><a href="/collections/products/{{cell.id}}" target="_blank">{{ cell.name }}</a></td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </tbody>
+            {% include 'new/keyboard-table.html' %}
         </table>
     </div>
 </div>
@@ -125,34 +101,43 @@
 <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery-nice-select/1.0/js/jquery.nice-select.min.js"
         type="application/javascript"></script>
 <script src="/assets/js/main.js"></script>
+<script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/switchery/0.8.2/switchery.min.js"
+        type="application/javascript"></script>
 <script>
-$(document).on('turbolinks:load', function () {
-            $(".preloader").addClass("loaded");
-            console.log('dsdsdsd')
-        });
     $(document).ready(function () {
+        var $switch = $('.js-switch');
+        var switchery = new Switchery(
+            $switch[0],
+            {size: 'small', color: '#6a7964'}
+        );
 
-        $('select,.select_option').niceSelect();
-        $('#short').on('change', function() {
-                let selectedValue = $('#short').val();
-                let mode = $('#mode').val();
-            if (mode === 't') {
-                Turbolinks.visit('/collections/keyboard/' + selectedValue);
-                return;
-            }
-            Turbolinks.visit('/collections/keyboard/' + selectedValue + '?mode='+mode);
-        });
-
-        $('#mode').on('change', function() {
-            let mode = $('#mode').val();
-            if (mode === 't') {
-                $('#textTable').show();
-                $('#imgTable').hide();
-            }else{
+        $switch.on('change', function () {
+            if ($(this).prop('checked')) {
                 $('#textTable').hide();
                 $('#imgTable').show();
+            } else {
+                $('#textTable').show();
+                $('#imgTable').hide();
             }
         });
+
+        $('select,.select_option').niceSelect();
+        $('#short').on('change', function () {
+            let selectedValue = $('#short').val();
+
+            $.ajax({
+                type: 'GET', url: '/apih/keyboard?s=' + selectedValue,
+                contentType: 'text/html',
+                success: function (data) {
+                    $('.square-table').empty().append(data)
+                    $switch.prop('checked', false).trigger('change');
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+        });
+
     });
 </script>
 </body>
