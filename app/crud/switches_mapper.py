@@ -47,6 +47,9 @@ def update_by_id(s: Switches, id: int):
                                      stor_loc_col=s.stor_loc_col)\
     .where(T_switches.c.id == id)
 
+def list(session):
+    return session.fetchall(text(f"select * from switches where deleted = 0"), Switches)
+
 def fetch_hot(session, size:int=2):
     return session.fetchall(text(f"select * from switches where deleted = 0 ORDER BY RANDOM() limit {size}"), Switches)
 

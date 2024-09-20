@@ -187,6 +187,15 @@ async def sqlite(request: Request):
         'request': request,
     })
 
+@v2_page_router.get('/control/keyboard')
+async def keyboard(request:Request):
+    with SqlSession() as session:
+        list = switches_mapper.list(session)
+    return templates.TemplateResponse('keyboard.html', context={
+        'request': request,
+        'list': [s.name for s in list]
+    })
+
 @v2_page_router.get('/collections/products/{id}')
 async def detail(request: Request, id: int):
     with SqlSession() as session:
