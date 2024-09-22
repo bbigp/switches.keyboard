@@ -231,6 +231,12 @@
 </script>
 
 <script>
+    var $searchInput = $('#searchInput');
+    $searchInput.keyup(function (event){
+        if (event.keyCode === 13) {
+            initFilter()
+        }
+    })
     $('.pagination a').on('click', function (event){
         event.preventDefault();
         var targetUrl = $(this).attr('href');
@@ -273,7 +279,7 @@
             qs.push('is_available=0')
         }
 
-        let searchVal = $('#searchInput').val();
+        let searchVal = $searchInput.val();
         if (searchVal !== '') {
             qs.push('s='+searchVal)
         }
@@ -294,7 +300,7 @@
         var tagValue = $(this).data('value');  // 获取 filterTag 的值
         $(this).remove();  // 移除当前 filterTag
         if (tagValue.startsWith('搜索:')) {
-            $('#searchInput').val('')
+            $searchInput.val('')
         }else if(tagValue.startsWith("状态:")){
             var available = $(this).data('available')
             $('li.availableItem').each(function() {

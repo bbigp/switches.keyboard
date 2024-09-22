@@ -2,15 +2,31 @@
     <div class="page_amount">
         <p><span>{{page.total_items}}</span></p>
     </div>
-    <!--                    <div class=" sorting_by d-flex align-items-center">-->
-    <!--                        <span>SORT BY :</span>-->
-    <!--                        <form class="select_option" action="#">-->
-    <!--                            <select name="orderby" id="short">-->
-    <!--                                <option selected value="1">NAME       3</option>-->
-    <!--                                <option  value="2">NAME  4</option>-->
-    <!--                            </select>-->
-    <!--                        </form>-->
-    <!--                    </div>-->
+    <div class=" sorting_by d-flex align-items-center">
+        <div style="position: relative">
+            <input id="searchInput" type="text" value="{{ global_qs_search }}" style="border: 1px solid #dddddd;
+                font-size: 15px;
+                padding: 5px 45px 6px 10px;
+                position: relative;
+                border-radius: .375rem;
+                width: 100%;">
+            <button id="searchBtn" style="background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+                border: medium none;
+                padding: 7px 15px;
+                position: absolute;
+                right: 0;
+                top: 0;"><i class="ion-search"></i>
+            </button>
+        </div>
+
+{#                            <span>SORT BY :</span>#}
+{#                            <form class="select_option" action="#">#}
+{#                                <select name="orderby" id="short">#}
+{#                                    <option selected value="1">NAME       3</option>#}
+{#                                    <option  value="2">NAME  4</option>#}
+{#                                </select>#}
+{#                            </form>#}
+    </div>
     <div class="toolbar_btn_wrapper d-flex align-items-center">
         <div class="view_btn">
             <a class="view" href="#">VIEW</a>
