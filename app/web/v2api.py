@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from fastapi import Query, APIRouter
 from sqlalchemy import select, insert, func, and_, or_, update, desc, text
@@ -164,10 +164,12 @@ async def list_icgb(day: str=None, usefulness: int=1):
 @v2_api_router.get('/gen-icgb', response_class=JSONResponse)
 async def gen_icgb(index: int):
     icgblist, day = icgb_mapper.gen_icgb(index)
+    if len(icgblist) == 0:
+        return {'status': 'error', 'msg': day}
     with SqlSession() as session:
         session.execute(icgb_mapper.batch_save_or_update(icgblist))
         list = session.fetchall(icgb_mapper.list_by_day(day=day), Icgb)
-    return {'page_list': list}
+    return {'status': 'ok', 'page_list': list}
 
 @v2_api_router.get('/done_icgblist', response_class=JSONResponse)
 async def done_icgblist(day: str):
@@ -189,3 +191,31 @@ async def calendar_events(start: str, end: str):
         list = session.fetchall(icgb_mapper.list_by_time(start, end), Icgb)
         events = [CalendarVO(title=data.title, start=data.icgb_day, end=data.icgb_day, url=data.href) for data in list]
     return {'page_list': events}
+
+@v2_api_router.post('/keyboard', response_class=JSONResponse)
+async def save_keyboard(matrix: List[List[str]]):
+    with SqlSession() as session:
+        non_empty_values = set()
+        value_positions = {}
+
+        for row_idx, row in enumerate(matrix):
+            for col_idx, value in enumerate(row):
+                if value:
+                    non_empty_values.add(value)
+                    if value not in value_positions:
+                        value_positions[value] = []
+                    value_positions[value].append((row_idx + 1, col_idx + 1))
+        list = switches_mapper.list_by_names(session, names=non_empty_values)
+        value_id_map = {getattr(item, 'name'): item for item in list}
+        results = []
+        for value, positions in value_positions.items():
+            item_id = value_id_map.get(value)
+            for row, col in positions:
+                results.append({
+                    "id": item_id.id,
+                    "name": item_id.name,
+                    "col": col,
+                    "row": row
+                })
+        print(results)
+    return {}

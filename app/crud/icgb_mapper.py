@@ -35,7 +35,7 @@ def batch_save_or_update(icgblist: list):
                 f"update_time, deleted, usefulness) "
                 f"VALUES {sql}"
                 f"ON CONFLICT(unique_title, url) DO UPDATE SET "
-                f"text = excluded.text, href = excluded.href, update_time = excluded.update_time")
+                f"text = excluded.text, href = excluded.href, update_time = excluded.update_time, day = excluded.day")
 
 def list_by_day(day: str, usefulness: int=1):
     if day:
@@ -64,21 +64,20 @@ def gen_icgb(index: int=1):
     if response.status_code != 200 or response.json()['code'] != 0:
         raise IOError('client error')
 
+    content = response.json()['data']['items'][index]['content']
+    if "键圈时刻表" not in content:
+        return [], content
     jump_url = response.json()['data']['items'][index]['jump_url'].replace("//", "https://")
+    loguru.logger.info(f"爬取：{content} {jump_url}")
     resp = requests.get(jump_url, headers=headers)
     soup = BeautifulSoup(resp.text, 'html.parser')
-    elements = soup.find_all(class_='publish-text')
-    try:
-        day = datetime.strptime(elements[0].get_text(), '%Y年%m月%d日 %H:%M').strftime('%Y-%m-%d')
-    except:
-        day = elements[0].get_text()
+    day = soup_day(soup)
     icgblist = []
     for i, h1 in enumerate(soup.find_all('h1')):
         title = h1.get_text().strip().replace("\n", "").replace("\r", "")
         print(f"Section {i+1}: {title}")
         if title is None or title == '':
             continue
-
         next_h1 = h1.find_next('h1')
         content = []
         href = ''
@@ -98,3 +97,16 @@ def gen_icgb(index: int=1):
                     create_time=now, update_time=now, url=jump_url, unique_title=title.replace("'", ""))
         icgblist.append(icgb)
     return icgblist, day
+
+def soup_day(soup):
+    for i, h1 in enumerate(soup.find_all('h1')):
+        title = h1.get_text().strip().replace("\n", "").replace("\r", "")
+        if title is None or title == '':
+            continue
+        if '当期内容更新时间：' in title or '当期内容更新时间:' in title:
+            r_time = title.replace('当期内容更新时间：', '').replace('当期内容更新时间:', '')
+            day = datetime.strptime(r_time, '%Y年%m月%d日').strftime('%Y-%m-%d')
+            return day
+    elements = soup.find_all(class_='publish-text')
+    day = datetime.strptime(elements[0].get_text(), '%Y年%m月%d日 %H:%M').strftime('%Y-%m-%d')
+    return day

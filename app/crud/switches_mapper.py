@@ -50,6 +50,10 @@ def update_by_id(s: Switches, id: int):
 def list(session):
     return session.fetchall(text(f"select * from switches where deleted = 0"), Switches)
 
+def list_by_names(session, names):
+    filter_names = ','.join(f"'{name}'" for name in names)
+    return session.fetchall(text(f"select * from switches where deleted = 0 and name in ({filter_names})"), Switches)
+
 def fetch_hot(session, size:int=2):
     return session.fetchall(text(f"select * from switches where deleted = 0 ORDER BY RANDOM() limit {size}"), Switches)
 

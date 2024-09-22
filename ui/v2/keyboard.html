@@ -1,9 +1,7 @@
 {% extends "main.html" %}
 {% block head %}
-<script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/art-template/4.13.2/lib/template-web.min.js"></script>
-  <link rel="stylesheet" href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/handsontable/8.3.2/handsontable.full.min.css">
-<script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/handsontable/8.3.2/handsontable.full.min.js"></script>
-
+    <link rel="stylesheet" href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/handsontable/8.3.2/handsontable.full.min.css">
+    <script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/handsontable/8.3.2/handsontable.full.min.js"></script>
 <style>
 .circle {
     display: inline-block;
@@ -19,14 +17,36 @@
 </style>
 {% endblock %}
 {% block content %}
+<div id="page-title">
+    <h1 class="page-header text-overflow">Static Tables</h1>
 
-<div>
+    <!--Searchbox-->
+    <div class="searchbox">
+        <div class="input-group custom-search-form">
+            <input type="text" class="form-control" placeholder="Search..">
+            <span class="input-group-btn">
+                <button class="text-muted" type="button"><i class="demo-pli-magnifi-glass"></i></button>
+            </span>
+        </div>
+    </div>
+</div>
 
-
-    <div id="table-container"></div>
+<ol class="breadcrumb">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Tables</a></li>
+    <li class="active">Static Tables</li>
+</ol>
+<div id="page-content">
+    <div class="panel">
+        <div>
+            <button id="addBtn" class="btn btn-primary">
+                <i class="ion-plus"></i> 添加
+            </button>
+        </div>
+        <div id="table-container"></div>
+    </div>
 </div>
 <script>
-    console.log()
     $(document).ready(function () {
 
         var rows = 5; // 假设有5行
@@ -34,10 +54,21 @@
         var array2D = [];
         var sourceData = {{list|tojson}}
 
-        var matches = sourceData.filter(function (item) {
-                            return item.toLowerCase().includes('盆');
-                        });
-        console.log(matches)
+        $('#addBtn').click(function (){
+            $.ajax({
+             type: 'POST',
+             url: '/api/v2/keyboard',
+             contentType: 'application/json',
+             data: JSON.stringify(array2D),
+             dataType: 'json',
+             success: function (data) {
+
+             },
+             error: function (err) {
+                 console.log(err)
+             }
+         })
+        })
 
         // 初始化空的二维数组，所有单元格设为空
         for (var i = 0; i < rows; i++) {
@@ -77,6 +108,7 @@
                 licenseKey: 'non-commercial-and-evaluation', // 添加许可证密钥
                 colWidths: 100,
                 rowHeights: 30,
+                height: 800,
                 cells: function (row, col, prop) {
                     var cellProperties = {};
                     cellProperties.type = 'autocomplete';

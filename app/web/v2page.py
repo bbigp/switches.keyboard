@@ -172,8 +172,11 @@ async def ayb(request: Request,):
         days = session.fetchall(icgb_mapper.list_day(), Icgb)
         if len(list) <= 0:
             icgblist, day = icgb_mapper.gen_icgb(0)
-            session.execute(icgb_mapper.batch_save_or_update(icgblist))
-            list = session.fetchall(icgb_mapper.list_by_day(day=day), Icgb)
+            if len(icgblist) > 0:
+                session.execute(icgb_mapper.batch_save_or_update(icgblist))
+                list = session.fetchall(icgb_mapper.list_by_day(day=day), Icgb)
+            else:
+                list = [Icgb(title=day)]
     return templates.TemplateResponse('c-ig.html', context={
         'request': request,
         'list': list,

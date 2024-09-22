@@ -249,6 +249,10 @@
         $('#icgbTbody').empty()
         $.ajax({type: 'GET', url: '/api/v2/gen-icgb?index='+index,
              success: function (data) {
+                 if (data.status !== 'ok') {
+                     $('#icgbTbody').append(data.msg)
+                     data.page_list = [{'title': data.msg}]
+                 }
                 var html = template('icgbTbodyTpl', {'list': data.page_list})
                 $('#icgbTbody').html(html)
                 datepicker.setDate(data.page_list[0]['day'])
