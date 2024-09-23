@@ -13,3 +13,11 @@ CREATE TABLE IF NOT EXISTS icgb (
     usefulness INTEGER DEFAULT 0,
     UNIQUE(unique_title, url)
 );
+CREATE TABLE IF NOT EXISTS board (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sid BIGINT NOT NULL,
+    row INT NOT NULL,
+    col INT NOT NULL,
+    ref TEXT NOT NULL,
+    UNIQUE(ref, row, col)
+);
