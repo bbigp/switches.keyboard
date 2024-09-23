@@ -195,7 +195,9 @@ async def keyboard(request:Request):
     with SqlSession() as session:
         list = switches_mapper.list(session)
         refs = board_mapper.fetch_all_ref(session=session)
-        array_2d = board_mapper.fetch_2d_array_by_ref(session=session, ref=refs[0])
+        array_2d = []
+        if len(refs) > 0:
+            array_2d = board_mapper.fetch_2d_array_by_ref(session=session, ref=refs[0])
     return templates.TemplateResponse('keyboard.html', context={
         'request': request,
         'list': [s.name for s in list],
@@ -218,7 +220,9 @@ async def detail(request: Request, id: int):
 async def keyboard(request: Request, ref:Optional[str] = None, mode:Optional[str] = 't'):
     with SqlSession() as session:
         refs = board_mapper.fetch_all_ref(session=session)
-        array_2d = board_mapper.fetch_2d_array_by_ref(session=session, ref=ref if ref else refs[0])
+        array_2d = []
+        if len(refs) > 0:
+            array_2d = board_mapper.fetch_2d_array_by_ref(session=session, ref=ref if ref else refs[0])
     return templates.TemplateResponse('collections-keyboard.html', context={
         'request': request,
         'data': array_2d,
