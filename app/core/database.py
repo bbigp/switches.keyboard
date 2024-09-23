@@ -54,4 +54,6 @@ class SqlSession(object):
         return list(result.values())[0]
 
 def parse_list_dict_2_model(list: list, claz) -> list:
+    if claz == str:
+        return [row[0] for row in list]
     return [claz.parse_obj(i) for i in list]

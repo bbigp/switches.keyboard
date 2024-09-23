@@ -57,3 +57,5 @@ class CalendarVO(BaseModel):
 class SwitchVO(Switches):
     html_desc: str=''
     images: list=None
+    row: int=None
+    col: int=None

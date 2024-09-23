@@ -79,8 +79,8 @@
             <span>SHOW BY :</span>
             <select name="orderby" id="short">
                 {% for item in stor_boxs %}
-                <option value="{{ item.word }}" {{
-                'selected' if request.path_params.get("keyboard") == item.word }}>{{ item.word }}</option>
+                <option value="{{ item }}" {{
+                'selected' if request.path_params.get("ref") == item }}>{{ item }}</option>
                 {% endfor %}
             </select>
             <span style="margin: 0 13px 0 13px;">图片:</span>

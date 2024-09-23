@@ -9,21 +9,19 @@ from starlette.responses import Response
 
 from app.core.database import SqlSession
 from app.core.internal import paginate_info
-from app.crud import switches_mapper
+from app.crud import switches_mapper, board_mapper
 from app.model.assembler import convert_vo
 from app.model.domain import Switches
-from app.web.v2page import generate_2d_array, determine_page_size
+from app.web.v2page import determine_page_size
 
 html_api_router = APIRouter(prefix='/apih')
 template_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'ui', 'v2')
 env = Environment(loader=FileSystemLoader(template_path))
 
 @html_api_router.get('/keyboard')
-async def keyboard(request: Request, s:Optional[str] = 'D.1'):
+async def keyboard(request: Request, s:Optional[str] = None):
     with SqlSession() as session:
-        stmt_list, _ = switches_mapper.filter(start=0, length=1000, stor_box=s)
-        list = session.fetchall(stmt_list, Switches)
-        array_2d = generate_2d_array(list)
+        array_2d = board_mapper.fetch_2d_array_by_ref(session=session, ref=s)
     template = env.get_template('new/keyboard-table.html')
     rendered_html = template.render(request=request, data=array_2d)
     compressed_content = gzip.compress(rendered_html.encode('utf-8'))

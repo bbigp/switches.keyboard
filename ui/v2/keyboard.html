@@ -1,19 +1,24 @@
 {% extends "main.html" %}
 {% block head %}
-    <link rel="stylesheet" href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/handsontable/8.3.2/handsontable.full.min.css">
-    <script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/handsontable/8.3.2/handsontable.full.min.js"></script>
+<link rel="stylesheet"
+      href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/handsontable/8.3.2/handsontable.full.min.css">
+<script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/handsontable/8.3.2/handsontable.full.min.js"></script>
+<link href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery-nice-select/1.0/css/nice-select.min.css"
+      type="text/css" rel="stylesheet"/>
+<script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery-nice-select/1.0/js/jquery.nice-select.min.js"
+        type="application/javascript"></script>
 <style>
-.circle {
-    display: inline-block;
-    background-color: white; /* 背景颜色 */
-    color: #4acbf5; /* 文字颜色 */
-    font-size: 12px; /* 字体大小 */
-    text-align: center; /* 文本居中 */
-    height: 15px; /* 高度 */
-    line-height: 15px; /* 行高，确保文本垂直居中 */
-    cursor: pointer; /* 鼠标悬停时显示为指针 */
-    margin-left: 2px;
-}
+    .circle {
+        display: inline-block;
+        background-color: white; /* 背景颜色 */
+        color: #4acbf5; /* 文字颜色 */
+        font-size: 12px; /* 字体大小 */
+        text-align: center; /* 文本居中 */
+        height: 15px; /* 高度 */
+        line-height: 15px; /* 行高，确保文本垂直居中 */
+        cursor: pointer; /* 鼠标悬停时显示为指针 */
+        margin-left: 2px;
+    }
 </style>
 {% endblock %}
 {% block content %}
@@ -38,48 +43,71 @@
 </ol>
 <div id="page-content">
     <div class="panel">
-        <div>
+
+        <div id="table-container"></div>
+        <div class="row">
+            <select name="orderby" id="short">
+                {% for item in stor_boxs %}
+                <option value="{{ item }}">{{ item }}</option>
+                {% endfor %}
+                <option value="">无</option>
+            </select>
             <button id="addBtn" class="btn btn-primary">
                 <i class="ion-plus"></i> 添加
             </button>
         </div>
-        <div id="table-container"></div>
     </div>
 </div>
 <script>
     $(document).ready(function () {
+        $('select,.select_option').niceSelect();
+        var $short = $('#short')
 
-        var rows = 5; // 假设有5行
-        var columns = 7; // 假设有5列
-        var array2D = [];
-        var sourceData = {{list|tojson}}
+        $short.on('change', function () {
 
-        $('#addBtn').click(function (){
             $.ajax({
-             type: 'POST',
-             url: '/api/v2/keyboard',
-             contentType: 'application/json',
-             data: JSON.stringify(array2D),
-             dataType: 'json',
-             success: function (data) {
-
-             },
-             error: function (err) {
-                 console.log(err)
-             }
-         })
-        })
-
-        // 初始化空的二维数组，所有单元格设为空
-        for (var i = 0; i < rows; i++) {
-            array2D[i] = [];
-            for (var j = 0; j < columns; j++) {
-                array2D[i][j] = ''; // 空单元格
-            }
-        }
-
+                type: 'GET', url: '/api/v2/keyboard?s=' + $short.val(),
+                contentType: 'text/html',
+                success: function (data) {
+                    mainData = data.page_list
+                    initData()
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+        });
         const container = document.getElementById('table-container');
 
+
+        var array2D = [];
+        var mainData = {{data | tojson}}
+        initData()
+
+        function initData() {
+            var mainRow = mainData.length;
+            var mainCol = mainData.reduce((max, row) => Math.max(max, row.length), 0);
+            for (var i = 0; i < Math.max(5, mainRow); i++) {
+                array2D[i] = [];
+                for (var j = 0; j < Math.max(7, mainCol); j++) {
+                    array2D[i][j] = ''; // 空单元格
+                }
+            }
+
+            for (var i = 0; i < mainData.length; i++) {
+                var cols = mainData[i]
+                for (var j = 0; j < cols.length; j++) {
+                    var item = cols[j]
+                    if (item !== null) {
+                        array2D[i][j] = item.name
+                    }
+                }
+            }
+            renderTable();
+        }
+
+
+        var sourceData = {{list | tojson}}
 
         function renderTable() {
             $('#table-container').empty()
@@ -91,16 +119,16 @@
                 rowHeaders: true,
                 contextMenu: {
                     items: {
-                        "row_below": { name: '插入下方行' },
-                        "remove_row": { name: '删除行' },
-                        "col_right": { name: '插入右侧列' },
-                        "remove_col": { name: '删除列' },
-                        "make_read_only": { name: '设为只读' },
-                        "copy": { name: '复制' },
-                        "cut": { name: '剪切' },
-                        "paste": { name: '粘贴' },
-                        "undo": { name: '撤销' },
-                        "redo": { name: '重做' },
+                        "row_below": {name: '插入下方行'},
+                        "remove_row": {name: '删除行'},
+                        "col_right": {name: '插入右侧列'},
+                        "remove_col": {name: '删除列'},
+                        "make_read_only": {name: '设为只读'},
+                        "copy": {name: '复制'},
+                        "cut": {name: '剪切'},
+                        "paste": {name: '粘贴'},
+                        "undo": {name: '撤销'},
+                        "redo": {name: '重做'},
                     }
                 },
                 manualRowMove: false,
@@ -108,7 +136,7 @@
                 licenseKey: 'non-commercial-and-evaluation', // 添加许可证密钥
                 colWidths: 100,
                 rowHeights: 30,
-                height: 800,
+                height: 300,
                 cells: function (row, col, prop) {
                     var cellProperties = {};
                     cellProperties.type = 'autocomplete';
@@ -120,7 +148,7 @@
                         console.log(matches)
                         process(matches);
                     }
-                    cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties){
+                    cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
                         td.style.textAlign = 'center'; // 水平居中
                         td.style.verticalAlign = 'middle'; // 垂直居中
                         if (value !== '') {
@@ -136,7 +164,40 @@
                 },
             });
         }
-        renderTable();
+
+
+        $('#addBtn').click(function () {
+            save(array2D, $short.val())
+        })
+
+        function save(matrix, ref) {
+            $.ajax({
+                type: 'POST',
+                url: '/api/v2/keyboard',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    'matrix': matrix,
+                    'ref': ref
+                }),
+                dataType: 'json',
+                success: function (data) {
+                    $.niftyNoty({
+                        type: 'success',
+                        icon : 'pli-cross icon-2x',
+                        message : '保存: <strong>' + data.status +'</strong>',
+                        container : 'floating',
+                        timer : 5000
+                    });
+                },
+                error: function (err) {
+                    console.log(err)
+                }
+            })
+        }
+
+
     })
+
+
 </script>
 {% endblock %}

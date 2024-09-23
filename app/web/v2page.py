@@ -9,7 +9,7 @@ from starlette.templating import Jinja2Templates
 
 from app.core.database import SqlSession
 from app.core.internal import paginate_info, get_month_start_end
-from app.crud import switches_mapper, keyword_mapper, icgb_mapper
+from app.crud import switches_mapper, keyword_mapper, icgb_mapper, board_mapper
 from app.model.assembler import convert_vo
 from app.model.domain import Keyword, Switches, KeyCountBO, \
     Icgb
@@ -190,13 +190,17 @@ async def sqlite(request: Request):
         'request': request,
     })
 
-@v2_page_router.get('/control/keyboard')
+@v2_page_router.get('/control/board')
 async def keyboard(request:Request):
     with SqlSession() as session:
         list = switches_mapper.list(session)
+        refs = board_mapper.fetch_all_ref(session=session)
+        array_2d = board_mapper.fetch_2d_array_by_ref(session=session, ref=refs[0])
     return templates.TemplateResponse('keyboard.html', context={
         'request': request,
-        'list': [s.name for s in list]
+        'list': [s.name for s in list],
+        'stor_boxs': refs,
+        'data': array_2d,
     })
 
 @v2_page_router.get('/collections/products/{id}')
@@ -210,36 +214,16 @@ async def detail(request: Request, id: int):
 
 @v2_page_router.get('/collections/keyboard')
 @v2_page_router.get('/collections/keyboard/')
-@v2_page_router.get('/collections/keyboard/{keyboard}')
-async def keyboard(request: Request, keyboard:Optional[str] = 'D.1', mode:Optional[str] = 't'):
+@v2_page_router.get('/collections/keyboard/{ref}')
+async def keyboard(request: Request, ref:Optional[str] = None, mode:Optional[str] = 't'):
     with SqlSession() as session:
-        stmt_list, _ = switches_mapper.filter(start=0, length=1000, stor_box=keyboard)
-        list = session.fetchall(stmt_list, Switches)
-        array_2d = generate_2d_array(list)
-        stor_boxs = keyword_mapper.fetch_keyboard(session)
+        refs = board_mapper.fetch_all_ref(session=session)
+        array_2d = board_mapper.fetch_2d_array_by_ref(session=session, ref=ref if ref else refs[0])
     return templates.TemplateResponse('collections-keyboard.html', context={
         'request': request,
         'data': array_2d,
-        'stor_boxs': stor_boxs,
+        'stor_boxs': refs,
     })
-
-
-def generate_2d_array(data: List[Switches]):
-    # 查找数据中的最大行和列索引
-    max_row = max((item.stor_loc_row for item in data if item.stor_loc_row is not None), default=0)
-    max_column = max((item.stor_loc_col for item in data if item.stor_loc_col is not None), default=0)
-
-    # 初始化一个空的二维数组
-    array_2d = [[None for _ in range(max_column)] for _ in range(max_row)]
-
-    # 填充二维数组
-    for item in data:
-        if item.stor_loc_row is not None and item.stor_loc_col is not None:
-            row = item.stor_loc_row
-            column = item.stor_loc_col
-            array_2d[row-1][column-1] = item.dict()
-
-    return array_2d
 
 
 

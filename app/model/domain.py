@@ -97,6 +97,13 @@ class Switches(BaseModel):
     update_time: int=None
     deleted: int=0
 
+class Board(BaseModel):
+    id: int=None
+    sid: int=None
+    row: int=None
+    col: int=None
+    ref: str=''
+
 
 T_switches = Table('switches',
                  metadata,

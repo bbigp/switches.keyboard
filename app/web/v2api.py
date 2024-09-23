@@ -2,16 +2,18 @@ from datetime import datetime
 from typing import Optional, List
 
 from fastapi import Query, APIRouter
+from pydantic.main import BaseModel
 from sqlalchemy import select, insert, func, and_, or_, update, desc, text
 from starlette.responses import JSONResponse
 
 from app.core.database import SqlSession
 from app.core.internal import generate_random_string, paginate_info, get_month_start_end
 from app.core.snowflake_id import id_worker
-from app.crud import keyword_mapper, switches_mapper, icgb_mapper
+from app.crud import keyword_mapper, switches_mapper, icgb_mapper, board_mapper
 from app.crud.switches_mapper import Filter
 from app.model.assembler import convert_vo, convert_keywrod_sqlm
-from app.model.domain import sqlm_keyword, Keyword, sqlm_keyboard_switch, KeyboardSwitch, Switches, KeyCountBO, Icgb
+from app.model.domain import sqlm_keyword, Keyword, sqlm_keyboard_switch, KeyboardSwitch, Switches, KeyCountBO, Icgb, \
+    Board
 from app.model.request import KeywordRequest, IcgbRequest, SqliteRequest
 from app.model.vo import CalendarVO
 from app.web.v2page import get_keyword_counts
@@ -192,13 +194,17 @@ async def calendar_events(start: str, end: str):
         events = [CalendarVO(title=data.title, start=data.icgb_day, end=data.icgb_day, url=data.href) for data in list]
     return {'page_list': events}
 
+class BoardRequest(BaseModel):
+    matrix: List[List[str]]
+    ref: str=''
+
 @v2_api_router.post('/keyboard', response_class=JSONResponse)
-async def save_keyboard(matrix: List[List[str]]):
+async def save_keyboard(request: BoardRequest):
     with SqlSession() as session:
         non_empty_values = set()
         value_positions = {}
 
-        for row_idx, row in enumerate(matrix):
+        for row_idx, row in enumerate(request.matrix):
             for col_idx, value in enumerate(row):
                 if value:
                     non_empty_values.add(value)
@@ -208,14 +214,16 @@ async def save_keyboard(matrix: List[List[str]]):
         list = switches_mapper.list_by_names(session, names=non_empty_values)
         value_id_map = {getattr(item, 'name'): item for item in list}
         results = []
+        ref = request.ref if request.ref else board_mapper.gen_ref(session=session)
         for value, positions in value_positions.items():
             item_id = value_id_map.get(value)
             for row, col in positions:
-                results.append({
-                    "id": item_id.id,
-                    "name": item_id.name,
-                    "col": col,
-                    "row": row
-                })
-        print(results)
-    return {}
+                results.append(Board(sid=item_id.id, ref=ref, row=row, col=col))
+        board_mapper.batch_save(session=session, list=results)
+    return {'status': 'ok'}
+
+@v2_api_router.get('/keyboard')
+async def keyboard(s:Optional[str] = None):
+    with SqlSession() as session:
+        array_2d = board_mapper.fetch_2d_array_by_ref(session=session, ref=s)
+    return {'page_list': array_2d}
