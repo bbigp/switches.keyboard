@@ -164,12 +164,7 @@
 </script>
 
 <script>
-    var $searchInput = $('#searchInput');
-    $searchInput.keyup(function (event){
-        if (event.keyCode === 13) {
-            initFilter()
-        }
-    })
+    var searchText;
     $('#switchesMain').on('click', '.pagination a', function (event){
         event.preventDefault();
         var page = $(this).data('value')
@@ -178,9 +173,14 @@
         }
         initFilter(page)
     }).on('click', '#searchBtn', function (){
-        $('.page_search_box').removeClass('active')
+        searchText = $('#searchInput').val()
         initFilter()
-    })
+    }).on('keydown', '#searchInput', function(event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            initFilter()
+        }
+    });
 
     $('#switchesFilter').on('click', '#typeFilter a', function (event){
         event.preventDefault();
@@ -272,9 +272,8 @@
             qs.push('is_available=0')
         }
 
-        let searchVal = $searchInput.val();
-        if (searchVal !== '') {
-            qs.push('s='+searchVal)
+        if (searchText !== '') {
+            qs.push('s='+searchText)
         }
         if (window.innerWidth <= 800) {
             qs.push('size=8')
