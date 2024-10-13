@@ -132,18 +132,18 @@
 <div class="pagination_style pagination justify-content-center">
     <ul class="d-flex">
         {% if page.has_previous_page %}
-        <li><a href="/collections/switches/{{ page.current_page - 1 }}"> << </a></li>
+        <li><a data-value="{{ page.current_page - 1 }}"> << </a></li>
         {% endif %}
         {% for item in page.adjacent_pages %}
         <li>
             <a class="{{ 'current' if item == page.current_page }} {{ 'disabled-link' if item == -1 }}"
-               href="{{  '/collections/switches/' + item|string if item != -1 else '#'}}">
+               data-value="{{ item|string if item != -1 else '#' }}">
                 {{ '...' if item == -1 else item }}
             </a>
         </li>
         {% endfor %}
         {% if page.has_next_page %}
-        <li><a href="/collections/switches/{{ page.current_page + 1 }}">>></a></li>
+        <li><a data-value="{{ page.current_page + 1 }}">>></a></li>
         {% endif %}
     </ul>
 </div>

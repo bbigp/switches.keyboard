@@ -93,11 +93,6 @@
 </head>
 
 <body>
-{% set global_qs_search = '' if request.query_params.get('s') is none else request.query_params.get('s') %}
-{% set global_qs_manufacturer = [] if request.query_params.get('manufacturer') is none else request.query_params.get('manufacturer').split(',') %}
-{% set global_qs_is_available = 1 if request.query_params.get('is_available') is none else request.query_params.get('is_available')|int %}
-{% set global_filter_count = 1 + (1 if global_qs_search else 0) + (global_qs_manufacturer|length) %}
-{% set global_qs_type = '' if request.query_params.get('t') is none else request.query_params.get('t') %}
 <div class="preloader text-white fs-6 text-uppercase overflow-hidden"><h1>loading...</h1></div>
 {% include 'new/canvas_menu.html' %}
 
@@ -116,71 +111,8 @@
                 <!--sidebar widget start-->
                 <aside class="sidebar_widget">
                     <div class="widget_inner">
-                        <div class="widget_list widget_filter">
-                            <h2>Filter By</h2>
-                            <div class="filter__list filterTagList">
-                                {% if global_qs_is_available == 1 or global_qs_is_available == 2  %}
-                                <div class="filterTag" data-value="状态:{{ global_qs_is_available }}" data-available="{{ global_qs_is_available }}">
-                                    {{ '仓库中' if global_qs_is_available == 1 else '草稿' }}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                </div>
-                                {% endif %}
-                                {% for q in global_qs_manufacturer %}
-                                <div class="filterTag" data-value="{{ q }}">
-                                    {{ q }}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                </div>
-                                {% endfor %}
-                                {% if global_qs_search %}
-                                <div class="filterTag" data-value="搜索:{{ global_qs_search }}">
-                                    搜索:{{ global_qs_search }}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                </div>
-                                {% endif %}
-                                {% if global_qs_type %}
-                                 <div class="filterTag" data-value="分类:{{ global_qs_type }}">
-                                    分类:{{ global_qs_type }}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                </div>
-                                {% endif %}
-                            </div>
-
-                            <div class="filter__list widget_brands">
-                                <h3 data-toggle="collapse" data-target="#brands">状态</h3>
-                                <ul class="widget_dropdown_categories collapse show row" style="flex-direction: row;" id="brands">
-                                    <li class="col-6 factory-item factoryItem availableItem" data-field="is_available" data-value="1">
-                                        <input class="switchFactoryCheck big-large-checkbox" {{ 'checked' if global_qs_is_available == 1 }} type="checkbox"/>
-                                        <span class="switchFactory big-factory {{ 'manufacturer-text' if global_qs_is_available == 1 }}">仓库中</span>
-                                    </li>
-                                    <li class="col-6 factory-item factoryItem availableItem" data-field="is_available" data-value="2">
-                                        <input class="switchFactoryCheck big-large-checkbox" {{ 'checked' if global_qs_is_available == 2 }} type="checkbox"/>
-                                        <span class="switchFactory big-factory {{ 'manufacturer-text' if global_qs_is_available == 2 }}">草稿</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="widget_list widget_categories">
-{#                            <h2>Categories</h2>#}
-                            <ul>
-                                <li class="widget_sub_categories"><a href="javascript:void(0)" data-toggle="collapse" data-target="#men">代工 MANUFACTORY</a>
-                                    <ul class="widget_dropdown_categories collapse show row" style="flex-direction: row;" id="men">
-{#                                        <li><a href="#"> New products <span>104</span></a></li>#}
-                                        {% for item in manufacturers %}
-                                            <li class="col-6 factory-item factoryItem" data-field="manufacturer" data-value="{{ item.word }}">
-                                                <input class="switchFactoryCheck big-large-checkbox" type="checkbox" {{ 'checked' if item.word in global_qs_manufacturer }}/>
-                                                <span class="switchFactory big-factory {{ 'manufacturer-text' if item.word in global_qs_manufacturer }}">{{ item.word }}</span>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </li>
-                                <li class="widget_sub_categories"><a href="javascript:void(0)" data-toggle="collapse" data-target="#women">分类</a>
-                                    <ul class="widget_dropdown_categories collapse show row" style="flex-direction: row;" id="typeFilter">
-                                        {% for type in switches_types %}
-                                        <li class="col-6 {{ 'manufacturer-text' if global_qs_type == type.word }}" data-value="{{ type.word }}"><a href="#"> {{ type.word }} <span>{{ '✓' if global_qs_type == type.word }}</span></a></li>
-                                        {% endfor %}
-                                    </ul>
-                                </li>
-                            </ul>
+                        <div id="switchesFilter">
+                            {{ switches_filter | safe }}
                         </div>
                         <div class="widget_list">
                             <h2>热门 Switches</h2>
@@ -207,8 +139,9 @@
 
                 {% set breadcrumb_list=['主页', '客制化轴体'] %}
                 {% include 'new/breadcrumbs.html' %}
-
-                {% include 'new/switches_wrapper.html' %}
+                <div id="switchesMain">
+                    {{ switches_wrapper | safe }}
+                </div>
             </div>
         </div>
     </div>
@@ -237,25 +170,85 @@
             initFilter()
         }
     })
-    $('.pagination a').on('click', function (event){
+    $('#switchesMain').on('click', '.pagination a', function (event){
         event.preventDefault();
-        var targetUrl = $(this).attr('href');
-        if (targetUrl === '#') {
+        var page = $(this).data('value')
+        if (page === '#') {
             return;
         }
-        initFilter(targetUrl)
-    })
-    $('#typeFilter a').on('click', function (event){
-        event.preventDefault();
-        $(this).parent().addClass('manufacturer-text')
-        initFilter()
-    })
-    $('#searchBtn').click(function (){
+        initFilter(page)
+    }).on('click', '#searchBtn', function (){
         $('.page_search_box').removeClass('active')
         initFilter()
     })
-    function initFilter(baseUrl='/collections/switches/1'){
-        let qs = []
+
+    $('#switchesFilter').on('click', '#typeFilter a', function (event){
+        event.preventDefault();
+        $(this).parent().addClass('manufacturer-text')
+        initFilter()
+    }).on('click', '.filterTag', function (){
+        var tagValue = $(this).data('value');  // 获取 filterTag 的值
+        $(this).remove();  // 移除当前 filterTag
+        if (tagValue.startsWith('搜索:')) {
+            $searchInput.val('')
+        }else if(tagValue.startsWith("状态:")){
+            var available = $(this).data('available')
+            $('li.availableItem').each(function() {
+                var liValue = $(this).data('value');
+                if (liValue === available) {
+                    var checkbox = $(this).find('input.switchFactoryCheck');
+                    checkbox.prop('checked', false);  // 取消勾选
+                }
+            });
+        }else if(tagValue.startsWith("分类:")){
+            $('#typeFilter li.manufacturer-text').each(function (){
+                $(this).removeClass('manufacturer-text')
+            })
+        }else {
+            // 找到与 filterTag 对应的 li，取消勾选并恢复样式
+            $('li.factoryItem').each(function() {
+                var liValue = $(this).data('value');
+                if (liValue === tagValue) {
+                    var checkbox = $(this).find('input.switchFactoryCheck');
+                    checkbox.prop('checked', false);  // 取消勾选
+                }
+            });
+        }
+        initFilter();  // 调用 initFilter 函数
+    }).on('click', '.factoryItem', function (){
+        var dataField = $(this).data('field')
+        if (dataField === 'manufacturer') {
+            if (!$(event.target).is('input')) {
+                var checkbox = $(this).find('input.switchFactoryCheck');
+                checkbox.prop('checked', !checkbox.prop('checked'));
+            }
+        } else if(dataField === 'is_available'){
+            var currentLi = $(this);
+            // 取消同级 li 的选中状态
+            currentLi.siblings().each(function() {
+                $(this).find('input.switchFactoryCheck').prop('checked', false); // 取消 input 的勾选
+            });
+
+            // 设置当前 li 为选中状态
+            var checkbox = currentLi.find('input.switchFactoryCheck');
+            checkbox.prop('checked', true); // 设置 input 为选中状态
+        }
+
+        initFilter()
+    }).on('click', '.switchFactoryCheck', function (event){
+        event.stopPropagation(); // 阻止事件冒泡到 li 上
+        var dataField = $(this).parent().data('field')
+        if(dataField === 'is_available') {
+            $('li.availableItem').each(function() {
+                var checkbox = $(this).find('input.switchFactoryCheck');
+                checkbox.prop('checked', false);  // 取消勾选
+            });
+            $(this).prop('checked', true)
+        }
+        initFilter()
+    })
+    function initFilter(page='1'){
+        let qs = ['page='+page]
 
         var manufacturerList = []
         $('li.factoryItem input:checked').each(function() {
@@ -289,78 +282,22 @@
         $('#typeFilter li.manufacturer-text').each(function (){
             qs.push('t=' + $(this).data('value'))
         })
-        let url = qs.length === 0 ? baseUrl : baseUrl+ '?'+ qs.join('&')
-        console.log('init filter ', url)
-        if (new URL(url, window.location.origin).href !== new URL(window.location.href).href) {
-            Turbolinks.visit(url);
-        }
+
+        let url = '/apih/filter/switches?'+ qs.join('&')
+        $.ajax({
+            type: 'GET', url: url,
+            contentType: 'text/html',
+            success: function (data) {
+                var htmlParts = data.split('<!--SPLIT-->');
+                $('#switchesMain').empty().append(htmlParts[0])
+                $('#switchesFilter').empty().append(htmlParts[1])
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
     }
 
-    $('.filterTag').on('click', function() {
-        var tagValue = $(this).data('value');  // 获取 filterTag 的值
-        $(this).remove();  // 移除当前 filterTag
-        if (tagValue.startsWith('搜索:')) {
-            $searchInput.val('')
-        }else if(tagValue.startsWith("状态:")){
-            var available = $(this).data('available')
-            $('li.availableItem').each(function() {
-                var liValue = $(this).data('value');
-                if (liValue === available) {
-                    var checkbox = $(this).find('input.switchFactoryCheck');
-                    checkbox.prop('checked', false);  // 取消勾选
-                }
-            });
-        }else if(tagValue.startsWith("分类:")){
-            $('#typeFilter li.manufacturer-text').each(function (){
-                $(this).removeClass('manufacturer-text')
-            })
-        }else {
-            // 找到与 filterTag 对应的 li，取消勾选并恢复样式
-            $('li.factoryItem').each(function() {
-                var liValue = $(this).data('value');
-                if (liValue === tagValue) {
-                    var checkbox = $(this).find('input.switchFactoryCheck');
-                    checkbox.prop('checked', false);  // 取消勾选
-                }
-            });
-        }
-        initFilter();  // 调用 initFilter 函数
-    });
-
-    $('.factoryItem').on('click', function() {
-        var dataField = $(this).data('field')
-        if (dataField === 'manufacturer') {
-            if (!$(event.target).is('input')) {
-                var checkbox = $(this).find('input.switchFactoryCheck');
-                checkbox.prop('checked', !checkbox.prop('checked'));
-            }
-        } else if(dataField === 'is_available'){
-            var currentLi = $(this);
-            // 取消同级 li 的选中状态
-            currentLi.siblings().each(function() {
-                $(this).find('input.switchFactoryCheck').prop('checked', false); // 取消 input 的勾选
-            });
-
-            // 设置当前 li 为选中状态
-            var checkbox = currentLi.find('input.switchFactoryCheck');
-            checkbox.prop('checked', true); // 设置 input 为选中状态
-        }
-
-        initFilter()
-    });
-
-    $('.switchFactoryCheck').on('click', function(event) {
-        event.stopPropagation(); // 阻止事件冒泡到 li 上
-        var dataField = $(this).parent().data('field')
-        if(dataField === 'is_available') {
-            $('li.availableItem').each(function() {
-                var checkbox = $(this).find('input.switchFactoryCheck');
-                checkbox.prop('checked', false);  // 取消勾选
-            });
-            $(this).prop('checked', true)
-        }
-        initFilter()
-    });
 </script>
 
 </body>

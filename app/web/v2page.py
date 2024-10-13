@@ -14,34 +14,15 @@ from app.model.assembler import convert_vo
 from app.model.domain import Keyword, Switches, KeyCountBO, \
     Icgb
 from app.model.vo import KeywordVO, CalendarVO
+from app.utils.jinja2_filters import format_with_tolerance, format_studio_with_manufacturer
+from app.utils.jinja2_template_render import render_switches_wrapper, determine_page_size, render_switches_filter
 
 templates = Jinja2Templates(directory='ui/v2')
+templates.env.filters['format_with_tolerance'] = format_with_tolerance
+templates.env.filters['format_studio_with_manufacturer'] = format_studio_with_manufacturer
 
 v2_page_router = APIRouter(prefix='')
 
-def format_with_tolerance(value):
-    base_value, tolerance, unit = value
-    if base_value is None or base_value == '':
-        return f'-{unit}'
-    elif tolerance is None or tolerance == '':
-        return f'{base_value}{unit}'
-    else:
-        return f'{base_value}{tolerance}{unit}'
-
-def format_studio_with_manufacturer(value):
-    studio, manufacturer = value
-    if studio and manufacturer:
-        if studio == manufacturer:
-            return f'{studio}'
-        else:
-            return f'{studio} | {manufacturer}'
-    elif studio or manufacturer:
-        return f'{studio}{manufacturer}'
-    else:
-        return ''
-
-templates.env.filters['format_with_tolerance'] = format_with_tolerance
-templates.env.filters['format_studio_with_manufacturer'] = format_studio_with_manufacturer
 
 @v2_page_router.get("/control", response_class=HTMLResponse)
 @v2_page_router.get('/control/main', response_class=HTMLResponse)
@@ -108,12 +89,7 @@ async def dev(
         'manufacturers': manufacturers
     })
 
-def determine_page_size(request: Request, size: int=Query(None)) -> int:
-    user_agent = request.headers.get("User-Agent", "")
-    if size is not None:
-        return size
-    mobile_pattern = re.compile(r"Mobi|Android|iPhone|iPad|iPod|Windows Phone", re.I)
-    return 8 if bool(mobile_pattern.search(user_agent)) else 15
+
 
 @v2_page_router.get("/")
 @v2_page_router.get('/collections')
@@ -132,24 +108,13 @@ async def main(
         is_available: Optional[int]=1
 ):
     with SqlSession() as session:
-        if is_available == 1:
-            available = True
-        elif is_available == 2:
-            available = False
-        else:
-            available = None
-        stmt_list, stmt_count = switches_mapper.filter((page - 1) * size, size, search, stor_box, manufacturer,
-                                                       available, type=type)
-        list = session.fetchall(stmt_list, Switches)
-        total = session.count(stmt_count)
-        types, manufacturers, _, studios = keyword_mapper.fetch_text(session)
+        switches_wrapper = render_switches_wrapper(session, page, size, search, type, stor_box, manufacturer, is_available)
+        switches_filter = render_switches_filter(session, request)
         hot_switches = switches_mapper.fetch_hot(session, size=3)
     return templates.TemplateResponse('collections-switches.html', context={
         'request': request,
-        'list': [convert_vo(i).dict() for i in list],
-        'page': paginate_info(total, page, size),
-        'manufacturers': manufacturers,
-        'switches_types': types,
+        'switches_wrapper': switches_wrapper,
+        'switches_filter': switches_filter,
         'hot_switches': hot_switches,
     })
 
