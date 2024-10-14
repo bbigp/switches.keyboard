@@ -4,7 +4,7 @@
     </div>
     <div class=" sorting_by d-flex align-items-center">
         <div style="position: relative">
-            <input id="searchInput" type="text" value="{{ global_qs_search }}" style="border: 1px solid #dddddd;
+            <input id="searchInput" type="text" value="{{ search if search else '' }}" style="border: 1px solid #dddddd;
                 font-size: 15px;
                 padding: 5px 45px 6px 10px;
                 position: relative;

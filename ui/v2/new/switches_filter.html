@@ -57,7 +57,7 @@
         <h3 data-toggle="collapse" data-target="#brands">状态</h3>
         <ul class="widget_dropdown_categories collapse show row" style="flex-direction: row;" id="brands">
             <li class="col-6 factory-item factoryItem availableItem" data-field="is_available" data-value="1">
-                <input class="switchFactoryCheck big-large-checkbox" {{ 'checked' if global_qs_is_available == 1 }}
+                <input id="defaultAvailable" class="switchFactoryCheck big-large-checkbox" {{ 'checked' if global_qs_is_available == 1 }}
                        type="checkbox"/>
                 <span class="switchFactory big-factory {{ 'manufacturer-text' if global_qs_is_available == 1 }}">仓库中</span>
             </li>

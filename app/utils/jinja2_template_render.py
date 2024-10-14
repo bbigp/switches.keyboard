@@ -47,7 +47,7 @@ def render_switches_wrapper(session, page: Optional[int]=1,
 
     template = env.get_template('new/switches_wrapper.html')
     rendered_html = template.render(list=[convert_vo(i).dict() for i in list],
-        page=paginate_info(total, page, size))
+        page=paginate_info(total, page, size), search=search)
     return rendered_html
     # compressed_content = gzip.compress(rendered_html.encode('utf-8'))
     # return compressed_content

@@ -160,11 +160,9 @@
     $(document).on('turbolinks:load', function () {
         $(".preloader").addClass("loaded");
     });
-    {#console.log({{page | tojson}})#}
 </script>
 
 <script>
-    var searchText;
     $('#switchesMain').on('click', '.pagination a', function (event){
         event.preventDefault();
         var page = $(this).data('value')
@@ -173,7 +171,6 @@
         }
         initFilter(page)
     }).on('click', '#searchBtn', function (){
-        searchText = $('#searchInput').val()
         initFilter()
     }).on('keydown', '#searchInput', function(event) {
         if (event.keyCode === 13) {
@@ -184,13 +181,19 @@
 
     $('#switchesFilter').on('click', '#typeFilter a', function (event){
         event.preventDefault();
-        $(this).parent().addClass('manufacturer-text')
+        var $this = $(this).parent()
+        if($this.find('span').text().includes('✓')){
+            $this.removeClass('manufacturer-text')
+        }else {
+            $this.addClass('manufacturer-text')
+        }
         initFilter()
     }).on('click', '.filterTag', function (){
         var tagValue = $(this).data('value');  // 获取 filterTag 的值
         $(this).remove();  // 移除当前 filterTag
         if (tagValue.startsWith('搜索:')) {
-            $searchInput.val('')
+            $('#searchInput').val('')
+            $('#defaultAvailable').prop('checked', true)
         }else if(tagValue.startsWith("状态:")){
             var available = $(this).data('available')
             $('li.availableItem').each(function() {
@@ -251,6 +254,7 @@
         let qs = ['page='+page]
 
         var manufacturerList = []
+        let is_available = 1
         $('li.factoryItem input:checked').each(function() {
             var parentLi = $(this).closest('li.factoryItem'); // 获取父级 li.factoryItem
             var dataField = parentLi.attr('data-field');
@@ -260,7 +264,7 @@
                 manufacturerList.push(dataValue)
             }
             if(dataField === 'is_available' && dataValue !== '1') {
-                qs.push('is_available=' + dataValue)
+                is_available = dataValue
             }
         });
 
@@ -269,11 +273,13 @@
             qs.push('manufacturer=' + manufacturerList.join(','))
         }
         if ($('li.availableItem input.switchFactoryCheck:checked').length <= 0){
-            qs.push('is_available=0')
+            is_available = 0
         }
 
+        var searchText = $('#searchInput').val()
         if (searchText !== '') {
             qs.push('s='+searchText)
+            is_available = 0
         }
         if (window.innerWidth <= 800) {
             qs.push('size=8')
@@ -281,6 +287,7 @@
         $('#typeFilter li.manufacturer-text').each(function (){
             qs.push('t=' + $(this).data('value'))
         })
+        qs.push('is_available=' + is_available)
 
         let url = '/apih/filter/switches?'+ qs.join('&')
         $.ajax({
