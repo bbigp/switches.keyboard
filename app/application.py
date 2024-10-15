@@ -8,21 +8,25 @@ from starlette.responses import HTMLResponse, JSONResponse, StreamingResponse
 from starlette.routing import Mount
 from starlette.staticfiles import StaticFiles
 
+from app import config
+from app.config import options
 from app.core.internal import convert_long_to_str
 from app.core.response import RedirectResponseWraper
-from app.web.html_api import html_api_router
-from app.web.pic import pic_router
-from app.web.stats import stats_router
-from app.web.v2api import v2_api_router
-from app.web.v2page import v2_page_router, templates
+from app.routers.html_api import html_api_router
+from app.routers.image import image_router, master_image_router
+from app.routers.stats import stats_router
+from app.routers.v2api import v2_api_router
+from app.routers.v2page import v2_page_router, templates
 
 
 def register_route(app):
     app.include_router(stats_router, tags=['stats_router'])
-    app.include_router(pic_router, tags=['pic_router'])
+    app.include_router(image_router, tags=['image_router'])
     app.include_router(v2_page_router, tags=['v2_page'])
     app.include_router(v2_api_router, tags=['v2_api'])
     app.include_router(html_api_router, tags=['html_api'])
+    if options.is_master():
+        app.include_router(master_image_router, tags=['master_image_router'])
     app.mount('/js', StaticFiles(directory='ui/js'), name='js')
     app.mount('/assets', StaticFiles(directory='ui/assets'), name='assets')
     app.mount('/', StaticFiles(directory='ui/img'), name='rootImg')
@@ -42,7 +46,7 @@ def register_logging(app):
     # )
     # if not os.path.exists(log_path):
     #     os.mkdir(log_path)
-    # log_file = '{0}/web-{1}.log'.format(log_path, datetime.now().strftime('%Y%m%d'))
+    # log_file = '{0}/routers-{1}.log'.format(log_path, datetime.now().strftime('%Y%m%d'))
     # logger.add(log_file, encoding='utf-8', rotation='500MB', retention='6 months', enqueue=True)
     # logger.debug('logging_provider registering')
     # logging.getLogger('uvicorn.access').handlers = [InterceptHandler()]

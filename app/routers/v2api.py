@@ -16,7 +16,7 @@ from app.model.domain import sqlm_keyword, Keyword, sqlm_keyboard_switch, Keyboa
     Board
 from app.model.request import KeywordRequest, IcgbRequest, SqliteRequest
 from app.model.vo import CalendarVO
-from app.web.v2page import get_keyword_counts
+from app.routers.v2page import get_keyword_counts
 
 v2_api_router = APIRouter(prefix='/api/v2')
 
