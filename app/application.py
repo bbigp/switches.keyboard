@@ -2,31 +2,26 @@ import json
 
 from fastapi import FastAPI, Request
 from loguru import logger
-from starlette import status
 from starlette.middleware.cors import CORSMiddleware
-from starlette.responses import HTMLResponse, JSONResponse, StreamingResponse
+from starlette.responses import JSONResponse
 from starlette.routing import Mount
 from starlette.staticfiles import StaticFiles
 
-from app import config
 from app.config import options
 from app.core.internal import convert_long_to_str
-from app.core.response import RedirectResponseWraper
-from app.routers.html_api import html_api_router
-from app.routers.image import image_router, master_image_router
-from app.routers.stats import stats_router
-from app.routers.v2api import v2_api_router
-from app.routers.v2page import v2_page_router, templates
+from app.routers.admin_api import admin_api_router
+from app.routers.image import image_router
+from app.routers.page import page_router, admin_page_router
+from app.routers.v2 import api_router
 
 
 def register_route(app):
-    app.include_router(stats_router, tags=['stats_router'])
-    app.include_router(image_router, tags=['image_router'])
-    app.include_router(v2_page_router, tags=['v2_page'])
-    app.include_router(v2_api_router, tags=['v2_api'])
-    app.include_router(html_api_router, tags=['html_api'])
+    app.include_router(api_router)
+    app.include_router(page_router)
+    app.include_router(image_router)
     if options.is_master():
-        app.include_router(master_image_router, tags=['master_image_router'])
+        app.include_router(admin_api_router)
+        app.include_router(admin_page_router)
     app.mount('/js', StaticFiles(directory='ui/js'), name='js')
     app.mount('/assets', StaticFiles(directory='ui/assets'), name='assets')
     app.mount('/', StaticFiles(directory='ui/img'), name='rootImg')
@@ -110,11 +105,3 @@ async def exception_handler(request: Request, e):
     msg = str(e.args[0])
     msg = msg if len(msg) <= 100 else str(msg[0:100])
     return JSONResponse(status_code=200, content={'status': 'error', 'msg': msg})
-
-@app.get("/", response_class=HTMLResponse)
-async def index():
-    return RedirectResponseWraper(url='/p/mkslist', status_code=status.HTTP_302_FOUND)
-
-@app.get("/test", response_class=HTMLResponse)
-async def test(request: Request):
-    return templates.TemplateResponse('layout.html', context={'request': request})

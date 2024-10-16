@@ -114,7 +114,7 @@
                             {% if item.light_style %}<span>{{item.light_style }},</span>{% endif %}
                             {% if item.pins %}<span>{{item.pins }}Pins,</span>{% endif %}
                             {% if item.type %}<span>{{item.type }},</span>{% endif %}
-                            {% if item.mark %}<span>{{item.mark }},</span>{% endif %}
+                            {% if item.mark %}<span>{{item.mark }}(标),</span>{% endif %}
                             {% if item.stor_loc_box %}
                             <span>{{ item.stor_loc_box }}{{ '' if item.stor_loc_row is none else '【' + item.stor_loc_row|string + '-' + item.stor_loc_col|string + '】'}}</span>
                             {% endif %}

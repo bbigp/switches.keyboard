@@ -1,26 +1,33 @@
+import os
+import shutil
 from datetime import datetime
 from typing import Optional, List
 
-from fastapi import Query, APIRouter
+from aiohttp import ClientSession
+from fastapi import Query, APIRouter, UploadFile
 from pydantic.main import BaseModel
-from sqlalchemy import select, insert, func, and_, or_, update, desc, text
+from sqlalchemy import select, text
 from starlette.responses import JSONResponse
 
+from app.config import app_config
 from app.core.database import SqlSession
-from app.core.internal import generate_random_string, paginate_info, get_month_start_end
+from app.core.internal import generate_random_string, paginate_info
 from app.core.snowflake_id import id_worker
 from app.crud import keyword_mapper, switches_mapper, icgb_mapper, board_mapper
 from app.crud.switches_mapper import Filter
-from app.model.assembler import convert_vo, convert_keywrod_sqlm
-from app.model.domain import sqlm_keyword, Keyword, sqlm_keyboard_switch, KeyboardSwitch, Switches, KeyCountBO, Icgb, \
+from app.model.assembler import convert_vo
+from app.model.domain import Keyword, Switches, Icgb, \
     Board
 from app.model.request import KeywordRequest, IcgbRequest, SqliteRequest
-from app.model.vo import CalendarVO
-from app.routers.v2page import get_keyword_counts
+from app.routers.page import get_keyword_counts
 
-v2_api_router = APIRouter(prefix='/api/v2')
+admin_api_router = APIRouter()
 
-@v2_api_router.get('/switches/copy')
+class BoardRequest(BaseModel):
+    matrix: List[List[str]]
+    ref: str=''
+
+@admin_api_router.get('/api/v2/switches/copy')
 async def copymks(id: int):
     with SqlSession() as session:
         switches = session.fetchone(switches_mapper.get_by_id(id), Switches)
@@ -36,7 +43,7 @@ async def copymks(id: int):
         session.execute(switches_mapper.save(switches))
         return {'status': 'ok'}
 
-@v2_api_router.delete('/switches')
+@admin_api_router.delete('/api/v2/switches')
 async def delete(id: int):
     with SqlSession() as session:
         row = session.execute(switches_mapper.delete_by_id(id))
@@ -45,9 +52,7 @@ async def delete(id: int):
         else:
             return {'status': 'error', 'msg': '删除失败'}
 
-
-
-@v2_api_router.get('/switches/filter')
+@admin_api_router.get('/api/v2/switches/filter')
 async def mkslist(
         draw: Optional[int]=None,
         start: Optional[int]=0,
@@ -69,7 +74,7 @@ async def mkslist(
         'page': paginate_info(total, start / length +1, length)
     }
 
-@v2_api_router.post('/switches', response_class=JSONResponse)
+@admin_api_router.post('/api/v2/switches', response_class=JSONResponse)
 async def save_mks(req: Switches):
     now = datetime.now().timestamp()
     with SqlSession() as session:
@@ -94,17 +99,7 @@ async def save_mks(req: Switches):
             save_or_ignore_keyword(req.mark, 'mark', session)
             return {'status': 'ok'}
 
-
-def save_or_ignore_keyword(word: str, type: str, session):
-    if word is None or word == '':
-        return
-    kw = session.fetchone(keyword_mapper.get_by_word(word, type), Keyword)
-    if kw is not None:
-        return
-    session.execute(keyword_mapper.save(word, type))
-
-
-@v2_api_router.get("/keyword", response_class=JSONResponse)
+@admin_api_router.get("/api/v2/keyword", response_class=JSONResponse)
 async def keyword(
         draw: Optional[int]=None,
         start: Optional[int]=None,
@@ -121,7 +116,7 @@ async def keyword(
         total = session.count(count)
         return {'draw': draw, 'page_list': list, 'recordsTotal': total, 'recordsFiltered': total}
 
-@v2_api_router.post('/keyword', response_class=JSONResponse)
+@admin_api_router.post('/api/v2/keyword', response_class=JSONResponse)
 async def save_keyword(req: KeywordRequest):
     with SqlSession() as session:
         if req.id is None or req.id == '':
@@ -135,7 +130,7 @@ async def save_keyword(req: KeywordRequest):
             session.execute(switches_mapper.update_keyword(req.type, req.word, req.id))
             return {'status': 'ok'}
 
-@v2_api_router.delete('/keyword', response_class=JSONResponse)
+@admin_api_router.delete('/api/v2/keyword', response_class=JSONResponse)
 async def delete_keyword(req: KeywordRequest):
     with SqlSession() as session:
         if session.count(switches_mapper.count_by_field(req.type, req.word)) > 0:
@@ -143,7 +138,7 @@ async def delete_keyword(req: KeywordRequest):
         session.execute(keyword_mapper.delete(req.word, req.type))
     return {'status': 'ok'}
 
-@v2_api_router.post('/icgb', response_class=JSONResponse)
+@admin_api_router.post('api/v2/icgb', response_class=JSONResponse)
 async def update_icgb(req: IcgbRequest):
     with SqlSession() as session:
         session.execute(
@@ -151,19 +146,19 @@ async def update_icgb(req: IcgbRequest):
         )
         return {'status': 'ok'}
 
-@v2_api_router.get('/icgb/unuseful')
+@admin_api_router.get('/api/v2/icgb/unuseful')
 async def update_unuseful(id: str):
     with SqlSession() as session:
         session.execute(icgb_mapper.update_unuseful(id))
     return {'status': 'ok'}
 
-@v2_api_router.get('/icgb', response_class=JSONResponse)
+@admin_api_router.get('/api/v2/icgb', response_class=JSONResponse)
 async def list_icgb(day: str=None, usefulness: int=1):
     with SqlSession() as session:
         list = session.fetchall(icgb_mapper.list_by_day(day=day, usefulness=usefulness), Icgb)
     return {'page_list': list}
 
-@v2_api_router.get('/gen-icgb', response_class=JSONResponse)
+@admin_api_router.get('/api/v2/gen-icgb', response_class=JSONResponse)
 async def gen_icgb(index: int):
     icgblist, day = icgb_mapper.gen_icgb(index)
     if len(icgblist) == 0:
@@ -173,32 +168,21 @@ async def gen_icgb(index: int):
         list = session.fetchall(icgb_mapper.list_by_day(day=day), Icgb)
     return {'status': 'ok', 'page_list': list}
 
-@v2_api_router.get('/done_icgblist', response_class=JSONResponse)
+@admin_api_router.get('/api/v2/done_icgblist', response_class=JSONResponse)
 async def done_icgblist(day: str):
     with SqlSession() as session:
         done_icgblist = session.fetchall(icgb_mapper.list_by_icgb_day(day), Icgb)
     return {'page_list': done_icgblist}
 
 
-@v2_api_router.post('/sqlite', response_class=JSONResponse)
+@admin_api_router.post('/api/v2/sqlite', response_class=JSONResponse)
 async def sqlite(req: SqliteRequest):
     with SqlSession() as session:
         session.execute(text(f"{req.sql}"))
         # session.execute(text(f"CREATE TABLE IF NOT EXISTS icgb (id INTEGER PRIMARY KEY, title TEXT NOT NULL, href TEXT, icgb_day TEXT, day TEXT, text TEXT, unique_title TEXT, url TEXT NOT NULL, create_time INTEGER, update_time INTEGER, deleted INTEGER DEFAULT 0, usefulness INTEGER DEFAULT 0, UNIQUE(unique_title, url));"))
     return {'status': 'ok'}
 
-@v2_api_router.get('/icgb/calendar_events', response_class=JSONResponse)
-async def calendar_events(start: str, end: str):
-    with SqlSession() as session:
-        list = session.fetchall(icgb_mapper.list_by_time(start, end), Icgb)
-        events = [CalendarVO(title=data.title, start=data.icgb_day, end=data.icgb_day, url=data.href) for data in list]
-    return {'page_list': events}
-
-class BoardRequest(BaseModel):
-    matrix: List[List[str]]
-    ref: str=''
-
-@v2_api_router.post('/keyboard', response_class=JSONResponse)
+@admin_api_router.post('/api/v2/keyboard', response_class=JSONResponse)
 async def save_keyboard(request: BoardRequest):
     with SqlSession() as session:
         non_empty_values = set()
@@ -222,8 +206,65 @@ async def save_keyboard(request: BoardRequest):
         board_mapper.batch_save(session=session, list=results)
     return {'status': 'ok'}
 
-@v2_api_router.get('/keyboard')
+@admin_api_router.get('/api/v2/keyboard')
 async def keyboard(s:Optional[str] = None):
     with SqlSession() as session:
         array_2d = board_mapper.fetch_2d_array_by_ref(session=session, ref=s)
     return {'page_list': array_2d}
+
+class DownloadRequest(BaseModel):
+    url: str
+@admin_api_router.post('/api/direct_use_pic', response_class=JSONResponse)
+async def direct_use(req: DownloadRequest):
+    if not req.url.startswith('/bfs/t/'):
+        return {'status': 'error', 'mgs': '非法链接'}
+    u = req.url.replace('/bfs/t/', '')
+    _from = app_config.temp_dir + u
+    temp_image_id = str(id_worker.next_id())
+    _to = app_config.file_dir + temp_image_id + '.jpg'
+    shutil.copy(_from, _to)
+    return {'status': 'ok', 'data': '/bfs/fs/' + temp_image_id + '.jpg' }
+
+@admin_api_router.post('/api/download_pic', response_class=JSONResponse)
+async def download_pic(req: DownloadRequest):
+    temp_image_id = str(id_worker.next_id())
+    # https://blog.csdn.net/e5pool/article/details/131014343  https://blog.csdn.net/wq10_12/article/details/133944658 使用代理
+    headers = {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1'}
+    async with ClientSession(headers=headers) as session:
+        async with session.get(req.url) as response:
+            with open(app_config.temp_dir + temp_image_id + '.jpg', 'wb') as f:
+                while True:
+                    chunk = await response.content.read(1024)
+                    if not chunk:
+                        break
+                    f.write(chunk)
+    return {'status': 'ok', 'data': '/bfs/t/' + temp_image_id + '.jpg' }
+
+@admin_api_router.post('/api/upload_pic')
+async def upload_pic(image: UploadFile):
+    image_id = str(id_worker.next_id())
+    with open(app_config.file_dir + image_id + '.jpg', 'wb') as f:
+        f.write(await image.read())
+    return {'status': 'ok', 'data': '/bfs/fs/' + image_id + '.jpg'}
+
+@admin_api_router.post('/api/upload_temp_pic')
+async def upload_pic(image: UploadFile):
+    image_id = str(id_worker.next_id())
+    with open(app_config.temp_dir + image_id + '.jpg', 'wb') as f:
+        f.write(await image.read())
+    return {'status': 'ok', 'data': '/bfs/t/' + image_id + '.jpg'}
+
+@admin_api_router.get('/api/page_temp_image')
+async def page_temp_image():
+    path = app_config.temp_dir
+    files = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
+    latest_files = sorted(files)[-20:]
+    return latest_files[::-1]
+
+def save_or_ignore_keyword(word: str, type: str, session):
+    if word is None or word == '':
+        return
+    kw = session.fetchone(keyword_mapper.get_by_word(word, type), Keyword)
+    if kw is not None:
+        return
+    session.execute(keyword_mapper.save(word, type))
