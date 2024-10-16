@@ -4,6 +4,7 @@ from datetime import datetime
 
 import markdown
 
+from app import config
 from app.model.domain import KeyboardSwitch, Keyword, Switches
 from app.model.request import KeywordRequest
 from app.model.vo import MksVO, KeywordVO, SwitchVO
@@ -13,6 +14,10 @@ def convert_vo(model: Switches) -> SwitchVO:
     if model.pic is None or model.pic == '':
         model.pic = '/bfs/fs/dummy_image.jpg'
     images, html_content = _markdown_html(model.desc)
+    if config.options.is_slave():
+        model.pic = 'http://118.31.9.234' + model.pic.replace('.jpg', '.webp')
+        for i in images:
+            i = 'http://118.31.9.234' + i.replace('.jpg', '.webp')
     return SwitchVO(id=model.id,
                     name=model.name,
                     studio=model.studio,
