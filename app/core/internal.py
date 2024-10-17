@@ -89,6 +89,7 @@ def paginate_info(total_items, current_page, items_per_page):
     }
 
 class ImageProcessor:
+    CONVERT_WEBP = 'image/convert,m_webp'
     # "image/convert,m_webp
     # option_str = "image/resize,m_fixed,h_100,w_100"
     # resize_options = ImageResizeOptions.from_string(option_str)
@@ -121,7 +122,7 @@ class ImageProcessor:
             else:
                 raise ValueError(f"Invalid parameter: {part}")
 
-    def process(self, from_image, to_image):
+    def process(self, from_image, to_image) -> (str, bool):
         if self.operation == "convert":
             return self._convert(from_image, to_image)
         elif self.operation == "resize":
@@ -135,14 +136,14 @@ class ImageProcessor:
         e = f"{to_image}webp/{Path(from_image).stem}.webp"
         os.makedirs(f"{to_image}webp/", exist_ok=True)
         if os.path.isfile(e):
-            return e
+            return e, True
         # with Image.open(from_image) as img:
         #     if img.mode == 'RGBA':
         #         img = img.convert('RGB')
         #     img.save(e, format="WEBP")
         # return e
         compress_to_target_size(from_image, e)
-        return e
+        return e, False
 
 
 def compress_to_target_size(input_path, output_path, max_size_kb=20, initial_quality=95, step_quality=5, min_quality=10):

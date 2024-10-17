@@ -9,9 +9,10 @@ from pydantic.main import BaseModel
 from sqlalchemy import select, text
 from starlette.responses import JSONResponse
 
+from app import config
 from app.config import app_config
 from app.core.database import SqlSession
-from app.core.internal import generate_random_string, paginate_info
+from app.core.internal import generate_random_string, paginate_info, ImageProcessor
 from app.core.snowflake_id import id_worker
 from app.crud import keyword_mapper, switches_mapper, icgb_mapper, board_mapper
 from app.crud.switches_mapper import Filter
@@ -256,10 +257,21 @@ async def upload_pic(image: UploadFile):
 
 @admin_api_router.get('/api/page_temp_image')
 async def page_temp_image():
-    path = app_config.temp_dir
+    path = config.options.temp_dir
     files = [f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))]
     latest_files = sorted(files)[-20:]
     return latest_files[::-1]
+
+@admin_api_router.get('/api/process_image')
+async def process_image():
+    path = config.options.file_dir
+    processor = ImageProcessor(ImageProcessor.CONVERT_WEBP)
+    count = 0
+    for file in os.listdir(path):
+        _, exists = processor.process(os.path.join(path, file), config.options.image_cache_path)
+        if not exists:
+            count += 1
+    return {'status': 'ok', 'data': count}
 
 def save_or_ignore_keyword(word: str, type: str, session):
     if word is None or word == '':

@@ -22,6 +22,6 @@ async def show_pic(path: str, source: str, process: str=Query(None, alias='x-pro
         return StreamingResponse(gen_white_image(), media_type='image/png', headers={'Etag': str(datetime.now().timestamp())})
     if not process:
         return FileResponse(full_path, media_type='image/jpg')
-    thumbnail_path = ImageProcessor(process).process(full_path, app_config.image_cache_path)
+    thumbnail_path, _ = ImageProcessor(process).process(full_path, app_config.image_cache_path)
     return FileResponse(thumbnail_path, media_type='image/webp')
 
