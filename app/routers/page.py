@@ -46,7 +46,7 @@ async def main(
         'request': request,
         'switches_wrapper': switches_wrapper,
         'switches_filter': switches_filter,
-        'hot_switches': hot_switches,
+        'hot_switches': [convert_vo(i).dict() for i in hot_switches],
     })
 
 @page_router.get('/collections/products/{id}')
