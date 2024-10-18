@@ -14,8 +14,8 @@ from app.config import app_config
 from app.core.database import SqlSession
 from app.core.internal import generate_random_string, paginate_info, ImageProcessor
 from app.core.snowflake_id import id_worker
-from app.crud import keyword_mapper, switches_mapper, icgb_mapper, board_mapper
-from app.crud.switches_mapper import Filter
+from app.service import keyword_mapper, switches_mapper, icgb_mapper, board_mapper
+from app.service.switches_mapper import Filter
 from app.model.assembler import convert_vo
 from app.model.domain import Keyword, Switches, Icgb, \
     Board

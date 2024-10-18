@@ -8,7 +8,7 @@ from starlette.templating import Jinja2Templates
 
 from app.core.database import SqlSession
 from app.core.internal import get_month_start_end
-from app.crud import switches_mapper, icgb_mapper, board_mapper, keyword_mapper
+from app.service import switches_mapper, icgb_mapper, board_mapper, keyword_mapper
 from app.model.assembler import convert_vo
 from app.model.domain import Icgb, Switches, KeyCountBO
 from app.model.vo import KeywordVO

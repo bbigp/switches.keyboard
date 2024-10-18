@@ -9,7 +9,7 @@ from starlette.requests import Request
 
 from app.core.database import SqlSession
 from app.core.internal import paginate_info
-from app.crud import switches_mapper, keyword_mapper
+from app.service import switches_mapper, keyword_mapper
 from app.model.assembler import convert_vo
 from app.model.domain import Switches
 from app.utils.jinja2_filters import format_with_tolerance, format_studio_with_manufacturer

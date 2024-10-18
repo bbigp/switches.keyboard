@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from sqlalchemy import text, insert, select, func, update
+from sqlalchemy.dialects import sqlite
 
 from app.model.domain import T_switches, Switches
 
@@ -13,7 +14,9 @@ def get_by_name(name: str):
     return text(f'select * from switches where name = :name and deleted = 0').bindparams(name=name)
 
 def save(s: Switches):
-    return insert(T_switches).values(s.dict())
+    stmt = insert(T_switches).values(s.dict())
+    compiled = stmt.compile(dialect=sqlite.dialect(), compile_kwargs={'literal_binds': True})
+    return str(compiled)
 
 def delete_by_id(id):
     return text(f'update switches set deleted = 1, update_time = {int(datetime.now().timestamp())} where id = {id}')
@@ -21,7 +24,7 @@ def delete_by_id(id):
 
 def update_keyword(field, new_value, old_value):
     # type studio manufacturer mark stor_loc_box
-    return text(f'update switches set {field} = :new_value where {field} = :old_value').bindparams(new_value=new_value, old_value=old_value)
+    return text(f"update switches set {field} = '{new_value}' where {field} = '{old_value}' ")
 
 def count():
     return text('select count(*) from switches where deleted = 0')
@@ -34,7 +37,7 @@ def count_by_field(field, value):
     return text(f'select count(*) from switches where {field} = :value and deleted = 0').bindparams(value=value)
 
 def update_by_id(s: Switches, id: int):
-    return update(T_switches).values(manufacturer=s.manufacturer, studio=s.studio, name=s.name,
+    stmt = update(T_switches).values(manufacturer=s.manufacturer, studio=s.studio, name=s.name,
                                      pic=s.pic, type=s.type, mark=s.mark, num=s.num, price=s.price, desc=s.desc,
                                      update_time=s.update_time, deleted=0,
                                      top_mat=s.top_mat, bottom_mat=s.bottom_mat, stem_mat=s.stem_mat, spring=s.spring,
@@ -46,6 +49,8 @@ def update_by_id(s: Switches, id: int):
                                      stor_loc_box=s.stor_loc_box, stor_loc_row=s.stor_loc_row,
                                      stor_loc_col=s.stor_loc_col)\
     .where(T_switches.c.id == id)
+    compiled = stmt.compile(dialect=sqlite.dialect(), compile_kwargs={'literal_binds': True})
+    return str(compiled)
 
 def list(session):
     return session.fetchall(text(f"select * from switches where deleted = 0"), Switches)

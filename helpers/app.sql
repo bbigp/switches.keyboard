@@ -21,3 +21,10 @@ CREATE TABLE IF NOT EXISTS board (
     ref TEXT NOT NULL,
     UNIQUE(ref, row, col)
 );
+
+CREATE TABLE integration (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,  -- 自增主键
+    sql_script TEXT NOT NULL DEFAULT '',   -- 存储 SQL 变更脚本
+    applied_at INTEGER,                    -- 时间戳，记录变更应用的时间
+    status INTEGER DEFAULT 0               -- 变更状态，默认值为 0
+);

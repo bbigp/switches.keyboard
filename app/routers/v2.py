@@ -6,7 +6,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
 from app.core.database import SqlSession
-from app.crud import icgb_mapper, board_mapper
+from app.service import icgb_mapper, board_mapper
 from app.model.domain import Icgb
 from app.model.vo import CalendarVO
 from app.utils.jinja2_template_render import env, determine_page_size, render_switches_wrapper, render_switches_filter

@@ -1,8 +1,9 @@
 from datetime import datetime
 
 from sqlalchemy import text, insert, select, desc, func, update
+from sqlalchemy.dialects import sqlite
 
-from app.crud.switches_mapper import Filter
+from app.service.switches_mapper import Filter
 from app.model.domain import T_keyword, Keyword
 from app.model.vo import KeywordVO
 
@@ -12,17 +13,19 @@ def get_by_word(word: str, type: str):
 
 def save(word: str, type: str, memo: str='', rank: int=0):
     now = int(datetime.now().timestamp())
-    return insert(T_keyword).values(Keyword(word=word, type=type, rank=rank, deleted=0, memo=memo,
+    stmt = insert(T_keyword).values(Keyword(word=word, type=type, rank=rank, deleted=0, memo=memo,
                                         create_time=now, update_time=now).dict())
+    compiled = stmt.compile(dialect=sqlite.dialect(), compile_kwargs={'literal_binds': True})
+    return str(compiled)
 
 def update_by_word_and_type(keyword, key, type):
     now = int(datetime.now().timestamp())
-    return update(T_keyword)\
-        .values(word=keyword.word, rank=keyword.rank, update_time=now, deleted=0, memo=keyword.memo)\
-        .where(text('word = :key and type = :type').bindparams(key=key, type=type))
+    return text(f"update keyword set word = '{keyword.word}', rank = {keyword.rank}, update_time = {now}, "
+                f"deleted = 0, memo = '{keyword.memo}' "
+                f"where word = '{key}' and type = '{type}' ")
 
 def delete(word, type):
-    return text('update keyword set deleted = 1 where word = :word and type = :type').bindparams(word=word, type=type)
+    return text(f"update keyword set deleted = 1 where word = '{word}' and type = '{type}' ")
 
 def count_by_type(type: str):
     return text('select count(*) from keyword where type = :type').bindparams(type=type)

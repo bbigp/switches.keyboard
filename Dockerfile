@@ -2,7 +2,7 @@ FROM python:3.8-alpine
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk add --no-cache gcc g++ linux-headers
-RUN apk add libwebp-dev imagemagick-dev
+RUN apk add libwebp-dev libjpeg-turbo-dev libheif-dev libde265-dev imagemagick-dev
 RUN mkdir -p /usr/main/data/images/ && mkdir -p /usr/main/data/temp/ && mkdir -p /usr/main/data/db/
 WORKDIR /usr/main/
 

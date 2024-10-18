@@ -104,6 +104,13 @@ class Board(BaseModel):
     col: int=None
     ref: str=''
 
+class Integration(BaseModel):
+    id: int=None
+    sql_script: str=''
+    applied_at: int=None
+    status: int=0
+
+
 
 T_switches = Table('switches',
                  metadata,

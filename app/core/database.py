@@ -1,3 +1,5 @@
+import datetime
+
 from loguru import logger
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
@@ -31,10 +33,13 @@ class SqlSession(object):
         else:
             pass
 
-    def execute(self, sql, params=None):
+    def execute(self, sql):
         logger.debug('==>  Preparing: {}', sql)
-        r = self.conn.execute(sql, params=params)
+        r = self.conn.execute(sql)
         logger.info('<====>  Total: {}', r.rowcount)
+        s = self.conn.execute(f"insert into integration (sql_script, applied_at, status) values (?, ?, ?)",
+                          (str(sql), datetime.datetime.now().timestamp(), 0))
+        logger.info('<====>  Inserted integration: {}', s.rowcount)
         return r.rowcount
 
     def fetchall(self, sql, clz, params=None):
