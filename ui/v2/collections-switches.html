@@ -208,6 +208,13 @@
     $('#switchesFilter').on('click', '#typeFilter a', function (event){
         event.preventDefault();
         var $this = $(this).parent()
+        var clickValue = $this.data('value')
+
+        $('#typeFilter li').each(function() {
+            if ($(this).data('value') !== clickValue) {
+                $(this).removeClass('manufacturer-text')
+            }
+        });
         if($this.find('span').text().includes('✓')){
             $this.removeClass('manufacturer-text')
         }else {

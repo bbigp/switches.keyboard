@@ -81,7 +81,13 @@ $(window).on('load', function () {
                     return '<img style="width: 96px;height: 74px;display: block;margin: auto auto;" class="main-pic" src="' + row.pic +'?x-process=image/convert,m_webp"/>'
                 }
             },
-            {data: "name"},
+            {
+                data: "name",
+                render: function (data, type, row, meta){
+                    var url = '/collections/products/' + row.id
+                    return '<a href="' + url + '" target="_blank">' + data + '</a>'
+                }
+            },
             {
                 data: "manufacturer",
                 render: function (data, type, row, meta) {

@@ -33,7 +33,8 @@ def render_switches_wrapper(session, page: Optional[int]=1,
         type: str=Query(default=None, alias='t'),
         stor_box: Optional[str]=None,
         manufacturer: Optional[str]=None,
-        is_available: Optional[int]=1):
+        is_available: Optional[int]=1,
+                            studio: Optional[str]=None):
     if is_available == 1:
         available = True
     elif is_available == 2:
@@ -41,7 +42,7 @@ def render_switches_wrapper(session, page: Optional[int]=1,
     else:
         available = None
     stmt_list, stmt_count = switches_mapper.filter((page - 1) * size, size, search, stor_box, manufacturer,
-                                                       available, type=type)
+                                                       available, type=type, studio=studio)
     list = session.fetchall(stmt_list, Switches)
     total = session.count(stmt_count)
 

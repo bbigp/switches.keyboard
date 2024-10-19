@@ -97,7 +97,7 @@
                             <div class="product_zoom_thumb">
                                 <img class="zoom-img-contain" data-image="{{image}}?x-process=image/convert,m_webp"
                                      src="{{image}}?x-process=image/convert,m_webp" alt="">
-                            </div>
+             x               </div>
                             {% endfor %}
                         </div>
                     </div>
@@ -106,7 +106,7 @@
             <div class="col-lg-6 col-md-6">
                 <div class="product_d_right">
                     <form action="#">
-                        <h1>{{switch.name}} {{ '' if switch.studio == switch.manufacturer else ' x ' + switch.studio }}</h1>
+                        <h1>{{switch.name}}</h1>
                         <div class="product_ratting_review d-flex align-items-center">
                             <div class=" product_ratting">
                                 {% if '静音' in switch.type %}
@@ -130,6 +130,11 @@
                                     <li>{{switch.type}}</li>
                                     <li>{{switch.mark}}(标)</li>
                                 </ul>
+                            </div>
+                        </div>
+                        <div class="product_ratting_review d-flex align-items-center">
+                            <div class=" product_ratting">
+                                <a href="/?studio={{ switch.studio }}" target="_blank">{{ switch.studio }}</a>
                             </div>
                         </div>
                         <div class="price_box">

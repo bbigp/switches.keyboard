@@ -28,3 +28,7 @@ CREATE TABLE integration (
     applied_at INTEGER,                    -- 时间戳，记录变更应用的时间
     status INTEGER DEFAULT 0               -- 变更状态，默认值为 0
 );
+
+update switches set type = '提前段落轴' where type = '提前大段落轴'
+
+update switches set manufacturer = '' where manufacturer is null

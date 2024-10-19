@@ -60,7 +60,9 @@ def list_by_names(session, names):
     return session.fetchall(text(f"select * from switches where deleted = 0 and name in ({filter_names})"), Switches)
 
 def fetch_hot(session, size:int=2):
-    return session.fetchall(text(f"select * from switches where deleted = 0 ORDER BY RANDOM() limit {size}"), Switches)
+    return session.fetchall(text(f"select * from switches where deleted = 0 and "
+                                 f"stor_loc_box != '' and stor_loc_box is not null "
+                                 f"ORDER BY RANDOM() limit {size}"), Switches)
 
 def filter(start: Optional[int]=0,
            length: Optional[int]=10,
@@ -68,7 +70,8 @@ def filter(start: Optional[int]=0,
            stor_box: Optional[str]=None,
            manufacturer: Optional[str]=None,
            is_available: Optional[bool]=None,
-           type: Optional[str]=None):
+           type: Optional[str]=None,
+           studio: Optional[str]=None):
     base = select('*') \
         .select_from(text('switches')) \
         .where(text('deleted = 0')) \
@@ -81,12 +84,16 @@ def filter(start: Optional[int]=0,
         .or_build('manufacturer', manufacturer) \
         .search_build(['name', 'studio', 'manufacturer', 'mark'], search)
 
+    if studio is not None and studio != '':
+        filter.append_where(text(f"studio = '{studio}' "))
+
     if is_available is None:
         pass
     elif is_available is True:
         filter.append_where(text("stor_loc_box != '' and stor_loc_box is not null"))
     else:
         filter.append_where(text("(stor_loc_box = '' or stor_loc_box is null)"))
+
     if stor_box is not None and stor_box != '':
         filter.append_where(text(f"stor_loc_box = '{stor_box}'"))
     if type is not None and type != '':
