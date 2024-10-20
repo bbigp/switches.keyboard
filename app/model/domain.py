@@ -110,6 +110,10 @@ class Integration(BaseModel):
     applied_at: int=None
     status: int=0
 
+class Material(BaseModel):
+    id: str
+    desc: str
+
 
 
 T_switches = Table('switches',

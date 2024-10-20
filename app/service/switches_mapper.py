@@ -71,7 +71,11 @@ def filter(start: Optional[int]=0,
            manufacturer: Optional[str]=None,
            is_available: Optional[bool]=None,
            type: Optional[str]=None,
-           studio: Optional[str]=None):
+           studio: Optional[str]=None,
+           stem: Optional[str]=None,
+           top_mat: Optional[str] = None,
+           bottom_mat: Optional[str] = None
+           ):
     base = select('*') \
         .select_from(text('switches')) \
         .where(text('deleted = 0')) \
@@ -86,6 +90,24 @@ def filter(start: Optional[int]=0,
 
     if studio is not None and studio != '':
         filter.append_where(text(f"studio = '{studio}' "))
+
+    if stem is not None and stem != '':
+        _list = []
+        for s in stem.split(','):
+            _list.extend(s.split('.'))
+        filter.or_build('stem_mat', ','.join(_list), like=True)
+
+    if top_mat is not None and top_mat != '':
+        _list = []
+        for s in top_mat.split(','):
+            _list.extend(s.split('.'))
+        filter.or_build('top_mat', ','.join(_list), like=True)
+
+    if bottom_mat is not None and bottom_mat != '':
+        _list = []
+        for s in bottom_mat.split(','):
+            _list.extend(s.split('.'))
+        filter.or_build('bottom_mat', ','.join(_list), like=True)
 
     if is_available is None:
         pass
@@ -131,19 +153,29 @@ class Filter():
         sql_text = text(f" {delimiter} ".join(str_list)).bindparams(**sql_params)
         return self.append_where(sql_text)
 
-    def or_build(self, field, cond_str):
+    def or_build(self, field: str, cond_str: str, like: bool=False):
+        """
+        build or语句
+        Args:
+            field: 字段名字
+            cond_str: 进行or的条件，用,分割
+            like: 是否进行like匹配
+
+        Returns:
+            filter
+        """
         if cond_str is None or cond_str == '':
             return self
         cond_list = cond_str.split(',')
         condition_list = []
         params = {}
         for i, _c in enumerate(cond_list):
-            param_name = f'bsearch_{i}'
-            condition_list.append(f"{field} = :{param_name}")
-            params[param_name] = _c.strip()
+            if like:
+                condition_list.append(f"{field} like '%{_c}%'")
+            else:
+                condition_list.append(f"{field} = '{_c}' ")
         or_condition = ' OR '.join(condition_list)
-        cond = text(f'({or_condition})').bindparams(**params)
-        return self.append_where(cond)
+        return self.append_where(text(f'({or_condition})'))
 
     def append_where(self, condtion):
         if self.base is not None:

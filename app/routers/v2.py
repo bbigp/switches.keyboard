@@ -38,10 +38,14 @@ async def filter_switches(request: Request, page: Optional[int]=1,
                           stor_box: Optional[str]=None,
                           manufacturer: Optional[str]=None,
                           is_available: Optional[int]=1,
-                          studio: Optional[str]=None):
+                          studio: Optional[str]=None,
+                          stem: Optional[str]=None,
+                          top_mat: Optional[str]=None,
+                          bottom_mat: Optional[str]=None):
     with SqlSession() as session:
         switches_wrapper = render_switches_wrapper(session, page, size, search, type, stor_box,
-                                                   manufacturer, is_available, studio)
+                                                   manufacturer, is_available, studio, stem=stem,
+                                                   top_mat=top_mat, bottom_mat=bottom_mat)
         switches_filter = render_switches_filter(session, request)
         compressed_content = gzip.compress((switches_wrapper + '<!--SPLIT-->' + switches_filter).encode('utf-8'))
     return Response(content=compressed_content, headers={"Content-Encoding": "gzip"}, media_type="text/html")

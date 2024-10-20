@@ -25,7 +25,6 @@
 
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/magnific-popup.js/1.1.0/magnific-popup.min.css">
-    <script src="https://unpkg.com/turbolinks"></script>
     <style>
         .preloader {
             position: fixed;
@@ -251,9 +250,9 @@
             });
         }
         initFilter();  // 调用 initFilter 函数
-    }).on('click', '.factoryItem', function (){
+    }).on('click', '.factoryItem', function (event){
         var dataField = $(this).data('field')
-        if (dataField === 'manufacturer') {
+        if (dataField === 'manufacturer' || dataField === 'stem_mat' || dataField === 'top_mat' || dataField === 'bottom_mat') {
             if (!$(event.target).is('input')) {
                 var checkbox = $(this).find('input.switchFactoryCheck');
                 checkbox.prop('checked', !checkbox.prop('checked'));
@@ -287,6 +286,9 @@
         let qs = ['page='+page]
 
         var manufacturerList = []
+        var stems = []
+        var top_mat = []
+        var bottom_mat = []
         let is_available = 1
         $('li.factoryItem input:checked').each(function() {
             var parentLi = $(this).closest('li.factoryItem'); // 获取父级 li.factoryItem
@@ -299,11 +301,29 @@
             if(dataField === 'is_available' && dataValue !== '1') {
                 is_available = dataValue
             }
+            if(dataField === 'stem_mat'){
+                stems.push(dataValue)
+            }
+            if (dataField === 'top_mat'){
+                top_mat.push(dataValue)
+            }
+            if (dataField === 'bottom_mat'){
+                bottom_mat.push(dataValue)
+            }
         });
 
 
         if (manufacturerList.length > 0) {
             qs.push('manufacturer=' + manufacturerList.join(','))
+        }
+        if (stems.length > 0){
+            qs.push('stem=' + stems.join(','))
+        }
+        if (top_mat.length > 0) {
+            qs.push('top_mat=' + top_mat.join(','))
+        }
+        if (bottom_mat.length > 0) {
+            qs.push('bottom_mat=' + bottom_mat.join(','))
         }
         if ($('li.availableItem input.switchFactoryCheck:checked').length <= 0){
             is_available = 0

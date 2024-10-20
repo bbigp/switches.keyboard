@@ -11,7 +11,7 @@ from app.core.database import SqlSession
 from app.core.internal import paginate_info
 from app.service import switches_mapper, keyword_mapper
 from app.model.assembler import convert_vo
-from app.model.domain import Switches
+from app.model.domain import Switches, Material
 from app.utils.jinja2_filters import format_with_tolerance, format_studio_with_manufacturer
 
 
@@ -34,7 +34,10 @@ def render_switches_wrapper(session, page: Optional[int]=1,
         stor_box: Optional[str]=None,
         manufacturer: Optional[str]=None,
         is_available: Optional[int]=1,
-                            studio: Optional[str]=None):
+                            studio: Optional[str]=None, stem: Optional[str]=None,
+                            top_mat: Optional[str] = None,
+                            bottom_mat: Optional[str] = None
+                            ):
     if is_available == 1:
         available = True
     elif is_available == 2:
@@ -42,18 +45,45 @@ def render_switches_wrapper(session, page: Optional[int]=1,
     else:
         available = None
     stmt_list, stmt_count = switches_mapper.filter((page - 1) * size, size, search, stor_box, manufacturer,
-                                                       available, type=type, studio=studio)
+                                                       available, type=type, studio=studio, stem=stem,
+                                                   top_mat=top_mat, bottom_mat=bottom_mat)
     list = session.fetchall(stmt_list, Switches)
     total = session.count(stmt_count)
 
+    active_list_mode = False
+    if (stem is not None and stem !='') or (top_mat is not None and top_mat != '') or (bottom_mat is not None and bottom_mat != ''):
+        active_list_mode = True
+
     template = env.get_template('new/switches_wrapper.html')
     rendered_html = template.render(list=[convert_vo(i).dict() for i in list],
-        page=paginate_info(total, page, size), search=search)
+        page=paginate_info(total, page, size), search=search, active_list_mode=active_list_mode)
     return rendered_html
     # compressed_content = gzip.compress(rendered_html.encode('utf-8'))
     # return compressed_content
 
 def render_switches_filter(session, request: Request):
     types, manufacturers, _, studios = keyword_mapper.fetch_text(session)
+    stem_mats, top_mats, bottom_mats = init_material()
     template = env.get_template('new/switches_filter.html')
-    return template.render(request=request, manufacturers=manufacturers, switches_types=types)
+    return template.render(request=request, manufacturers=manufacturers, switches_types=types, stem_tops=stem_mats,
+                           top_mats=top_mats, bottom_mats=bottom_mats)
+
+
+pok = Material(id='POK', desc='POK')
+pom = Material(id='POM', desc='POM')
+upe = Material(id='UPE', desc='UPE')
+ly = Material(id='LY', desc='LY')
+pbt = Material(id='PBT', desc='PBT')
+pa66 = Material(id='PA66', desc='PA66')
+pc = Material(id='PC', desc='PC')
+pa_all = Material(id='尼龙.PA', desc='尼龙')
+def init_material():
+    stem_mats = [pom, upe, pok, ly, Material(id='Y3', desc='Y3(旭华)'),
+                 Material(id='P3', desc='P3(JWK)'),
+                 Material(id='HPE', desc='HPE(TEC)'), Material(id='MPE', desc='MPE'),
+                 Material(id='U2.U3.U4', desc='U2-U4(JJK)'), Material(id='L3.L4', desc='L3-L4(JJK)'),
+                 Material(id='T2.T3.T4.T5', desc='T2-T5(HMX)')]
+
+    top_mats = [pom, pc, upe, pa_all]
+    bottom_mats = [pom, pc, upe, pa_all, pok, pbt, pa66]
+    return stem_mats, top_mats, bottom_mats

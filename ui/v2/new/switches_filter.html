@@ -1,5 +1,8 @@
 {% set global_qs_search = '' if request.query_params.get('s') is none else request.query_params.get('s') %}
 {% set global_qs_manufacturer = [] if request.query_params.get('manufacturer') is none else request.query_params.get('manufacturer').split(',') %}
+{% set global_qs_stem = [] if request.query_params.get('stem') is none else request.query_params.get('stem').split(',') %}
+{% set global_qs_top_mat = [] if request.query_params.get('top_mat') is none else request.query_params.get('top_mat').split(',') %}
+{% set global_qs_bottom_mat = [] if request.query_params.get('bottom_mat') is none else request.query_params.get('bottom_mat').split(',') %}
 {% set global_qs_is_available = 1 if request.query_params.get('is_available') is none else request.query_params.get('is_available')|int %}
 {% set global_filter_count = 1 + (1 if global_qs_search else 0) + (global_qs_manufacturer|length) %}
 {% set global_qs_type = '' if request.query_params.get('t') is none else request.query_params.get('t') %}
@@ -22,6 +25,39 @@
         {% for q in global_qs_manufacturer %}
             <div class="filterTag" data-value="{{ q }}">
                 {{ q }}
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"
+                     class="feather feather-x" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+        {% endfor %}
+        {% for q in global_qs_stem %}
+            <div class="filterTag" data-value="{{ q }}">
+                轴心:{{ q }}
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"
+                     class="feather feather-x" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+        {% endfor %}
+        {% for q in global_qs_top_mat %}
+            <div class="filterTag" data-value="{{ q }}">
+                上盖:{{ q }}
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"
+                     class="feather feather-x" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+        {% endfor %}
+        {% for q in global_qs_bottom_mat %}
+            <div class="filterTag" data-value="{{ q }}">
+                底壳:{{ q }}
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"
                      class="feather feather-x" aria-hidden="true">
@@ -104,6 +140,40 @@
                     <li class="col-6 {{ 'manufacturer-text' if global_qs_type == type.word }}"
                         data-value="{{ type.word }}"><a href="#"> {{ type.word }}
                         <span>{{ '✓' if global_qs_type == type.word }}</span></a></li>
+                {% endfor %}
+            </ul>
+        </li>
+        <li class="widget_sub_categories"><a href="javascript:void(0)" data-toggle="collapse">轴心</a>
+            <ul class="widget_dropdown_categories collapse show row" style="flex-direction: row;">
+                {#                                                        <li><a href="#"> New products <span>104</span></a></li>#}
+                {% for item in stem_tops %}
+                    <li class="col-6 factory-item factoryItem" data-field="stem_mat" data-value="{{ item.id }}">
+                        <input class="switchFactoryCheck big-large-checkbox"
+                               type="checkbox" {{ 'checked' if item.id in global_qs_stem }}/>
+                        <span class="switchFactory big-factory {{ 'manufacturer-text' if item.id in global_qs_stem }}">{{ item.desc }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </li>
+        <li class="widget_sub_categories"><a href="javascript:void(0)" data-toggle="collapse">上盖</a>
+            <ul class="widget_dropdown_categories collapse show row" style="flex-direction: row;">
+                {% for item in top_mats %}
+                    <li class="col-6 factory-item factoryItem" data-field="top_mat" data-value="{{ item.id }}">
+                        <input class="switchFactoryCheck big-large-checkbox"
+                               type="checkbox" {{ 'checked' if item.id in global_qs_top_mat }}/>
+                        <span class="switchFactory big-factory {{ 'manufacturer-text' if item.id in global_qs_top_mat }}">{{ item.desc }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </li>
+        <li class="widget_sub_categories"><a href="javascript:void(0)" data-toggle="collapse">底壳</a>
+            <ul class="widget_dropdown_categories collapse show row" style="flex-direction: row;">
+                {% for item in bottom_mats %}
+                    <li class="col-6 factory-item factoryItem" data-field="bottom_mat" data-value="{{ item.id }}">
+                        <input class="switchFactoryCheck big-large-checkbox"
+                               type="checkbox" {{ 'checked' if item.id in global_qs_bottom_mat }}/>
+                        <span class="switchFactory big-factory {{ 'manufacturer-text' if item.id in global_qs_bottom_mat }}">{{ item.desc }}</span>
+                    </li>
                 {% endfor %}
             </ul>
         </li>

@@ -37,11 +37,15 @@ async def main(
         stor_box: Optional[str]=None,
         manufacturer: Optional[str]=None,
         is_available: Optional[int]=1,
-        studio: Optional[str]=None
+        studio: Optional[str]=None,
+        stem: Optional[str]=None,
+        top_mat: Optional[str]=None,
+        bottom_mat: Optional[str]=None
 ):
     with SqlSession() as session:
         switches_wrapper = render_switches_wrapper(session, page, size, search, type, stor_box, manufacturer,
-                                                   is_available, studio=studio)
+                                                   is_available, studio=studio, stem=stem,
+                                                   top_mat=top_mat, bottom_mat=bottom_mat)
         switches_filter = render_switches_filter(session, request)
         hot_switches = switches_mapper.fetch_hot(session, size=3)
     return templates.TemplateResponse('collections-switches.html', context={

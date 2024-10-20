@@ -33,15 +33,15 @@
         </div>
         <div class="shop_toolbar_btn">
             <ul class="d-flex align-items-center">
-                <li><a href="#" class="active btn-grid-3" data-role="grid_3"><i class="ion-grid"></i></a></li>
-                <li><a href="#" class="btn-list" data-role="grid_list"><i class="ion-navicon"></i></a></li>
+                <li><a href="#" class="{{ 'active' if not active_list_mode }} btn-grid-3" data-role="grid_3"><i class="ion-grid"></i></a></li>
+                <li><a href="#" class="{{ 'active' if active_list_mode }} btn-list" data-role="grid_list"><i class="ion-navicon"></i></a></li>
             </ul>
         </div>
     </div>
 </div>
-<div class="row shop_wrapper">
+<div class="row shop_wrapper {{ 'grid_3' if not active_list_mode else 'grid_list' }}">
     {% for item in list %}
-    <div class="col-lg-4 col-md-4 col-sm-6 col-6 ">
+    <div class="{{ 'col-lg-4 col-md-4 col-sm-6 col-6' if not active_list_mode else 'col-6 col-12' }}">
         <div class="single_product">
             <div class="product_thumb">
                 <a href="/collections/products/{{ item.id }}" target="_blank">
@@ -118,6 +118,21 @@
                             {% if item.stor_loc_box %}
                             <span>{{ item.stor_loc_box }}{{ '' if item.stor_loc_row is none else '【' + item.stor_loc_row|string + '-' + item.stor_loc_col|string + '】'}}</span>
                             {% endif %}
+                        </p>
+                        <p>
+                            <span>{{ '轴心: -' if not item.stem_mat else '轴心: ' + item.stem_mat }}</span>
+                            <span>{{ ' | 上盖: -' if not item.top_mat else ' | 上盖: ' + item.top_mat }}</span>
+                            <span>{{ ' | 底壳: -' if not item.bottom_mat else ' | 底壳: ' + item.bottom_mat }}</span>
+                        </p>
+                        <p>
+                            <span>压力: </span>
+                            <span>{{ '-' if not item.actuation_force else item.actuation_force | string + 'g' }}</span>
+                            <span> --> </span>
+                            <span>{{ '-' if not item.bottom_force else item.bottom_force |string  + 'g' }}</span>
+                            <span> | 行程: </span>
+                            <span>{{ '-' if not item.pre_travel else item.pre_travel |string  + 'mm' }}</span>
+                            <span> --> </span>
+                            <span>{{ '-' if not item.total_travel else item.total_travel |string  + 'mm' }}</span>
                         </p>
                     </div>
                     <!--                                <div class="add_to_cart">-->
