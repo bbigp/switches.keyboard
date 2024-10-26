@@ -126,13 +126,13 @@
                         </p>
                         <p>
                             <span>压力: </span>
-                            <span>{{ '-' if not item.actuation_force else item.actuation_force | string + 'g' }}</span>
+                            <span>{{ '*' if not item.actuation_force else item.actuation_force | string + 'g' }}</span>
                             <span> --> </span>
-                            <span>{{ '-' if not item.bottom_force else item.bottom_force |string  + 'g' }}</span>
+                            <span>{{ '*' if not item.bottom_force else item.bottom_force |string  + 'g' }}</span>
                             <span> | 行程: </span>
-                            <span>{{ '-' if not item.pre_travel else item.pre_travel |string  + 'mm' }}</span>
+                            <span>{{ '*' if not item.pre_travel else item.pre_travel |string  + 'mm' }}</span>
                             <span> --> </span>
-                            <span>{{ '-' if not item.total_travel else item.total_travel |string  + 'mm' }}</span>
+                            <span>{{ '*' if not item.total_travel else item.total_travel |string  + 'mm' }}</span>
                         </p>
                     </div>
                     <!--                                <div class="add_to_cart">-->
