@@ -13,7 +13,7 @@
           prevArrow:'<button class="prev_arrow"><i class="icon-arrow-left icons"></i></button>',
           nextArrow:'<button class="next_arrow"><i class="icon-arrow-right icons"></i></button>',
         });
-    };
+    }
 
 
       $(window).on('load', function () {

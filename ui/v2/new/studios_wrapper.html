@@ -1,0 +1,103 @@
+{% for studio in studios %}
+    {% if studio.switches is not none and (studio.switches | length > 0) %}
+        <section class="product_section mb-80">
+            <div class="container">
+                <div class="product_header d-flex justify-content-between  mb-60">
+                    <div class="section_title">
+                        <h2>{{ studio.word }}</h2>
+                    </div>
+                    {% if studio.switches | length > 4 %}
+                    <div class="product_tab_btn d-flex">
+                        {#                    <ul class="nav" role="tablist">#}
+                        {#                        <li>#}
+                        {#                            <a class="active" data-toggle="tab" href="#all2" role="tab" aria-controls="all2"#}
+                        {#                                aria-selected="true">#}
+                        {#                                All#}
+                        {#                            </a>#}
+                        {#                        </li>#}
+                        {#                    </ul>#}
+                        <div class="all_product">
+                            <a href="/collections/switches?studio={{ studio.word }}" target="_blank">All</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="product_container row">
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="all2" role="tabpanel">
+                            <div class="product_slick">
+                                {% for item in studio.switches %}
+                                    <article class="col single_product">
+                                        <figure>
+                                            <div class="product_thumb">
+                                                <a href="/collections/products/{{ item.id }}" target="_blank">
+                                                    <img style="width: 100%; height: auto; aspect-ratio: 13/10; object-fit: cover;"
+                                                         class="primary_img"
+                                                         src="{{ item.pic }}?x-process=image/convert,m_webp"
+                                                         alt="{{ item.name }}">
+                                                </a>
+                                                <div class="product_action">
+                                                    {#                                            <ul>#}
+                                                    {#                                                <li class="wishlist"><a href="#" data-tippy="Wishlist"#}
+                                                    {#                                                        data-tippy-inertia="true" data-tippy-delay="50"#}
+                                                    {#                                                        data-tippy-arrow="true" data-tippy-placement="left"><i#}
+                                                    {#                                                            class="icon-heart icons"></i></a></li>#}
+                                                    {##}
+                                                    {#                                                <li class="quick_view"><a data-toggle="modal" data-target="#modal_box"#}
+                                                    {#                                                        data-tippy="Quick View" href="#" data-tippy-inertia="true"#}
+                                                    {#                                                        data-tippy-delay="50" data-tippy-arrow="true"#}
+                                                    {#                                                        data-tippy-placement="left"><i#}
+                                                    {#                                                            class="icon-size-fullscreen icons"></i></a></li>#}
+                                                    {#                                                <li class="compare"><a data-tippy="Compare" href="#"#}
+                                                    {#                                                        data-tippy-inertia="true" data-tippy-delay="50"#}
+                                                    {#                                                        data-tippy-arrow="true" data-tippy-placement="left"><i#}
+                                                    {#                                                            class="icon-refresh icons"></i></a></li>#}
+                                                    {#                                            </ul>#}
+                                                </div>
+                                                <div class="product_label">
+                                                    {% if item.type == '青轴' %}
+                                                        <span style="background: #42a5f5;">青</span>
+                                                    {% elif item.type == '茶轴' %}
+                                                        <span style="background: #8F4F04;">茶</span>
+                                                    {% elif item.type == '静音线性轴' %}
+                                                        <span style="background: #f38234;">静L</span>
+                                                    {% elif item.type == '静音段落轴' %}
+                                                        <span style="background: #f38234;">静T</span>
+                                                    {% elif '段落轴' in item.type %}
+                                                        <span style="background: #3c763d;">T</span>
+                                                    {% elif '线性轴' in item.type %}
+                                                        <span style="background: #364291;">L</span>
+                                                    {% else %}
+                                                        <span style="background: #ca0000;">{{ item.type }}</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <figcaption class="product_content text-center">
+                                                <div class="product_ratting">
+                                                    {#                                            <ul class="d-flex justify-content-center">#}
+                                                    {#                                                <li><a href="#"><i class="ion-android-star"></i></a></li>#}
+                                                    {#                                                <li><a href="#"><i class="ion-android-star"></i></a></li>#}
+                                                    {#                                                <li><a href="#"><i class="ion-android-star"></i></a></li>#}
+                                                    {#                                                <li><a href="#"><i class="ion-android-star"></i></a></li>#}
+                                                    {#                                                <li><a href="#"><i class="ion-android-star"></i></a></li>#}
+                                                    {#                                                <li><span>(2)</span></li>#}
+                                                    {#                                            </ul>#}
+                                                </div>
+                                                <h4 class="product_name"><a
+                                                        href="/collections/products/{{ item.id }}"
+                                                        target="_blank">{{ item.name }}</a></h4>
+                                                <div class="price_box">
+                                                    <span>{{ item.manufacturer if item.manufacturer }}</span>
+                                                </div>
+                                            </figcaption>
+                                        </figure>
+                                    </article>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endif %}
+{% endfor %}

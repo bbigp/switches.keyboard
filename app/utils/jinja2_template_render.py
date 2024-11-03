@@ -68,6 +68,22 @@ def render_switches_filter(session, request: Request):
     return template.render(request=request, manufacturers=manufacturers, switches_types=types, stem_tops=stem_mats,
                            top_mats=top_mats, bottom_mats=bottom_mats)
 
+def render_studios(session: SqlSession, request: Request):
+    search = request.query_params.get('search')
+    studios = keyword_mapper.fetch_random_studios(session, search, 5)
+    switches = switches_mapper.fetch_switches_by_studios(session, [item.word for item in studios])
+
+    map = {}
+    for item in switches:
+        map.setdefault(item.studio, []).append(item)
+
+    for item in studios:
+        item.switches = map.get(item.word)
+
+    template = env.get_template('new/studios_wrapper.html')
+    return template.render(request=request, studios=[studio.dict() for studio in studios])
+
+
 
 pok = Material(id='POK', desc='POK')
 pom = Material(id='POM', desc='POM')

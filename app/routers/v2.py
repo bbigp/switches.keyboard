@@ -9,7 +9,8 @@ from app.core.database import SqlSession
 from app.service import icgb_mapper, board_mapper
 from app.model.domain import Icgb
 from app.model.vo import CalendarVO
-from app.utils.jinja2_template_render import env, determine_page_size, render_switches_wrapper, render_switches_filter
+from app.utils.jinja2_template_render import env, determine_page_size, render_switches_wrapper, render_switches_filter, \
+    render_studios
 
 api_router = APIRouter()
 
@@ -30,7 +31,7 @@ async def keyboard(request: Request, s:Optional[str] = None):
     compressed_content = gzip.compress(rendered_html.encode('utf-8'))
     return Response(content=compressed_content, headers={"Content-Encoding": "gzip"}, media_type="text/html")
 
-@api_router.get("/apih/filter/switches")
+@api_router.get('/apih/filter/switches')
 async def filter_switches(request: Request, page: Optional[int]=1,
                           size: int=Depends(determine_page_size),
                           search: str=Query(default=None, alias='s'),
@@ -51,4 +52,12 @@ async def filter_switches(request: Request, page: Optional[int]=1,
     return Response(content=compressed_content, headers={"Content-Encoding": "gzip"}, media_type="text/html")
 
 
+@api_router.get('/apih/filter/studios')
+async def filter_studios(request: Request, page: Optional[int]=1,
+                         size: Optional[int]=100,
+                         search: Optional[str]=None):
+    with SqlSession() as session:
+        rendered_html = render_studios(session, request)
+        compressed_content = gzip.compress(rendered_html.encode('utf-8'))
+    return Response(content=compressed_content, headers={"Content-Encoding": "gzip"}, media_type="text/html")
 

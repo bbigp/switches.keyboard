@@ -1,9 +1,10 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from sqlalchemy import text, insert, select, func, update
 from sqlalchemy.dialects import sqlite
 
+from app.core.database import SqlSession
 from app.model.domain import T_switches, Switches
 
 
@@ -63,6 +64,10 @@ def fetch_hot(session, size:int=2):
     return session.fetchall(text(f"select * from switches where deleted = 0 and "
                                  f"stor_loc_box != '' and stor_loc_box is not null "
                                  f"ORDER BY RANDOM() limit {size}"), Switches)
+
+def fetch_switches_by_studios(session: SqlSession, studios: List[str]) -> List[Switches]:
+    s = ','.join(f"'{item}'" for item in studios)
+    return session.fetchall(f"select * from switches where deleted=0 and studio in ({s})", Switches)
 
 def filter(start: Optional[int]=0,
            length: Optional[int]=10,

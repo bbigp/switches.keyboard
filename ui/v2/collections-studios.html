@@ -1,0 +1,110 @@
+{% extends "collections-main.html" %}
+{% block head %}
+{% endblock %}
+<style>
+</style>
+{% block content %}
+    <div style="margin-top: 80px;"></div>
+
+    <div class="shop_toolbar_wrapper d-flex justify-content-between align-items-center">
+        <div class="page_amount">
+        </div>
+        <div class=" sorting_by d-flex align-items-center">
+            <div style="position: relative">
+                <input id="searchInput" type="text" value="" style="border: 1px solid #dddddd;
+                font-size: 15px;
+                padding: 5px 45px 6px 10px;
+                position: relative;
+                border-radius: .375rem;
+                width: 100%;">
+                <button id="searchBtn" style="background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+                border: medium none;
+                padding: 7px 15px;
+                position: absolute;
+                right: 0;
+                top: 0;"><i class="ion-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="toolbar_btn_wrapper d-flex align-items-center">
+        </div>
+    </div>
+
+    <div id="studiosMain">
+        {{ studio_wrapper | safe }}
+    </div>
+
+{% endblock %}
+
+{% block footer %}
+    <script>
+        $(document).ready(function () {
+            var currentSearch = $('#searchInput').val()
+            $('#searchBtn').click(function () {
+                initPage()
+            })
+            $('#searchInput').on('keydown', function (event) {
+                if (event.keyCode === 13) {
+                    event.preventDefault();
+                    initPage()
+                }
+            })
+
+
+            function initPage() {
+                var searchText = $('#searchInput').val()
+                if(currentSearch === searchText){
+                    return;
+                }
+                $.ajax({
+                    type: 'GET', url: '/apih/filter/studios?search=' + searchText,
+                    contentType: 'text/html',
+                    success: function (data) {
+                        $('#studiosMain').empty().append(data)
+                        $('#searchInput').val(searchText)
+                        currentSearch = searchText
+                        initSlick()
+                        $('html, body').animate({scrollTop: 100}, 'slow');
+                    },
+                    error: function (err) {
+                        console.log(err)
+                    }
+                })
+            }
+
+            function initSlick() {
+                var $slick = $('.product_slick')
+
+                $slick.on('init', function (event, slick) {
+                    $('.slick-track').css({
+                        'margin-left': '0',
+                        'margin-right': '0'
+                    })
+                });
+
+                $slick.slick({
+                    slidesToShow: 4,
+                    slidesToScroll: 1,
+                    arrows: true,
+                    dots: false,
+                    autoplay: false,
+                    speed: 300,
+                    centerMode: false,
+                    infinite: true,
+                    responsive: [
+                        {breakpoint: 992, settings: {slidesToShow: 3}},
+                        {breakpoint: 768, settings: {slidesToShow: 2}},
+                        {breakpoint: 300, settings: {slidesToShow: 1}}
+                    ],
+                    prevArrow: '<button class="prev_arrow"><i class="icon-arrow-left icons"></i></button>',
+                    nextArrow: '<button class="next_arrow"><i class="icon-arrow-right icons"></i></button>',
+
+                })
+            }
+
+            initSlick()
+
+
+        });
+    </script>
+{% endblock %}

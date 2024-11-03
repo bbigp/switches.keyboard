@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html class="js sizes customelements history pointerevents postmessage webgl websockets cssanimations csscolumns csscolumns-width csscolumns-span csscolumns-fill csscolumns-gap csscolumns-rule csscolumns-rulecolor csscolumns-rulestyle csscolumns-rulewidth csscolumns-breakbefore csscolumns-breakafter csscolumns-breakinside flexbox picture srcset webworkers"
+      lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Keyboard Switches</title>
+    <meta name="robots" content="noindex, follow">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet"
+          href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.0.0-alpha2/css/bootstrap.min.css">
+    <!--    5.0.0-alpha1 -> 5.0.0-alpha2-->
+    <link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/slick-carousel/1.9.0/slick.min.css">
+    <link rel="stylesheet"
+          href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/simple-line-icons/2.5.5/css/simple-line-icons.min.css">
+    <!--    无版本 -> 2.5.5-->
+    <link rel="stylesheet" href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/ionicons/2.0.0/css/ionicons.min.css">
+    <link rel="stylesheet"
+          href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/animate.css/4.1.1/animate.min.css">
+    <!--    无版本 -> 4.1.1-->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/magnific-popup.js/1.1.0/magnific-popup.min.css">
+    <style>
+        .preloader {
+            position: fixed;
+            top: 0;
+            z-index: 9999;
+            background: #fff;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: height 0.8s cubic-bezier(0.075, 0.82, 0.165, 1);
+        }
+
+        .preloader.loaded {
+            height: 0;
+        }
+
+        .preloader h1 {
+            color: black;
+        }
+        {#翻页#}
+        .disabled-link {
+            pointer-events: none;
+            color: rgb(128, 128, 128);
+            text-decoration: none;
+        }
+    </style>
+    {% block head %}
+    {% endblock %}
+</head>
+
+<body>
+
+
+
+<div class="preloader text-white fs-6 text-uppercase overflow-hidden"><h1>loading...</h1></div>
+{% include 'new/canvas_menu.html' %}
+
+<header class="header_section border-bottom">
+    {% include 'component/header-top.html' %}
+
+    {% include 'new/main_header.html' %}
+
+</header>
+
+{% block content %}
+{% endblock %}
+
+
+{% include 'new/footer_widgets.html' %}
+
+<script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/bootstrap/5.0.0-alpha2/js/bootstrap.min.js"></script>
+<script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/slick-carousel/1.9.0/slick.min.js"></script>
+<script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/wow/1.1.2/wow.min.js"></script> <!--    v1.3.0 -> 1.1.2-->
+<script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/scrollup/2.4.1/jquery.scrollUp.min.js"></script>
+<script src="/assets/js/main.js"></script>
+<script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+{% block footer %}
+{% endblock %}
+</body>
+</html>

@@ -13,7 +13,8 @@ from app.model.assembler import convert_vo
 from app.model.domain import Icgb, Switches, KeyCountBO
 from app.model.vo import KeywordVO
 from app.utils.jinja2_filters import format_with_tolerance, format_studio_with_manufacturer
-from app.utils.jinja2_template_render import render_switches_wrapper, determine_page_size, render_switches_filter
+from app.utils.jinja2_template_render import render_switches_wrapper, determine_page_size, render_switches_filter, \
+    render_studios
 
 templates = Jinja2Templates(directory='ui/v2')
 templates.env.filters['format_with_tolerance'] = format_with_tolerance
@@ -63,6 +64,18 @@ async def detail(request: Request, id: int):
         'request': request,
         'switch': convert_vo(model).dict()
     })
+
+@page_router.get('/collections/studios')
+@page_router.get('/collections/studios/')
+@page_router.get('/collections/studios/{page}')
+async def studios(request: Request, page: Optional[int]=1, search: Optional[str]=None):
+    with SqlSession() as session:
+        studio_wrapper = render_studios(session, request)
+    return templates.TemplateResponse('collections-studios.html', context={
+        'request': request,
+        'studio_wrapper': studio_wrapper,
+    })
+
 
 @page_router.get('/collections/keyboard')
 @page_router.get('/collections/keyboard/')

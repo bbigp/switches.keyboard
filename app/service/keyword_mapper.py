@@ -1,11 +1,13 @@
 from datetime import datetime
+from typing import List
 
 from sqlalchemy import text, insert, select, desc, func, update
 from sqlalchemy.dialects import sqlite
 
+from app.core.database import SqlSession
 from app.service.switches_mapper import Filter
 from app.model.domain import T_keyword, Keyword
-from app.model.vo import KeywordVO
+from app.model.vo import KeywordVO, StudioVO
 
 
 def get_by_word(word: str, type: str):
@@ -45,24 +47,36 @@ def list_by_types(types):
     type = ",".join(["'" + t + "'" for t in types])
     return text(f"select * from keyword where deleted = 0 and type in ({type}) order by word desc")
 
+def fetch_random_studios(session: SqlSession, search: str, limit: int) -> List[StudioVO]:
+    query = f"select * from keyword where deleted = 0 and type = 'studio' "
+    if search is not None and search != '':
+        query += f" and word like '%{search}%' "
+    query += f" ORDER BY RANDOM() limit {limit} "
+    return session.fetchall(query, StudioVO)
+
 def fetch_text(session):
     list = session.fetchall(list_by_types(['type', 'manufacturer', 'mark', 'studio']), KeywordVO)
-    switch_types = []
-    manufacturers = []
-    marks = []
-    studios = []
+    map = {}
     for item in list:
-        if item.type == 'type':
-            switch_types.append(item)
-        elif item.type == 'manufacturer':
-            manufacturers.append(item)
-        elif item.type == 'mark':
-            marks.append(item.word)
-        elif item.type == 'studio':
-            studios.append(item.word)
-        else:
-            pass
-    return switch_types, manufacturers, marks, studios
+        map.setdefault(item.type, []).append(item)
+    # switch_types = []
+    # manufacturers = []
+    # marks = []
+    # studios = []
+    # for item in list:
+    #     if item.type == 'type':
+    #         switch_types.append(item)
+    #     elif item.type == 'manufacturer':
+    #         manufacturers.append(item)
+    #     elif item.type == 'mark':
+    #         marks.append(item.word)
+    #     elif item.type == 'studio':
+    #         studios.append(item.word)
+    #     else:
+    #         pass
+    # return switch_types, manufacturers, marks, studios
+    return map.get('type'), map.get('manufacturer'), map.get('mark'), map.get('mark')
+
 
 def fetch_keyboard(session):
     return session.fetchall(text(f"select * from keyword where deleted = 0 and type = 'stor_loc_box' and word like 'D.%' "), KeywordVO)

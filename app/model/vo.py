@@ -1,3 +1,5 @@
+from typing import List
+
 from pydantic.main import BaseModel
 
 from app.model.domain import Keyword, Switches
@@ -59,3 +61,6 @@ class SwitchVO(Switches):
     images: list=None
     row: int=None
     col: int=None
+
+class StudioVO(Keyword):
+    switches: List[SwitchVO]=[]
