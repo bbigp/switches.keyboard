@@ -1,3 +1,4 @@
+{% if studios is not none and (studios | length > 0) %}
 {% for studio in studios %}
     {% if studio.switches is not none and (studio.switches | length > 0) %}
         <section class="product_section mb-80">
@@ -6,7 +7,7 @@
                     <div class="section_title">
                         <h2>{{ studio.word }}</h2>
                     </div>
-                    {% if studio.switches | length > 4 %}
+                    {% if studio.switches | length >= 4 %}
                     <div class="product_tab_btn d-flex">
                         {#                    <ul class="nav" role="tablist">#}
                         {#                        <li>#}
@@ -17,7 +18,7 @@
                         {#                        </li>#}
                         {#                    </ul>#}
                         <div class="all_product">
-                            <a href="/collections/switches?studio={{ studio.word }}" target="_blank">All</a>
+                            <a href="/collections/switches?studio={{ studio.word }}" target="_blank">All({{ (studio.switches | length) }})</a>
                         </div>
                     </div>
                     {% endif %}
@@ -101,3 +102,8 @@
         </section>
     {% endif %}
 {% endfor %}
+{% else %}
+    <div style="height: 800px; display: flex; align-items: center; justify-content: center;">
+    <h2>没有符合条件的工作室</h2>
+    </div>
+{% endif %}
