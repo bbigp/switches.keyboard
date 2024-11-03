@@ -17,6 +17,9 @@
                                     <li><a class="{{ 'active' if request.path.startswith('/collections/switches') or request.path.startswith('/collections/products') }}"
                                            href="/collections/switches">客制化轴体</a></li>
                                     <li><a class="{{ 'active' if request.path.startswith('/collections/studios') }}" href="/collections/studios">工作室</a></li>
+                                    {% if show_control %}
+                                    <li><a href="/control" target="_blank">控制台</a></li>
+                                    {% endif %}
 <!--                                    <li><a class="{{ 'active' if request.path.startswith('/collections/keyboard') }}" href="/collections/keyboard" target="_blank">轴板</a> </li>-->
 <!--                                    <li><a class="{{ 'active' if request.path.startswith('/icgb') }}" href="/icgb" target="_blank">icgb</a></li>-->
                                 </ul>

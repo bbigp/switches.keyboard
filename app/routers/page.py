@@ -6,6 +6,7 @@ from fastapi.encoders import jsonable_encoder
 from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
 
+from app.config import options
 from app.core.database import SqlSession
 from app.core.internal import get_month_start_end
 from app.service import switches_mapper, icgb_mapper, board_mapper, keyword_mapper
@@ -54,6 +55,7 @@ async def main(
         'switches_wrapper': switches_wrapper,
         'switches_filter': switches_filter,
         'hot_switches': [convert_vo(i).dict() for i in hot_switches],
+        'show_control': options.is_master(),
     })
 
 @page_router.get('/collections/products/{id}')
@@ -62,7 +64,8 @@ async def detail(request: Request, id: int):
         model = session.fetchone(switches_mapper.get_by_id(id), Switches)
     return templates.TemplateResponse('collections-products.html', context={
         'request': request,
-        'switch': convert_vo(model).dict()
+        'switch': convert_vo(model).dict(),
+        'show_control': options.is_master(),
     })
 
 @page_router.get('/collections/studios')
@@ -74,6 +77,7 @@ async def studios(request: Request, page: Optional[int]=1, search: Optional[str]
     return templates.TemplateResponse('collections-studios.html', context={
         'request': request,
         'studio_wrapper': studio_wrapper,
+        'show_control': options.is_master(),
     })
 
 

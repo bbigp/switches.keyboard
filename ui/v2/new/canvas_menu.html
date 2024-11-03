@@ -13,7 +13,7 @@
                             <!--                            <li class="text-white"><i class="icons icon-phone"></i> <a href="tel:+05483716566">+054 8371-->
                             <!--                                65 66</a></li>-->
                             <li class="text-white"><i class="icon-envelope-letter icons"></i> <a
-                                    href="http://swtiches.f.onlybox.cn/">swtiches.f.onlybox.cn</a>
+                                    href="http://switches.coolbet.cn/">switches.coolbet.cn</a>
                             </li>
                         </ul>
                     </div>
@@ -52,12 +52,14 @@
                             </li>
                             <li class="menu-item-has-children {{ 'active' if request.path.startswith('/collections/switches') or request.path.startswith('/collections/products') }}">
                                 <a href="/collections/switches">客制化轴体</a></li>
-                            <li class="menu-item-has-children {{ 'active' if request.path.startswith('/collections/keyboard') }}">
-                                <a href="/collections/keyboard" target="_blank">轴板</a>
-                            </li>
-                            <li class="menu-item-has-children {{ 'active' if request.path.startswith('/icgb') }}">
-                                <a href="/icgb" target="_blank">ICGB</a>
-                            </li>
+                            <li><a class="{{ 'active' if request.path.startswith('/collections/studios') }}" href="/collections/studios">工作室</a></li>
+
+{#                            <li class="menu-item-has-children {{ 'active' if request.path.startswith('/collections/keyboard') }}">#}
+{#                                <a href="/collections/keyboard" target="_blank">轴板</a>#}
+{#                            </li>#}
+{#                            <li class="menu-item-has-children {{ 'active' if request.path.startswith('/icgb') }}">#}
+{#                                <a href="/icgb" target="_blank">ICGB</a>#}
+{#                            </li>#}
                             <!--                            <li class="menu-item-has-children">-->
                             <!--                                <a href="#">pages </a>-->
                             <!--                                <ul class="sub-menu">-->
