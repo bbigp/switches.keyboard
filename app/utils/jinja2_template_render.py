@@ -75,7 +75,7 @@ def render_studios(session: SqlSession, request: Request):
 
     map = {}
     for item in switches:
-        map.setdefault(item.studio, []).append(item)
+        map.setdefault(item.studio, []).append(convert_vo(item))
 
     for item in studios:
         item.switches = map.get(item.word)
