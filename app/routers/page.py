@@ -168,8 +168,8 @@ async def index(request: Request, id: Optional[int]=None):
         'switch_types': types,
         'manufacturers': manufacturers,
         'stor_loc_boxs': stor_loc_boxs,
-        'marks': marks,
-        'studios': studios,
+        'marks': [item.word for item in marks],
+        'studios': [item.word for item in studios],
         'error_msg': []
     })
 

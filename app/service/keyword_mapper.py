@@ -75,7 +75,7 @@ def fetch_text(session):
     #     else:
     #         pass
     # return switch_types, manufacturers, marks, studios
-    return map.get('type'), map.get('manufacturer'), map.get('mark'), map.get('mark')
+    return map.get('type'), map.get('manufacturer'), map.get('mark'), map.get('studio')
 
 
 def fetch_keyboard(session):
