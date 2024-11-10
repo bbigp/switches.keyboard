@@ -7,6 +7,7 @@
 {% set global_filter_count = 1 + (1 if global_qs_search else 0) + (global_qs_manufacturer|length) %}
 {% set global_qs_type = '' if request.query_params.get('t') is none else request.query_params.get('t') %}
 {% set global_qs_studio = '' if request.query_params.get('studio') is none else request.query_params.get('studio') %}
+{% set global_qs_stor_box = '' if request.query_params.get('stor_box') is none else request.query_params.get('stor_box') %}
 <div class="widget_list widget_filter">
     <h2>Filter By</h2>
     <div class="filter__list filterTagList">
@@ -80,6 +81,17 @@
         {% if global_qs_studio %}
             <div class="filterTag" data-value="工作室:{{ global_qs_studio }}">
                 工作室:{{ global_qs_studio }}
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"
+                     class="feather feather-x" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+        {% endif %}
+        {% if global_qs_stor_box %}
+            <div class="filterTag" data-value="Store:{{ global_qs_stor_box }}">
+            Store:{{ global_qs_stor_box }}
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"
                      class="feather feather-x" aria-hidden="true">
@@ -178,7 +190,10 @@
             </ul>
         </li>
         <li>
-            <input type="text" id="studioInput" hidden disabled  value="{{ global_qs_studio  }}">
+            <input type="text" id="studioInput" disabled  value="{{ global_qs_studio  }}">
+        </li>
+        <li>
+            <input type="text" id="storBoxInput" disabled value="{{ global_qs_stor_box }}">
         </li>
     </ul>
 </div>

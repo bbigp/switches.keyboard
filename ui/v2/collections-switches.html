@@ -111,7 +111,21 @@
     			parentsDiv.children().addClass('col-12').removeClass('col-lg-3 col-lg-4 col-md-4 col-sm-6 col-cust-5');
     		}
 
-    });
+    }).on('click', 'a.studManuSpan', function (event){
+        event.preventDefault();
+        var stu = $(this).data('studio')
+        var manu = $(this).data('manufacturer')
+        if (manu !== stu) {
+            $('#studioInput').val(stu)
+        }
+        $('li.factoryItem').each(function() {
+                if ($(this).data('value') === manu && $(this).data('field') === 'manufacturer') {
+                    var checkbox = $(this).find('input.switchFactoryCheck');
+                    checkbox.prop('checked', true);  // 取消勾选
+                }
+            });
+        initFilter()
+    })
 
     $('#switchesFilter').on('click', '#typeFilter a', function (event){
         event.preventDefault();
@@ -150,6 +164,8 @@
             })
         } else if(tagValue.startsWith("工作室")){
             $('#studioInput').val("")
+        } else if(tagValue.startsWith('Store:')){
+            $('#storBoxInput').val('')
         } else {
             // 找到与 filterTag 对应的 li，取消勾选并恢复样式
             $('li.factoryItem').each(function() {
@@ -257,6 +273,10 @@
         var studio = $('#studioInput').val()
         if (studio !== ''){
             qs.push('studio=' + studio)
+        }
+        var storBox = $('#storBoxInput').val()
+        if (storBox !== '') {
+            qs.push('stor_box=' + storBox)
         }
         qs.push('is_available=' + is_available)
 

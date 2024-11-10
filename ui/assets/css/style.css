@@ -3063,8 +3063,8 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
   font-weight: 700;
   line-height: 22px;
   display: inline-block;
-  font-size: 14px;
-  margin-bottom: 5px;
+  font-size: 18px;
+  margin-bottom: 8px;
 }
 @media only screen and (max-width: 575px) {
   .product_content h4.product_name {
@@ -4543,8 +4543,10 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
   }
 }
 .product_list_content h4.product_name {
+  font-weight: 700;
+  line-height: 22px;
   font-size: 18px;
-  margin-bottom: 7px;
+  margin-bottom: 11px;
 }
 .product_list_content h4.product_name a:hover {
   color: #6a7964;

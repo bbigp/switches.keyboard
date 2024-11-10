@@ -118,7 +118,11 @@
                                 {% else %}
                                 <span class="product-label" style="background: #ca0000;">None</span>
                                 {% endif %}
-                                {{ switch.manufacturer if switch.manufacturer else '' }}
+                                <span>
+                                    <a href="/collections/switches?manufacturer={{ switch.manufacturer }}">
+                                        {{ switch.manufacturer if switch.manufacturer else '' }}
+                                    </a>
+                                </span>
 <!--                                <ul class="d-flex">-->
 <!--                                    <li><a href="#"><i class="ion-ios-star"></i></a></li>-->
 <!--                                    <li><a href="#"><i class="ion-ios-star"></i></a></li>-->
@@ -134,7 +138,7 @@
                         </div>
                         <div class="product_ratting_review d-flex align-items-center">
                             <div class=" product_ratting">
-                                <a href="/?studio={{ switch.studio }}" target="_blank">{{ switch.studio }}</a>
+                                <a href="/collections/switches?studio={{ switch.studio }}">{{ switch.studio }}</a>
                             </div>
                         </div>
                         <div class="price_box">
@@ -145,7 +149,11 @@
 
                                 <li><i class="fa fa-puzzle-piece" ></i>{{switch.light_style }}</li>
                                 <li>针脚: <span class="stock">{{switch.pins}}</span></li>
-                                <li><i class="ion-android-playstore" ></i>{{ switch.stor_loc_box }}<span>{{ '' if switch.stor_loc_row is none else '【' + switch.stor_loc_row|string + '-' + switch.stor_loc_col|string + '】'}}</span></li>
+                                <li><i class="ion-android-playstore" ></i>
+                                    <a href="/collections/switches?stor_box={{ switch.stor_loc_box }}">
+                                        {{ switch.stor_loc_box }}<span>{{ '' if switch.stor_loc_row is none else '【' + switch.stor_loc_row|string + '-' + switch.stor_loc_col|string + '】'}}</span>
+                                    </a>
+                                </li>
 {#                                <li><i class="icon-layers icons"></i> Only <span>15</span> left</li>#}
                             </ul>
                         </div>

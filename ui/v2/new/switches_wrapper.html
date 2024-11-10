@@ -77,68 +77,71 @@
                 </div>
             </div>
             <div class="product_content grid_content text-center">
-                <a href="/collections/products/{{ item.id }}" target="_blank">
-                    <!--                                <div class="product_ratting">-->
-                    <!--                                    <ul class="d-flex justify-content-center">-->
-                    <!--                                        <li><a href="#"><i class="ion-android-star"></i></a></li>-->
-                    <!--                                        <li><a href="#"><i class="ion-android-star"></i></a></li>-->
-                    <!--                                        <li><a href="#"><i class="ion-android-star"></i></a></li>-->
-                    <!--                                        <li><a href="#"><i class="ion-android-star"></i></a></li>-->
-                    <!--                                        <li><a href="#"><i class="ion-android-star"></i></a></li>-->
-                    <!--                                        <li><span>(2)</span></li>-->
-                    <!--                                    </ul>-->
-                    <!--                                </div>-->
-                    <h4 class="product_name">{{ item.name }}</h4>
-                    <div class="price_box">
+                <!--                                <div class="product_ratting">-->
+                <!--                                    <ul class="d-flex justify-content-center">-->
+                <!--                                        <li><a href="#"><i class="ion-android-star"></i></a></li>-->
+                <!--                                        <li><a href="#"><i class="ion-android-star"></i></a></li>-->
+                <!--                                        <li><a href="#"><i class="ion-android-star"></i></a></li>-->
+                <!--                                        <li><a href="#"><i class="ion-android-star"></i></a></li>-->
+                <!--                                        <li><a href="#"><i class="ion-android-star"></i></a></li>-->
+                <!--                                        <li><span>(2)</span></li>-->
+                <!--                                    </ul>-->
+                <!--                                </div>-->
+                <h4 class="product_name">
+                    <a href="/collections/products/{{ item.id }}" target="_blank">{{ item.name }}</a>
+                </h4>
+                <div class="price_box">
+                    <a href="#" class="studManuSpan" data-studio="{{ item.studio }}" data-manufacturer="{{ item.manufacturer }}">
                         <span>{{ (item.studio, item.manufacturer) | format_studio_with_manufacturer }}</span>
-                        <!--                                    <span class="current_price">$43.00</span>-->
-                        <!--                                    <span class="old_price">$46.00</span>-->
-                    </div>
-                    <!--                                <div class="add_to_cart">-->
-                    <!--                                    <a class="btn btn-primary" href="#" data-tippy="Add To Cart"  data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top">Add To Cart</a>-->
-                    <!--                                </div>-->
-                </a>
+                    </a>
+                    <!--                                    <span class="current_price">$43.00</span>-->
+                    <!--                                    <span class="old_price">$46.00</span>-->
+                </div>
+                <!--                                <div class="add_to_cart">-->
+                <!--                                    <a class="btn btn-primary" href="#" data-tippy="Add To Cart"  data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top">Add To Cart</a>-->
+                <!--                                </div>-->
             </div>
             <div class="product_list_content">
-                <a href="/collections/products/{{ item.id }}" target="_blank">
-                    <h4 class="product_name">{{ item.name }}{{ '' if item.studio == item.manufacturer else ' x ' +
-                        item.studio }}</h4>
-                    {# <p><a href="#">show</a></p>#}
-                    <div class="price_box">
-                        {{ item.manufacturer if item.manufacturer else '' }}
-                        <!--                                    <span class="current_price">$43.00</span>-->
-                        <!--                                    <span class="old_price">$46.00</span>-->
-                    </div>
-                    <div class="product_desc">
-                        <p>
-                            {% if item.light_style %}<span>{{item.light_style }},</span>{% endif %}
-                            {% if item.pins %}<span>{{item.pins }}Pins,</span>{% endif %}
-                            {% if item.type %}<span>{{item.type }},</span>{% endif %}
-                            {% if item.mark %}<span>{{item.mark }}(标),</span>{% endif %}
-                            {% if item.stor_loc_box %}
+                <h4 class="product_name">
+                    <a href="/collections/products/{{ item.id }}" target="_blank">{{ item.name }}</a>
+                </h4>
+                {# <p><a href="#">show</a></p>#}
+                <div class="price_box">
+                    <a href="#" class="studManuSpan" data-studio="{{ item.studio }}" data-manufacturer="{{ item.manufacturer }}">
+                        <span>{{ (item.studio, item.manufacturer) | format_studio_with_manufacturer }}</span>
+                    </a>
+                    <!--                                    <span class="current_price">$43.00</span>-->
+                    <!--                                    <span class="old_price">$46.00</span>-->
+                </div>
+                <div class="product_desc">
+                    <p>
+                        {% if item.light_style %}<span>{{item.light_style }},</span>{% endif %}
+                        {% if item.pins %}<span>{{item.pins }}Pins,</span>{% endif %}
+                        {% if item.type %}<span>{{item.type }},</span>{% endif %}
+                        {% if item.mark %}<span>{{item.mark }}(标),</span>{% endif %}
+                        {% if item.stor_loc_box %}
                             <span>{{ item.stor_loc_box }}{{ '' if item.stor_loc_row is none else '【' + item.stor_loc_row|string + '-' + item.stor_loc_col|string + '】'}}</span>
-                            {% endif %}
-                        </p>
-                        <p>
-                            <span>{{ '轴心: -' if not item.stem_mat else '轴心: ' + item.stem_mat }}</span>
-                            <span>{{ ' | 上盖: -' if not item.top_mat else ' | 上盖: ' + item.top_mat }}</span>
-                            <span>{{ ' | 底壳: -' if not item.bottom_mat else ' | 底壳: ' + item.bottom_mat }}</span>
-                        </p>
-                        <p>
-                            <span>压力: </span>
-                            <span>{{ '*' if not item.actuation_force else item.actuation_force | string + 'g' }}</span>
-                            <span> --> </span>
-                            <span>{{ '*' if not item.bottom_force else item.bottom_force |string  + 'g' }}</span>
-                            <span> | 行程: </span>
-                            <span>{{ '*' if not item.pre_travel else item.pre_travel |string  + 'mm' }}</span>
-                            <span> --> </span>
-                            <span>{{ '*' if not item.total_travel else item.total_travel |string  + 'mm' }}</span>
-                        </p>
-                    </div>
-                    <!--                                <div class="add_to_cart">-->
-                    <!--                                    <a class="btn btn-primary" href="#" data-tippy="Add To Cart"  data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top">Add To Cart</a>-->
-                    <!--                                </div>-->
-                </a>
+                        {% endif %}
+                    </p>
+                    <p>
+                        <span>{{ '轴心: -' if not item.stem_mat else '轴心: ' + item.stem_mat }}</span>
+                        <span>{{ ' | 上盖: -' if not item.top_mat else ' | 上盖: ' + item.top_mat }}</span>
+                        <span>{{ ' | 底壳: -' if not item.bottom_mat else ' | 底壳: ' + item.bottom_mat }}</span>
+                    </p>
+                    <p>
+                        <span>压力: </span>
+                        <span>{{ '*' if not item.actuation_force else item.actuation_force | string + 'g' }}</span>
+                        <span> --> </span>
+                        <span>{{ '*' if not item.bottom_force else item.bottom_force |string  + 'g' }}</span>
+                        <span> | 行程: </span>
+                        <span>{{ '*' if not item.pre_travel else item.pre_travel |string  + 'mm' }}</span>
+                        <span> --> </span>
+                        <span>{{ '*' if not item.total_travel else item.total_travel |string  + 'mm' }}</span>
+                    </p>
+                </div>
+                <!--                                <div class="add_to_cart">-->
+                <!--                                    <a class="btn btn-primary" href="#" data-tippy="Add To Cart"  data-tippy-inertia="true" data-tippy-delay="50" data-tippy-arrow="true" data-tippy-placement="top">Add To Cart</a>-->
+                <!--                                </div>-->
             </div>
         </div>
     </div>
