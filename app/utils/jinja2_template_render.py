@@ -25,7 +25,7 @@ def determine_page_size(request: Request, size: int=Query(None)) -> int:
     if size is not None:
         return size
     mobile_pattern = re.compile(r"Mobi|Android|iPhone|iPad|iPod|Windows Phone", re.I)
-    return 8 if bool(mobile_pattern.search(user_agent)) else 15
+    return 8 if bool(mobile_pattern.search(user_agent)) else 18
 
 def render_switches_wrapper(session, page: Optional[int]=1,
         size: int=Depends(determine_page_size),

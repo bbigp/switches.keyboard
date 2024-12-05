@@ -3,7 +3,8 @@ import json
 from fastapi import FastAPI, Request
 from loguru import logger
 from starlette.middleware.cors import CORSMiddleware
-from starlette.responses import JSONResponse
+from starlette.middleware.sessions import SessionMiddleware
+from starlette.responses import JSONResponse, RedirectResponse
 from starlette.routing import Mount
 from starlette.staticfiles import StaticFiles
 
@@ -14,11 +15,20 @@ from app.routers.image import image_router
 from app.routers.page import page_router, admin_page_router
 from app.routers.v2 import api_router
 
+async def login(request: Request):
+    request.session["user_id"] = "bigp"
+    return RedirectResponse(url="/")
+
+async def logout(request: Request):
+    request.session.pop("user_id", None)
+    return RedirectResponse(url="/")
 
 def register_route(app):
     app.include_router(api_router)
     app.include_router(page_router)
     app.include_router(image_router)
+    app.add_route("/login", login, methods=["GET"])
+    app.add_route("/logout", logout, methods=["GET"])
     if options.is_master():
         app.include_router(admin_api_router)
         app.include_router(admin_page_router)
@@ -63,6 +73,7 @@ def init_app():
     return app
 
 app = init_app()
+app.add_middleware(SessionMiddleware, secret_key="2323232")
 
 # @app.middleware('http')
 # async def add_process_time_header(request: Request, call_next):
