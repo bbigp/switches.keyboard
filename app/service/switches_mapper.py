@@ -79,7 +79,15 @@ def filter(start: Optional[int]=0,
            studio: Optional[str]=None,
            stem: Optional[str]=None,
            top_mat: Optional[str] = None,
-           bottom_mat: Optional[str] = None
+           bottom_mat: Optional[str] = None,
+min_travel: Optional[int]=None,
+                          max_travel: Optional[int]=None,
+                          min_total_travel: Optional[int]=None,
+                          max_total_travel: Optional[int]=None,
+min_force: Optional[int]=None,
+                          max_force: Optional[int]=None,
+                          min_total_force: Optional[int]=None,
+                          max_total_force: Optional[int]=None
            ):
     base = select('*') \
         .select_from(text('switches')) \
@@ -95,6 +103,23 @@ def filter(start: Optional[int]=0,
 
     if studio is not None and studio != '':
         filter.append_where(text(f"studio = '{studio}' "))
+
+    if min_travel is not None:
+        filter.append_where(f"pre_travel >= {min_travel / 10} ")
+    if max_travel is not None:
+        filter.append_where(f"pre_travel <= {max_travel / 10} ")
+    if min_total_travel is not None:
+        filter.append_where(f"total_travel >= {min_total_travel / 10} ")
+    if max_total_travel is not None:
+        filter.append_where(f"total_travel <= {max_total_travel / 10} ")
+    if min_force is not None:
+        filter.append_where(f"actuation_force >= {min_force}")
+    if max_force is not None:
+        filter.append_where(f"actuation_force <= {max_force}")
+    if min_total_force is not None:
+        filter.append_where(f"bottom_force >= {min_total_force}")
+    if max_total_force is not None:
+        filter.append_where(f"bottom_force <= {max_total_force}")
 
     if stem is not None and stem != '':
         _list = []
@@ -183,6 +208,8 @@ class Filter():
         return self.append_where(text(f'({or_condition})'))
 
     def append_where(self, condtion):
+        if isinstance(condtion, str):
+            condtion = text(condtion)
         if self.base is not None:
             self.base = self.base.where(condtion)
         if self.count is not None:

@@ -8,6 +8,14 @@
 {% set global_qs_type = '' if request.query_params.get('t') is none else request.query_params.get('t') %}
 {% set global_qs_studio = '' if request.query_params.get('studio') is none else request.query_params.get('studio') %}
 {% set global_qs_stor_box = '' if request.query_params.get('stor_box') is none else request.query_params.get('stor_box') %}
+{% set global_qs_min_travel = 8 if request.query_params.get('min_travel') is none else request.query_params.get('min_travel') %}
+{% set global_qs_max_travel = 26 if request.query_params.get('max_travel') is none else request.query_params.get('max_travel') %}
+{% set global_qs_min_total_travel = 26 if request.query_params.get('min_total_travel') is none else request.query_params.get('min_total_travel') %}
+{% set global_qs_max_total_travel = 40 if request.query_params.get('max_total_travel') is none else request.query_params.get('max_total_travel') %}
+{% set global_qs_min_force = 10 if request.query_params.get('min_force') is none else request.query_params.get('min_force') %}
+{% set global_qs_max_force = 70 if request.query_params.get('max_travel') is none else request.query_params.get('max_force') %}
+{% set global_qs_min_total_force = 20 if request.query_params.get('min_total_force') is none else request.query_params.get('min_total_force') %}
+{% set global_qs_max_total_force = 100 if request.query_params.get('max_total_force') is none else request.query_params.get('max_total_force') %}
 <div class="widget_list widget_filter">
     <h2>Filter By</h2>
     <div class="filter__list filterTagList">
@@ -111,6 +119,50 @@
                 </svg>
             </div>
         {% endif %}
+        {% if global_qs_min_travel != 8 or global_qs_max_travel != 26 %}
+            <div class="filterTag" data-value="触发行程:{{ global_qs_type }}">
+                触发行程:{{ global_qs_min_travel|int / 10}} - {{ global_qs_max_travel|int / 10}}
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"
+                     class="feather feather-x" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+        {% endif %}
+        {% if global_qs_min_total_travel != 26 or global_qs_max_total_travel != 40 %}
+            <div class="filterTag" data-value="触底行程:{{ global_qs_type }}">
+                触底行程:{{ global_qs_min_total_travel|int / 10}} - {{ global_qs_max_total_travel|int / 10}}
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"
+                     class="feather feather-x" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+        {% endif %}
+        {% if global_qs_min_force != 10 or global_qs_max_force != 70 %}
+            <div class="filterTag" data-value="触发压力:{{ global_qs_type }}">
+                触发压力:{{ global_qs_min_force }} - {{ global_qs_max_force}}
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"
+                     class="feather feather-x" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+        {% endif %}
+        {% if global_qs_min_total_force != 20 or global_qs_max_total_force != 100 %}
+            <div class="filterTag" data-value="触底压力:{{ global_qs_type }}">
+                触底压力:{{ global_qs_min_total_force}} - {{ global_qs_max_total_force}}
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"
+                     class="feather feather-x" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+        {% endif %}
     </div>
 
     <div class="filter__list widget_brands">
@@ -196,4 +248,38 @@
             <input type="text" id="storBoxInput" disabled hidden value="{{ global_qs_stor_box }}">
         </li>
     </ul>
+</div>
+<div class="widget_list widget_filter">
+    <div class="filter__list slider_range">
+        <h3>触发行程</h3>
+        <form action="#">
+            <div id="travelSliderRange" data-unit="mm" data-range-min="5" data-range-max="30" data-min="{{ global_qs_min_travel }}" data-max="{{ global_qs_max_travel }}" style="height: 3px;"></div>
+            <span>行程:</span>
+            <input type="text" name="text"/>
+        </form>
+    </div>
+    <div class="filter__list slider_range">
+        <h3>触底行程</h3>
+        <form action="#">
+            <div id="totalTravelSliderRange" data-unit="mm" data-range-min="20" data-range-max="40" data-min="{{ global_qs_min_total_travel }}" data-max="{{ global_qs_max_total_travel }}" style="height: 3px;"></div>
+            <span>行程:</span>
+            <input type="text" name="text"/>
+        </form>
+    </div>
+    <div class="filter__list slider_range">
+        <h3>触发压力</h3>
+        <form action="#">
+            <div id="forceSliderRange" data-unit="g" data-range-min="5" data-range-max="70" data-min="{{ global_qs_min_force }}" data-max="{{ global_qs_max_force }}" style="height: 3px;"></div>
+            <span>行程:</span>
+            <input type="text" name="text"/>
+        </form>
+    </div>
+    <div class="filter__list slider_range">
+        <h3>触底压力</h3>
+        <form action="#">
+            <div id="totalForceSliderRange" data-unit="g" data-range-min="10" data-range-max="100" data-min="{{ global_qs_min_total_force }}" data-max="{{ global_qs_max_total_force }}" style="height: 3px;"></div>
+            <span>行程:</span>
+            <input type="text" name="text"/>
+        </form>
+    </div>
 </div>

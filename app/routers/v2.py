@@ -42,11 +42,24 @@ async def filter_switches(request: Request, page: Optional[int]=1,
                           studio: Optional[str]=None,
                           stem: Optional[str]=None,
                           top_mat: Optional[str]=None,
-                          bottom_mat: Optional[str]=None):
+                          bottom_mat: Optional[str]=None,
+                          min_travel: Optional[int] = None,
+                          max_travel: Optional[int] = None,
+                          min_total_travel: Optional[int] = None,
+                          max_total_travel: Optional[int] = None,
+                          min_force: Optional[int] = None,
+                          max_force: Optional[int] = None,
+                          min_total_force: Optional[int] = None,
+                          max_total_force: Optional[int] = None
+                          ):
     with SqlSession() as session:
         switches_wrapper = render_switches_wrapper(session, page, size, search, type, stor_box,
                                                    manufacturer, is_available, studio, stem=stem,
-                                                   top_mat=top_mat, bottom_mat=bottom_mat)
+                                                   top_mat=top_mat, bottom_mat=bottom_mat,
+                                                   min_travel=min_travel, max_travel=max_travel,
+                                                   min_total_travel=min_total_travel, max_total_travel=max_total_travel,
+                                                   min_force=min_force, max_force=max_force,
+                                                   min_total_force=min_total_force, max_total_force=max_total_force)
         switches_filter = render_switches_filter(session, request)
         compressed_content = gzip.compress((switches_wrapper + '<!--SPLIT-->' + switches_filter).encode('utf-8'))
     return Response(content=compressed_content, headers={"Content-Encoding": "gzip"}, media_type="text/html")

@@ -162,6 +162,14 @@
             $('#typeFilter li.manufacturer-text').each(function (){
                 $(this).removeClass('manufacturer-text')
             })
+        }  else if(tagValue.startsWith("触发行程:")){
+            $( "#travelSliderRange" ).slider('option', 'values', [8, 26])
+        } else if(tagValue.startsWith("触底行程:")){
+            $( "#totalTravelSliderRange" ).slider('option', 'values', [26, 40])
+        }else if(tagValue.startsWith("触发压力:")){
+            $( "#forceSliderRange" ).slider('option', 'values', [10, 70])
+        } else if(tagValue.startsWith("触底压力:")){
+            $( "#totalForceSliderRange" ).slider('option', 'values', [20, 100])
         } else if(tagValue.startsWith("工作室")){
             $('#studioInput').val("")
         } else if(tagValue.startsWith('Store:')){
@@ -261,8 +269,6 @@
         if (searchText !== '') {
             qs.push('s='+searchText)
             is_available = 0
-        }else{
-            is_available = 1
         }
         if (window.innerWidth <= 800) {
             qs.push('size=8')
@@ -270,6 +276,7 @@
         $('#typeFilter li.manufacturer-text').each(function (){
             qs.push('t=' + $(this).data('value'))
         })
+        qs.push('is_available=' + is_available)
         var studio = $('#studioInput').val()
         if (studio !== ''){
             qs.push('studio=' + studio)
@@ -278,7 +285,38 @@
         if (storBox !== '') {
             qs.push('stor_box=' + storBox)
         }
-        qs.push('is_available=' + is_available)
+
+        var travels = $( "#travelSliderRange" ).slider("values")
+        if (travels[0] !== 8) {
+            qs.push('min_travel=' + travels[0])
+        }
+        if (travels[1] !== 26) {
+            qs.push('max_travel=' + travels[1])
+        }
+
+        var totalTravels = $( "#totalTravelSliderRange" ).slider("values")
+        if (totalTravels[0] !== 26) {
+            qs.push('min_total_travel=' + totalTravels[0])
+        }
+        if (totalTravels[1] !== 40) {
+            qs.push('max_total_travel=' + totalTravels[1])
+        }
+
+        var forces = $( "#forceSliderRange" ).slider("values")
+        if (forces[0] !== 10) {
+            qs.push('min_force=' + forces[0])
+        }
+        if (forces[1] !== 70) {
+            qs.push('max_force=' + forces[1])
+        }
+
+        var totalForces = $( "#totalForceSliderRange" ).slider("values")
+        if (totalForces[0] !== 20) {
+            qs.push('min_total_force=' + totalForces[0])
+        }
+        if (totalForces[1] !== 100) {
+            qs.push('max_total_force=' + totalForces[1])
+        }
 
         let url = '/apih/filter/switches?'+ qs.join('&')
         $.ajax({
@@ -289,12 +327,48 @@
                 $('#switchesMain').empty().append(htmlParts[0])
                 $('#switchesFilter').empty().append(htmlParts[1])
                 $('html, body').animate({ scrollTop: 100 }, 'slow');
+                inifSliderRnage()
             },
             error: function (err) {
                 console.log(err)
             }
         })
     }
-
+    inifSliderRnage()
+    function inifSliderRnage(){
+        slider($( "#travelSliderRange" ))
+        slider($("#totalTravelSliderRange"))
+        slider($('#forceSliderRange'))
+        slider($('#totalForceSliderRange'))
+    }
+    function slider($slider) {
+        var min = $slider.data('min')
+        var max = $slider.data('max')
+        var unit = $slider.data('unit')
+        $slider.slider({
+            range: true,
+            min: $slider.data('range-min'),
+            max: $slider.data('range-max'),
+            values: [ min, max ],
+            slide: function( event, ui ) {
+                $(this).closest('form').find('input[name="text"]').val(
+                    (unit === 'mm' ? ui.values[0]/10 : ui.values[0])
+                    + unit + " - "
+                    + (unit === 'mm' ? ui.values[1]/10 : ui.values[1])
+                    + unit );
+            },
+            stop: function (event, ui){
+                initFilter(1)
+            },
+            create: function (event, ui) {
+                $(this).closest('form').find('input[name="text"]').val(
+                    (unit === 'mm' ? min/10 : min)
+                    + unit + " - "
+                    + (unit === 'mm' ? max/10 : max)
+                    + unit
+                );
+            }
+        });
+    }
     </script>
 {% endblock %}

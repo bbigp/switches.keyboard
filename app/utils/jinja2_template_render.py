@@ -25,7 +25,7 @@ def determine_page_size(request: Request, size: int=Query(None)) -> int:
     if size is not None:
         return size
     mobile_pattern = re.compile(r"Mobi|Android|iPhone|iPad|iPod|Windows Phone", re.I)
-    return 8 if bool(mobile_pattern.search(user_agent)) else 18
+    return 8 if bool(mobile_pattern.search(user_agent)) else 24
 
 def render_switches_wrapper(session, page: Optional[int]=1,
         size: int=Depends(determine_page_size),
@@ -36,7 +36,15 @@ def render_switches_wrapper(session, page: Optional[int]=1,
         is_available: Optional[int]=1,
                             studio: Optional[str]=None, stem: Optional[str]=None,
                             top_mat: Optional[str] = None,
-                            bottom_mat: Optional[str] = None
+                            bottom_mat: Optional[str] = None,
+min_travel: Optional[int]=None,
+                          max_travel: Optional[int]=None,
+                          min_total_travel: Optional[int]=None,
+                          max_total_travel: Optional[int]=None,
+min_force: Optional[int]=None,
+                          max_force: Optional[int]=None,
+                          min_total_force: Optional[int]=None,
+                          max_total_force: Optional[int]=None
                             ):
     if is_available == 1:
         available = True
@@ -46,12 +54,25 @@ def render_switches_wrapper(session, page: Optional[int]=1,
         available = None
     stmt_list, stmt_count = switches_mapper.filter((page - 1) * size, size, search, stor_box, manufacturer,
                                                        available, type=type, studio=studio, stem=stem,
-                                                   top_mat=top_mat, bottom_mat=bottom_mat)
+                                                   top_mat=top_mat, bottom_mat=bottom_mat,
+                                                   min_travel=min_travel, max_travel=max_travel,
+                                                   min_total_travel=min_total_travel, max_total_travel=max_total_travel,
+                                                   min_force=min_force, max_force=max_force,
+                                                   min_total_force=min_total_force, max_total_force=max_total_force
+                                                   )
     list = session.fetchall(stmt_list, Switches)
     total = session.count(stmt_count)
 
     active_list_mode = False
-    if (stem is not None and stem !='') or (top_mat is not None and top_mat != '') or (bottom_mat is not None and bottom_mat != ''):
+    if (
+            (stem is not None and stem !='')
+            or (top_mat is not None and top_mat != '')
+            or (bottom_mat is not None and bottom_mat != '')
+            or (min_travel is not None) or (max_travel is not None)
+            or (min_total_travel is not None) or (max_total_travel is not None)
+            or (min_force is not None) or (max_force is not None)
+            or (min_total_force is not None) or (max_total_force is not None)
+    ):
         active_list_mode = True
 
     template = env.get_template('new/switches_wrapper.html')

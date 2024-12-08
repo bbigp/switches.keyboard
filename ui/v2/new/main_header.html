@@ -31,9 +31,11 @@
                                 <li class="header_search"><a href="#"><i class="icon-magnifier icons"></i></a></li>
                                 {% endif %}
                                 <li class="account_link" style="margin-right: 29px;">
+                                    {% if request.session.user_id  != '' %}
                                     <a href="/logout">
                                         <i class="icon-user icons"></i>
                                     </a>
+                                    {% endif %}
 {#                                    <ul class="dropdown_account_link">#}
 {#                                        <li><a href="#">My Account</a></li>#}
 {#                                        <li><a href="/logout">Login</a></li>#}
